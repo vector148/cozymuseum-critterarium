@@ -1,0 +1,42 @@
+{
+  "auditedAt": "2026-08-01",
+  "legacySibling": {
+    "status": "deleted-after-verified-extraction",
+    "path": "../CozyMuseum",
+    "existsAfterDeletion": false
+  },
+  "curatedMigration": {
+    "workbookRows": 62,
+    "realmWorkbooks": 4,
+    "lastIdempotencyRun": {
+      "inserted": 0,
+      "updated": 0,
+      "unchanged": 62,
+      "failed": 0
+    }
+  },
+  "legacyMedia": {
+    "sourceFiles": 27,
+    "verifiedTargetFiles": 27,
+    "missing": 0,
+    "sha256Mismatches": 0
+  },
+  "rawObservationArchive": {
+    "path": "database/seeds/legacy-observations.txt",
+    "bytes": 63034,
+    "sha256": "046dedb2634cf8089cd675ad5dae583604f70473d7c306b812a81b5604eaa45f",
+    "manifest": "database/seeds/legacy-observation-candidates.json",
+    "rawCandidates": 452,
+    "organismCandidates": 416,
+    "taxonomyReferences": 36,
+    "uniqueOrganismCandidates": 384
+  },
+  "deletionGate": {
+    "curatedMigrationIdempotent": true,
+    "legacyMediaHashesMatched": true,
+    "rawArchiveHashMatched": true,
+    "catalogIdentityFailures": 0,
+    "catalogDuplicateIds": 0,
+    "encountersLeftByQa": 0
+  }
+}

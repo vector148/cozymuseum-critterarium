@@ -1,0 +1,11 @@
+{
+  "name": "CozyMuseum",
+  "short_name": "CozyMuseum",
+  "description": "Your aesthetic digital museum for collecting, cataloging, and displaying favorite critters.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#06171d",
+  "theme_color": "#06171d",
+  "lang": "en",
+  "categories": ["lifestyle", "education", "entertainment"]
+}

@@ -1,0 +1,126 @@
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg: #0a0e1a;
+  --surface: rgba(255,255,255,0.05);
+  --border: rgba(255,255,255,0.08);
+  --text: #dfeef7;
+  --text-dim: rgba(223,238,247,0.5);
+  --accent: #1e90ff;
+  --green: #2ed573;
+  --red: #ff4757;
+  --yellow: #ffa502;
+  --radius: 14px;
+  --font: 'Inter', sans-serif;
+  --font-display: 'Lexend', sans-serif;
+}
+
+html, body { height: 100%; background: var(--bg); color: var(--text); font-family: var(--font); }
+
+#root { height: 100%; display: flex; flex-direction: column; }
+
+/* Nav */
+.top-nav {
+  display: flex; gap: 8px; padding: 16px 24px;
+  border-bottom: 1px solid var(--border);
+  background: rgba(10,14,26,0.8);
+  backdrop-filter: blur(12px);
+  position: sticky; top: 0; z-index: 100;
+}
+.nav-tab {
+  padding: 8px 18px; border-radius: 999px;
+  border: 1px solid var(--border);
+  background: transparent; color: var(--text-dim);
+  font-family: var(--font); font-size: 13px; font-weight: 600;
+  cursor: pointer; transition: all 0.15s;
+}
+.nav-tab:hover { color: var(--text); border-color: rgba(255,255,255,0.2); }
+.nav-tab.active {
+  background: var(--accent); border-color: var(--accent);
+  color: #fff;
+}
+
+/* Main */
+.main-content { flex: 1; overflow-y: auto; padding: 24px; }
+
+/* Overview */
+.overview-count { font-size: 12px; color: var(--text-dim); margin-bottom: 20px; }
+
+/* Card grid */
+.card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 16px;
+}
+
+.card {
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  background: var(--surface);
+  overflow: hidden;
+  cursor: pointer;
+  transition: transform 0.18s, border-color 0.18s, box-shadow 0.18s;
+}
+.card:hover {
+  transform: translateY(-3px);
+  border-color: rgba(255,255,255,0.15);
+  box-shadow: 0 12px 32px rgba(0,0,0,0.4);
+}
+
+.card-cover {
+  width: 100%; aspect-ratio: 2/3;
+  background: rgba(255,255,255,0.04);
+  overflow: hidden;
+}
+.card-cover img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.card-fallback {
+  width: 100%; height: 100%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 40px;
+}
+
+.card-meta { padding: 10px 12px 12px; }
+.card-title {
+  font-family: var(--font-display); font-size: 13px; font-weight: 700;
+  line-height: 1.4; margin-bottom: 6px;
+  display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.card-row { display: flex; align-items: center; justify-content: space-between; }
+.card-pill {
+  font-size: 10px; font-weight: 800; text-transform: uppercase;
+  padding: 2px 8px; border-radius: 999px;
+  background: rgba(30,144,255,0.15); color: var(--accent);
+  border: 1px solid rgba(30,144,255,0.3);
+}
+.card-score { font-size: 11px; font-weight: 700; color: var(--text-dim); }
+
+/* Utils */
+.empty-state {
+  text-align: center; padding: 60px 24px;
+  color: var(--text-dim); font-size: 14px;
+}
+.empty-state.error { color: var(--red); }
+
+/* Buy Me a Coffee — subtle fixed corner */
+.bmc-btn {
+  position: fixed;
+  bottom: 20px; right: 20px;
+  width: 38px; height: 38px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.1);
+  backdrop-filter: blur(10px);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 17px;
+  text-decoration: none;
+  opacity: 0.38;
+  transition: opacity 0.2s, transform 0.2s, background 0.2s;
+  z-index: 500;
+}
+.bmc-btn:hover {
+  opacity: 1;
+  transform: scale(1.12);
+  background: rgba(255,210,80,0.14);
+  border-color: rgba(255,210,80,0.28);
+}
