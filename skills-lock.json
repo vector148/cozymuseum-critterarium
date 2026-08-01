@@ -1,0 +1,40 @@
+{
+  "skills": {
+    "ask-matt": {
+      "source": "mattpocock/skills",
+      "installedAt": "2026-06-27"
+    },
+    "codebase-design": {
+      "source": "mattpocock/skills",
+      "installedAt": "2026-06-27"
+    },
+    "diagnosing-bugs": {
+      "source": "mattpocock/skills",
+      "installedAt": "2026-06-27"
+    },
+    "grill-with-docs": {
+      "source": "mattpocock/skills",
+      "installedAt": "2026-06-27"
+    },
+    "improve-codebase-architecture": {
+      "source": "mattpocock/skills",
+      "installedAt": "2026-06-27"
+    },
+    "setup-matt-pocock-skills": {
+      "source": "mattpocock/skills",
+      "installedAt": "2026-06-27"
+    },
+    "tdd": {
+      "source": "mattpocock/skills",
+      "installedAt": "2026-06-27"
+    },
+    "to-issues": {
+      "source": "mattpocock/skills",
+      "installedAt": "2026-06-27"
+    },
+    "to-prd": {
+      "source": "mattpocock/skills",
+      "installedAt": "2026-06-27"
+    }
+  }
+}

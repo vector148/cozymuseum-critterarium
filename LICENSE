@@ -1,0 +1,54 @@
+COZYMUSEUM CRITTERARIUM PERSONAL-USE LICENSE
+
+Copyright (c) 2026 CozyMuseum ("CozyMuseum", the "Owner"). All rights reserved.
+
+CozyMuseum Critterarium is licensed solely for personal, private, and non-commercial use.
+Commercial use, resale, sublicensing, and unauthorized public distribution are strictly prohibited.
+
+1. Grant of Personal-Use License
+
+Subject to the terms and conditions of this License, you are granted a limited, personal,
+non-exclusive, non-transferable, and revocable license to install, execute, and privately modify
+this software solely for your own personal, private, non-commercial museum and natural-history
+cataloging purposes.
+
+2. Prohibited Uses and Restrictions
+
+Under this License, you expressly agree NOT to:
+(a) Sell, resell, rent, lease, loan, monetize, commercialize, or use this software (in whole or in part)
+    to generate direct or indirect revenue;
+(b) Publish, upload, syndicate, redistribute, share, mirror, or make the source code, binaries, or
+    derivative versions available publicly on any code-sharing platform, package repository, or public network;
+(c) Sublicense, assign, or transfer any rights granted under this License to any third party;
+(d) Host, deploy, or operate this software as a public website, cloud platform, SaaS, or commercial service;
+(e) Extract or use this software's proprietary source code, application architecture, or design system
+    for training, fine-tuning, or evaluating machine learning or AI models without prior written consent;
+(f) Remove, alter, or obscure any copyright, trademark, or license notices contained within this software.
+
+3. Third-Party Materials and Media Carve-Out
+
+The Owner claims copyright solely over the original application source code, user interface implementation,
+design styling, and custom architecture authored by CozyMuseum.
+
+This License DOES NOT claim ownership over, and explicitly excludes:
+(a) Third-party open-source software libraries, packages, and tools (including npm dependencies),
+    each of which remains governed by its respective open-source license (e.g., MIT, Apache 2.0, BSD);
+(b) Third-party media, biological catalog metadata, scientific taxonomy records, specimen imagery,
+    and cultural assets licensed under Creative Commons (including CC0), Public Domain Dedication,
+    or approved open-access content licenses from original scientific and public providers
+    (e.g., Wikimedia Commons, GBIF, iNaturalist, Pexels, Unsplash);
+(c) Trademarks, titles, logos, or brand marks belonging to third parties referenced strictly for
+    factual cataloging, personal curation, or nominative commentary.
+
+All third-party materials remain the property of their respective rights holders and are subject to their
+applicable licenses and terms.
+
+4. Disclaimer of Warranty and Limitation of Liability
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT
+NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, TITLE, AND
+NON-INFRINGEMENT.
+
+IN NO EVENT SHALL THE OWNER, COPYRIGHT HOLDER, OR COZYMUSEUM BE LIABLE FOR ANY CLAIM, DAMAGES,
+OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT, OR OTHERWISE, ARISING FROM, OUT OF,
+OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
