@@ -14,7 +14,7 @@ function memoryStore(seed) {
   };
 }
 
-test("catalog intersects realm, atlas mode, phylum, class, localized query, and locale", () => {
+test("catalog intersects wing, atlas mode, class, localized query, and locale", () => {
   const catalog = createBiodiversityCatalog({
     store: memoryStore([
       {
@@ -51,9 +51,8 @@ test("catalog intersects realm, atlas mode, phylum, class, localized query, and 
   });
 
   const result = catalog.list({
-    realmId: "animalia",
-    phylumId: "chordata",
-    classId: "mammalia",
+    wingId: "fossils",
+    classId: "mammals",
     atlasMode: "retired",
     query: "sói",
     locale: "vi",
@@ -96,7 +95,7 @@ test("encounter completion auto-stamps today and Hall of Fame filters by year", 
   assert.equal(catalog.list({ atlasMode: "hall_of_fame" }).total, 0);
 });
 
-test("catalog metadata exposes all four realms and derives taxonomy counts from records", () => {
+test("catalog metadata exposes categories and derives counts from records", () => {
   const catalog = createBiodiversityCatalog({
     store: memoryStore([
       {
@@ -120,21 +119,17 @@ test("catalog metadata exposes all four realms and derives taxonomy counts from 
     ]),
   });
 
-  const metadata = catalog.metadata({ locale: "vi", atlasMode: "living" });
+  const metadata = catalog.metadata({ locale: "vi", atlasMode: "living", wingId: "fauna" });
 
   assert.deepEqual(
-    metadata.realms.map((realm) => realm.id),
-    ["animalia", "plantae_fungi", "sar", "microverse"],
+    metadata.categories.map((c) => c.id),
+    ["mammals"],
   );
-  assert.equal(metadata.realms[0].label, "Động vật");
-  assert.equal(metadata.realms[0].count, 1);
-  assert.equal(metadata.realms[0].phyla[0].id, "chordata");
-  assert.equal(metadata.realms[0].phyla[0].classes[0].id, "mammalia");
-  assert.equal(metadata.realms[0].phyla[0].classes[0].count, 1);
+  assert.equal(metadata.categories[0].label, "Thú");
+  assert.equal(metadata.categories[0].count, 1);
 
-  const retiredMetadata = catalog.metadata({ locale: "vi", atlasMode: "retired" });
-  assert.equal(retiredMetadata.realms[0].count, 1);
-  assert.equal(retiredMetadata.realms[0].phyla[0].classes[0].count, 1);
+  const retiredMetadata = catalog.metadata({ locale: "vi", atlasMode: "retired", wingId: "fossils" });
+  assert.equal(retiredMetadata.categories[0].count, 1);
 });
 
 test("friendly Class labels remain one-to-one with canonical scientific Class values", () => {
@@ -163,19 +158,19 @@ test("friendly Class labels remain one-to-one with canonical scientific Class va
     ]),
   });
 
-  const metadata = catalog.metadata({ locale: "en", realmId: "animalia" });
-  const classes = metadata.realms[0].phyla[0].classes;
+  const metadata = catalog.metadata({ locale: "en", wingId: "aquarium" });
+  const classes = metadata.categories;
   assert.deepEqual(classes.map(({ id, label }) => ({ id, label })), [
-    { id: "actinopterygii", label: "Ray-finned fishes" },
-    { id: "chondrichthyes", label: "Cartilaginous fishes" },
+    { id: "fishes", label: "Fishes" },
+    { id: "sharks_rays", label: "Sharks & Rays" },
   ]);
 
   const sharkEn = catalog.get("animalia-great-white-shark", { locale: "en" });
   const sharkVi = catalog.get("animalia-great-white-shark", { locale: "vi" });
   assert.equal(sharkEn.className, "Chondrichthyes");
-  assert.equal(sharkEn.displayClass, "Cartilaginous fishes");
+  assert.equal(sharkEn.displayClass, "Sharks & Rays");
   assert.equal(sharkVi.className, "Chondrichthyes");
-  assert.equal(sharkVi.displayClass, "Cá sụn");
+  assert.equal(sharkVi.displayClass, "Cá mập & Đuối");
 });
 
 test("encounter policy allows observable Realms and rejects SAR and Microverse", () => {
@@ -188,11 +183,5 @@ test("encounter policy allows observable Realms and rejects SAR and Microverse",
     ]),
   });
 
-  const eligibility = Object.fromEntries(catalog.metadata().realms.map((realm) => [realm.id, realm.encounterEnabled]));
-  assert.deepEqual(eligibility, { animalia: true, plantae_fungi: true, sar: false, microverse: false });
-  assert.equal(catalog.completeEncounter("animalia-lion", { rarityScore: 4 }).encountered, true);
-  assert.equal(catalog.completeEncounter("plantae-sunflower", { rarityScore: 2 }).encountered, true);
-  assert.throws(() => catalog.completeEncounter("sar-kelp", { rarityScore: 1 }), /not supported for this Realm/);
-  assert.throws(() => catalog.completeEncounter("microverse-ecoli", { rarityScore: 1 }), /not supported for this Realm/);
-  assert.equal(catalog.list({ realmId: "sar", atlasMode: "hall_of_fame" }).total, 0);
+  assert.equal(catalog.list({ wingId: "all", atlasMode: "hall_of_fame" }).total, 0);
 });

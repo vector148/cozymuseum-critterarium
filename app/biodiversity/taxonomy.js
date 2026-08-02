@@ -5,6 +5,12 @@ export const REALMS = Object.freeze([
   { id: "microverse", labelEn: "Microverse", labelVi: "Siêu vi", icon: "✣", color: "red", encounterEnabled: false },
 ]);
 
+export const COZY_CATEGORY_ORDER = Object.freeze([
+  "mammals", "birds", "reptiles", "amphibians", "insects", "arachnids", "other_animals",
+  "fishes", "sharks_rays", "corals_jellyfish", "mollusks", "crustaceans", "echinoderms", "marine_life",
+  "flowering_plants", "conifers", "ferns_mosses", "fungi", "other_plants"
+]);
+
 export const PROHIBITED_CLASS_KEYS = Object.freeze(new Set([
   "all", "unknown", "unresolved", "unresolved_class",
   "fish", "fishes", "pisces", "ca",
@@ -27,17 +33,17 @@ const LABELS = Object.freeze({
   className: {
     mammalia: ["Mammals", "Thú"], aves: ["Birds", "Chim"], reptilia: ["Reptiles", "Bò sát"],
     amphibia: ["Amphibians", "Lưỡng cư"],
-    actinopterygii: ["Ray-finned fishes", "Cá vây tia"],
-    chondrichthyes: ["Cartilaginous fishes", "Cá sụn"],
-    insecta: ["Insects", "Côn trùng"], arachnida: ["Arachnids", "Hình nhện"],
-    malacostraca: ["Malacostracans", "Giáp xác bậc cao"], myriapoda: ["Myriapods", "Nhiều chân"],
-    cephalopoda: ["Cephalopods", "Động vật chân đầu"], scyphozoa: ["True jellyfish", "Sứa thật"],
-    hydrozoa: ["Hydrozoans", "Thủy tức"], dinocaridida: ["Dinocaridids", "Dinocaridida"],
-    trilobita: ["Trilobites", "Bọ ba thùy"], magnoliopsida: ["Flowering dicots", "Thực vật hai lá mầm"],
-    pinopsida: ["Conifers", "Thông"], ginkgoopsida: ["Ginkgoes", "Bạch quả"],
-    polypodiopsida: ["Ferns", "Dương xỉ"], agaricomycetes: ["Mushroom-forming fungi", "Nấm đảm"],
-    lycopodiopsida: ["Lycophytes", "Thạch tùng"], glossopteridopsida: ["Glossopterids", "Dương xỉ hạt Glossopteris"],
-    phaeophyceae: ["Brown algae", "Tảo nâu"], bacillariophyceae: ["Diatoms", "Tảo cát"],
+    actinopterygii: ["Fishes", "Cá"],
+    chondrichthyes: ["Sharks & Rays", "Cá mập & Đuối"],
+    insecta: ["Insects", "Côn trùng"], arachnida: ["Spiders & Scorpions", "Nhện & Bọ cạp"],
+    malacostraca: ["Crabs & Shrimp", "Cua & Tôm"], myriapoda: ["Centipedes", "Rết & Cuốn chiếu"],
+    cephalopoda: ["Squids & Octopuses", "Mực & Bạch tuộc"], scyphozoa: ["Jellyfishes", "Sứa"],
+    hydrozoa: ["Hydrozoans", "Thủy tức"], dinocaridida: ["Dinocaridids", "Sinh vật kỳ dị"],
+    trilobita: ["Trilobites", "Bọ ba thùy"], magnoliopsida: ["Trees & Flowers", "Cây thân gỗ & Hoa"],
+    pinopsida: ["Conifers", "Thông & Tùng"], ginkgoopsida: ["Ginkgoes", "Bạch quả"],
+    polypodiopsida: ["Ferns", "Dương xỉ"], agaricomycetes: ["Mushrooms", "Nấm"],
+    lycopodiopsida: ["Mosses", "Rêu & Thạch tùng"], glossopteridopsida: ["Ancient Ferns", "Dương xỉ cổ đại"],
+    phaeophyceae: ["Kelp & Seaweed", "Tảo biển"], bacillariophyceae: ["Diatoms", "Tảo cát"],
     oligohymenophorea: ["Oligohymenophoreans", "Trùng lông Oligohymenophorea"],
     aconoidasida: ["Aconoidasidans", "Aconoidasida"], pisoniviricetes: ["Pisoniviricetes", "Pisoniviricetes"],
     insthoviricetes: ["Insthoviricetes", "Insthoviricetes"], caudoviricetes: ["Tailed bacteriophages", "Thể thực khuẩn có đuôi"],
@@ -45,9 +51,67 @@ const LABELS = Object.freeze({
     bacilli: ["Bacilli", "Bacilli"], saccharomycetes: ["Saccharomycetes", "Nấm men Saccharomycetes"],
     eurotiomycetes: ["Eurotiomycetes", "Eurotiomycetes"], halobacteria: ["Halobacteria", "Halobacteria"],
     thermococci: ["Thermococci", "Thermococci"],
-    all: ["Unresolved class", "Chưa xác định lớp"],
+    all: ["All Categories", "Tất cả các nhóm"],
   },
+  cozyCategory: {
+    fishes: ["Fishes", "Cá"],
+    sharks_rays: ["Sharks & Rays", "Cá mập & Đuối"],
+    corals_jellyfish: ["Corals & Jellyfish", "San hô & Sứa"],
+    mollusks: ["Mollusks", "Động vật thân mềm"],
+    crustaceans: ["Crustaceans", "Giáp xác"],
+    echinoderms: ["Starfish & Urchins", "Sao biển & Cầu gai"],
+    marine_life: ["Other Marine Life", "Sinh vật biển khác"],
+    
+    mammals: ["Mammals", "Thú"],
+    birds: ["Birds", "Chim"],
+    reptiles: ["Reptiles", "Bò sát"],
+    amphibians: ["Amphibians", "Lưỡng cư"],
+    insects: ["Insects", "Côn trùng"],
+    arachnids: ["Arachnids", "Nhện & Bọ cạp"],
+    other_animals: ["Other Animals", "Động vật khác"],
+    
+    flowering_plants: ["Flowering Plants", "Thực vật có hoa"],
+    conifers: ["Conifers", "Cây lá kim"],
+    ferns_mosses: ["Ferns & Mosses", "Dương xỉ & Rêu"],
+    fungi: ["Fungi", "Nấm"],
+    other_plants: ["Other Plants", "Thực vật khác"],
+
+    all: ["All Categories", "Tất cả các nhóm"],
+  }
 });
+
+export function getCozyCategory(className, wingId) {
+  const k = taxonomyKey(className);
+  
+  if (wingId === "aquarium") {
+    if (["actinopterygii", "teleostei", "carangiformes", "perciformes", "siluriformes", "cypriniformes", "syngnathiformes"].includes(k)) return "fishes";
+    if (["chondrichthyes", "elasmobranchii", "myliobatiformes", "carcharhiniformes", "lamniformes"].includes(k)) return "sharks_rays";
+    if (["anthozoa", "scyphozoa", "hydrozoa", "cubozoa", "ascidiacea"].includes(k)) return "corals_jellyfish";
+    if (["cephalopoda", "gastropoda", "bivalvia"].includes(k)) return "mollusks";
+    if (["malacostraca", "maxillopoda"].includes(k)) return "crustaceans";
+    if (["holothuroidea", "asteroidea", "echinoidea"].includes(k)) return "echinoderms";
+    return "marine_life";
+  }
+  
+  if (wingId === "fauna" || wingId === "fossils") { 
+    if (["mammalia"].includes(k)) return "mammals";
+    if (["aves"].includes(k)) return "birds";
+    if (["reptilia", "testudines", "squamata", "crocodilia"].includes(k)) return "reptiles";
+    if (["amphibia", "anura", "caudata"].includes(k)) return "amphibians";
+    if (["insecta", "lepidoptera", "hymenoptera", "coleoptera", "diptera"].includes(k)) return "insects";
+    if (["arachnida"].includes(k)) return "arachnids";
+    if (["dinocaridida", "trilobita"].includes(k)) return "other_animals";
+    if (wingId === "fauna") return "other_animals";
+  }
+
+  if (["magnoliopsida", "liliopsida"].includes(k)) return "flowering_plants";
+  if (["pinopsida", "ginkgoopsida", "cycadopsida"].includes(k)) return "conifers";
+  if (["polypodiopsida", "lycopodiopsida", "glossopteridopsida"].includes(k)) return "ferns_mosses";
+  if (["agaricomycetes", "saccharomycetes", "eurotiomycetes"].includes(k)) return "fungi";
+  if (wingId === "flora") return "other_plants";
+  
+  return "other_animals";
+}
 
 function humanize(value) {
   return String(value || "unknown").replace(/_/g, " ").replace(/\b\w/g, (letter) => letter.toUpperCase());

@@ -22,8 +22,8 @@ test("Animalia and Plantae backgrounds stay byte-identical to the approved Realm
   );
 
   const css = readFileSync(resolve(root, "resources/css/glass.css"), "utf8");
-  assert.match(css, /html\.theme-bio-animalia\s*\{[^}]*url\('\/bg-animalia\.jpg'\)/s);
-  assert.match(css, /html\.theme-bio-plantae_fungi\s*\{[^}]*url\('\/bg-plantae-fungi\.jpg'\)/s);
+  assert.match(css, /html\.theme-wing-aquarium\s*\{[^}]*url\('\/bg-animalia\.jpg'\)/s);
+  assert.match(css, /html\.theme-wing-flora\s*\{[^}]*url\('\/bg-plantae-fungi\.jpg'\)/s);
 });
 
 test("taxonomy controls use a translucent blurred scrim without changing Realm backgrounds", () => {

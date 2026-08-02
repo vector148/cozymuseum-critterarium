@@ -232,8 +232,8 @@ async function fetchINaturalistImage(fetchImpl, query, timeoutMs) {
 
 function wikimediaCommonsImageUrl(query, featured = false) {
   const url = new URL("https://commons.wikimedia.org/w/api.php");
-  const negativeKeywords = '-"specimen" -"illustration" -"drawing" -"fossil" -"track" -"trap" -"museum" -"dead" -"map"';
-  const searchQuery = featured ? `"${query}" (incategory:Featured_pictures_of_animals OR incategory:Featured_pictures_of_plants OR incategory:Featured_pictures_of_fungi OR incategory:Quality_images)` : `"${query}" ${negativeKeywords}`;
+  const negativeKeywords = '-"specimen" -"illustration" -"drawing" -"fossil" -"track" -"trap" -"museum" -"dead" -"map" -"fishing" -"catch" -"caught" -"market" -"food" -"dish" -"painting" -"art" -"sketch" -"vintage" -"botanical" -"statue" -"model" -"sculpture" -"captive" -"zoo"';
+  const searchQuery = featured ? `"${query}" (incategory:Featured_pictures_of_animals OR incategory:Featured_pictures_of_plants OR incategory:Featured_pictures_of_fungi OR incategory:Quality_images) ${negativeKeywords}` : `"${query}" ${negativeKeywords}`;
   url.search = new URLSearchParams({
     action: "query",
     generator: "search",
@@ -307,23 +307,28 @@ async function resolveWikidataClass(fetchImpl, initialEntityId, timeoutMs) {
     : null;
 }
 
-function videoScore(video) {
+function videoScore(video, queryWords) {
   const title = clean(video.title).toLowerCase();
   const duration = Number(video.seconds) || 0;
   const views = Number(video.views) || 0;
   if (!video.videoId && !video.url) return -Infinity;
   if (duration > 0 && duration < 45) return -100;
+  
+  // Require at least one word from the query to be in the title
+  const hasRelevance = queryWords.some(word => title.includes(word));
+  if (!hasRelevance) return -200;
+
   let score = Math.log10(Math.max(views, 1));
   if (/\b4k\b|2160p/.test(title)) score += 35;
   if (/\bfull\s*hd\b|1080p|\bhd\b/.test(title)) score += 15;
   if (/wildlife|in the wild|nature|natural history|documentary/.test(title)) score += 24;
-  if (/shorts?|compilation|meme|cartoon|gameplay/.test(title)) score -= 18;
+  if (/shorts?|compilation|meme|cartoon|gameplay|10 hours|epic/.test(title)) score -= 50;
   if (duration >= 180) score += 5;
   return score;
 }
 
-function rankedVideos(result) {
-  return [...(result?.videos || [])].sort((left, right) => videoScore(right) - videoScore(left));
+function rankedVideos(result, queryWords) {
+  return [...(result?.videos || [])].sort((left, right) => videoScore(right, queryWords) - videoScore(left, queryWords));
 }
 
 async function isEmbeddableYouTubeVideo(video, fetchImpl, timeoutMs) {
@@ -340,9 +345,9 @@ async function isEmbeddableYouTubeVideo(video, fetchImpl, timeoutMs) {
   }
 }
 
-async function bestVerifiedVideo(result, fetchImpl, timeoutMs) {
-  for (const video of rankedVideos(result)) {
-    if (await isEmbeddableYouTubeVideo(video, fetchImpl, timeoutMs)) return video;
+async function bestVerifiedVideo(result, queryWords, fetchImpl, timeoutMs) {
+  for (const video of rankedVideos(result, queryWords)) {
+    if (videoScore(video, queryWords) > -100 && await isEmbeddableYouTubeVideo(video, fetchImpl, timeoutMs)) return video;
   }
   return null;
 }
@@ -476,8 +481,9 @@ export function createBioEnricher({
       const shouldRefresh = (field) => overwrite || selectedOverwriteFields.has(field) || !clean(row[field]);
       const gbifPromise = enabledProviders.has("gbif") ? fetchGbifTaxon(fetchImpl, query, requestTimeoutMs)
         .catch((error) => { errors.push({ provider: "gbif", message: error.message }); return null; }) : Promise.resolve(null);
-      const videoPromise = enabledProviders.has("youtube") && shouldRefresh("youtubeUrl") ? resolvedYouTubeSearch(`${clean(row.commonNameEn) || query} ${query} wildlife documentary 4K`)
-        .then((result) => bestVerifiedVideo(result, fetchImpl, requestTimeoutMs))
+      const queryWords = [...new Set(`${clean(row.commonNameEn)} ${query}`.toLowerCase().split(/\s+/).filter(w => w.length > 3))];
+      const videoPromise = enabledProviders.has("youtube") && shouldRefresh("youtubeUrl") ? resolvedYouTubeSearch(`${clean(row.commonNameEn) || query} ${query} animal documentary`)
+        .then((result) => bestVerifiedVideo(result, queryWords, fetchImpl, requestTimeoutMs))
         .catch((error) => { errors.push({ provider: "youtube", message: error.message }); return null; }) : Promise.resolve(null);
       const wikimediaRead = async (provider, url, transform) => {
         try {

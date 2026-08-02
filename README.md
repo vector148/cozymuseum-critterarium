@@ -1,6 +1,6 @@
 # CozyMuseum
 
-**Current shell version:** `1.0.0`
+**Current shell version:** `1.1.0`
 
 > Your aesthetic digital museum. A cozy, local-first sanctuary to collect, catalog, and display your favorite critters with a beautiful Liquid Glass UI.
 

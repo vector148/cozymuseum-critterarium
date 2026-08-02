@@ -21,23 +21,40 @@
   --display: "Exo 2", "Be Vietnam Pro", system-ui, sans-serif;
 }
 
-html.theme-bio-animalia {
-  --accent: #2aa7ff;
-  --accent-rgb: 42, 167, 255;
+html.theme-wing-fauna {
+  --accent: #ff4757;
+  --accent-rgb: 255, 71, 87;
+  background:
+    linear-gradient(180deg, rgba(20, 5, 5, 0.5) 0%, rgba(30, 10, 10, 0.72) 100%),
+    url('/bg-fauna.jpg') no-repeat center center fixed;
+  background-size: cover;
+}
+
+html.theme-wing-flora {
+  --accent: #35dd84;
+  --accent-rgb: 53, 221, 132;
+  background: url('/bg-plantae-fungi.jpg') no-repeat center center fixed;
+  background-size: cover;
+}
+
+html.theme-wing-aquarium {
+  --accent: #00e5ff;
+  --accent-rgb: 0, 229, 255;
   background:
     linear-gradient(135deg, rgba(6, 12, 20, 0.20) 0%, rgba(7, 14, 24, 0.36) 100%),
     url('/bg-animalia.jpg') no-repeat center center fixed;
   background-size: cover;
 }
 
-html.theme-bio-plantae_fungi {
-  --accent: #35dd84;
-  --accent-rgb: 53, 221, 132;
-  background: url('/bg-plantae-fungi.jpg') no-repeat center center fixed;
-  background-size: cover;
+html.theme-wing-fossils {
+  --accent: #ffc13b;
+  --accent-rgb: 255, 193, 59;
+  background:
+    radial-gradient(circle at 76% 8%, rgba(var(--accent-rgb), 0.36), transparent 34%),
+    radial-gradient(circle at 18% 88%, rgba(var(--accent-rgb), 0.17), transparent 42%),
+    linear-gradient(145deg, rgba(var(--accent-rgb), 0.2) 0%, #07141a 48%, #02090d 100%);
+  background-attachment: fixed;
 }
-html.theme-bio-sar { --accent: #ffc13b; --accent-rgb: 255, 193, 59; }
-html.theme-bio-microverse { --accent: #ff4757; --accent-rgb: 255, 71, 87; }
 
 * { box-sizing: border-box; }
 
@@ -74,12 +91,16 @@ body::before {
   mask-image: linear-gradient(to bottom, black, transparent 72%);
 }
 
-html.theme-bio-animalia body,
-html.theme-bio-plantae_fungi body {
+html.theme-wing-fauna body,
+html.theme-wing-flora body,
+html.theme-wing-aquarium body,
+html.theme-wing-fossils body {
   background: transparent;
 }
 
-html.theme-bio-animalia body::before {
+html.theme-wing-fauna body::before,
+html.theme-wing-aquarium body::before,
+html.theme-wing-fossils body::before {
   z-index: 0;
   background:
     radial-gradient(circle at 18% 12%, rgba(255, 255, 255, 0.18), transparent 30%),
@@ -88,15 +109,17 @@ html.theme-bio-animalia body::before {
   mask-image: none;
 }
 
-html.theme-bio-plantae_fungi body::before {
+html.theme-wing-flora body::before {
   z-index: 0;
   background: linear-gradient(180deg, rgba(4, 9, 16, 0.08) 0%, rgba(4, 9, 16, 0.20) 100%);
   background-size: auto;
   mask-image: none;
 }
 
-html.theme-bio-animalia body::after,
-html.theme-bio-plantae_fungi body::after {
+html.theme-wing-fauna body::after,
+html.theme-wing-flora body::after,
+html.theme-wing-aquarium body::after,
+html.theme-wing-fossils body::after {
   content: "";
   position: fixed;
   inset: 0;
@@ -106,8 +129,10 @@ html.theme-bio-plantae_fungi body::after {
   pointer-events: none;
 }
 
-html.theme-bio-animalia #app,
-html.theme-bio-plantae_fungi #app {
+html.theme-wing-fauna #app,
+html.theme-wing-flora #app,
+html.theme-wing-aquarium #app,
+html.theme-wing-fossils #app {
   position: relative;
   z-index: 1;
 }
@@ -384,8 +409,7 @@ a { color: inherit; }
 .atlas-year-select option { color: var(--text); background: #152027; }
 
 .taxonomy-row {
-  display: grid;
-  grid-template-columns: 72px minmax(0, 1fr);
+  display: flex;
   align-items: center;
   gap: 10px;
 }
@@ -413,6 +437,7 @@ a { color: inherit; }
 .dot { width: 9px; height: 9px; border-radius: 50%; box-shadow: 0 0 10px currentColor; }
 .dot.green { color: var(--green); background: currentColor; }
 .dot.blue { color: var(--blue); background: currentColor; }
+.dot.accent { color: var(--accent); background: currentColor; }
 .chip-count { min-width: 19px; padding: 2px 5px; border-radius: 999px; color: rgba(240, 248, 250, 0.62); background: rgba(255, 255, 255, 0.08); font-size: 9px; text-align: center; }
 .taxonomy-hint { align-self: center; color: rgba(208, 224, 228, 0.4); font-size: 11px; font-style: italic; white-space: nowrap; }
 
@@ -544,7 +569,7 @@ a { color: inherit; }
   .mobile-menu-btn span { width: 20px; height: 2px; border-radius: 2px; background: var(--text); }
   .atlas-search-row { flex-direction: column; }
   .atlas-year-select { width: 100%; min-height: 46px; }
-  .taxonomy-row { grid-template-columns: 1fr; gap: 7px; }
+  .taxonomy-row { gap: 7px; }
   .taxonomy-hint { white-space: normal; }
   .grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
   .meta { padding: 13px; }

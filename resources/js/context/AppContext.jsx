@@ -11,11 +11,10 @@ function initialLocale() {
 }
 
 export function AppProvider({ children }) {
-  const [realmId, setRealmId] = useState("animalia");
+  const [wingId, setWingId] = useState("aquarium");
   const [atlasMode, setAtlasMode] = useState("living");
   const [locale, setLocale] = useState(initialLocale);
   const [query, setQuery] = useState("");
-  const [phylumId, setPhylumId] = useState("all");
   const [classId, setClassId] = useState("all");
   const [encounterYear, setEncounterYear] = useState("all");
   const [toast, setToast] = useState({ msg: "", show: false });
@@ -36,32 +35,24 @@ export function AppProvider({ children }) {
     toastTimer.current = setTimeout(() => setToast((current) => ({ ...current, show: false })), 2600);
   }, []);
 
-  const switchRealm = useCallback((nextRealm) => {
-    setRealmId(nextRealm);
-    setPhylumId("all");
+  const switchWing = useCallback((nextWing) => {
+    setWingId(nextWing);
     setClassId("all");
     setEncounterYear("all");
   }, []);
 
   const switchMode = useCallback((nextMode) => {
     setAtlasMode(nextMode);
-    setPhylumId("all");
     setClassId("all");
     setEncounterYear(nextMode === "hall_of_fame" ? "auto" : "all");
   }, []);
 
-  const selectPhylum = useCallback((nextPhylum) => {
-    setPhylumId(nextPhylum);
-    setClassId("all");
-  }, []);
-
   return (
     <AppContext.Provider value={{
-      realmId, switchRealm,
+      wingId, switchWing,
       atlasMode, switchMode,
       locale, setLocale,
       query, setQuery,
-      phylumId, selectPhylum,
       classId, setClassId,
       encounterYear, setEncounterYear,
       toast, showToast,

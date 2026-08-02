@@ -3,7 +3,7 @@ import { useCallback, useEffect, useState } from "react";
 import { api } from "../api/index.js";
 
 export function useAtlas(filters) {
-  const [metadata, setMetadata] = useState({ realms: [], encounterYears: [] });
+  const [metadata, setMetadata] = useState({ categories: [], encounterYears: [] });
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -18,7 +18,7 @@ export function useAtlas(filters) {
     Promise.all([
       api.getMetadata({
         locale: filters.locale,
-        realmId: filters.realmId,
+        wingId: filters.wingId,
         atlasMode: filters.atlasMode,
       }),
       api.getOrganisms(filters),
@@ -35,11 +35,10 @@ export function useAtlas(filters) {
       cancelled = true;
     };
   }, [
-    filters.realmId,
+    filters.wingId,
     filters.atlasMode,
     filters.locale,
     filters.query,
-    filters.phylumId,
     filters.classId,
     filters.encounterYear,
     revision,

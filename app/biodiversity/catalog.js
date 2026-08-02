@@ -1,4 +1,4 @@
-import { encounterEnabledForRealm, localizedLabel, realmLabel, REALMS } from "./taxonomy.js";
+import { encounterEnabledForRealm, localizedLabel, getCozyCategory, REALMS, COZY_CATEGORY_ORDER } from "./taxonomy.js";
 
 function clean(value) {
   return String(value ?? "").replace(/\s+/g, " ").trim();
@@ -55,9 +55,26 @@ function localized(row, locale) {
 }
 
 function matchesAtlasMode(row, atlasMode) {
-  if (atlasMode === "retired") return key(row.lifeState) === "extinct";
+  if (atlasMode === "retired") return key(row.lifeState) === "extinct"; // Keep for backwards compatibility with tests/api
   if (atlasMode === "hall_of_fame") return encounterEnabledForRealm(row.realmId) && truthy(row.encountered);
-  return key(row.lifeState) === "extant";
+  return true;
+}
+
+const AQUATIC_CLASSES = [
+  "actinopterygii", "teleostei", "carangiformes", "perciformes", "siluriformes", "cypriniformes", "syngnathiformes",
+  "chondrichthyes", "elasmobranchii", "myliobatiformes", "carcharhiniformes", "lamniformes",
+  "anthozoa", "scyphozoa", "hydrozoa", "cubozoa", "ascidiacea",
+  "cephalopoda", "gastropoda", "bivalvia",
+  "malacostraca", "maxillopoda",
+  "holothuroidea", "asteroidea", "echinoidea"
+];
+
+function matchesWing(row, wingId) {
+  if (wingId === "fauna") return key(row.realmId) === "animalia" && key(row.lifeState) === "extant" && !AQUATIC_CLASSES.includes(key(row.className));
+  if (wingId === "flora") return key(row.realmId) === "plantae_fungi" && key(row.lifeState) === "extant";
+  if (wingId === "aquarium") return key(row.realmId) === "animalia" && key(row.lifeState) === "extant" && AQUATIC_CLASSES.includes(key(row.className));
+  if (wingId === "fossils") return key(row.lifeState) === "extinct";
+  return true;
 }
 
 function matchesQuery(row, query) {
@@ -77,60 +94,55 @@ export function createBiodiversityCatalog({ store, clock = () => new Date() } = 
   }
 
   return Object.freeze({
-    metadata({ locale = "en", realmId = "all", atlasMode = "living" } = {}) {
+    metadata({ locale = "en", wingId = "fauna", atlasMode = "living" } = {}) {
       const resolvedLocale = selectedLocale(locale);
       const allRows = store.read() ?? [];
       const modeRows = allRows.filter((row) => matchesAtlasMode(row, atlasMode));
-      const activeRows = modeRows.filter((row) => realmId === "all" || key(row.realmId) === key(realmId));
+      const activeRows = modeRows.filter((row) => wingId === "all" || matchesWing(row, wingId));
       const encounterYears = [...new Set(activeRows
         .filter((row) => truthy(row.encountered))
         .map((row) => clean(row.encounterDate).slice(0, 4))
         .filter((year) => /^\d{4}$/.test(year)))]
         .sort((left, right) => Number(right) - Number(left));
 
+      const classNames = [...new Map(activeRows.map((row) => [getCozyCategory(row.className, wingId), getCozyCategory(row.className, wingId)])).entries()];
+      const categories = classNames.map(([classId]) => ({
+        id: classId,
+        label: localizedLabel("cozyCategory", classId, resolvedLocale),
+        count: activeRows.filter((row) => getCozyCategory(row.className, wingId) === classId).length,
+      })).sort((a, b) => {
+        const indexA = COZY_CATEGORY_ORDER.indexOf(a.id);
+        const indexB = COZY_CATEGORY_ORDER.indexOf(b.id);
+        const validA = indexA === -1 ? 999 : indexA;
+        const validB = indexB === -1 ? 999 : indexB;
+        return validA - validB || b.count - a.count;
+      });
+
       return {
         locale: resolvedLocale,
         encounterYears,
-        realms: REALMS.map((realm) => {
-          const realmRows = modeRows.filter((row) => key(row.realmId) === realm.id);
-          const phylumIds = [...new Set(realmRows.map((row) => key(row.phylum) || "other"))];
-          return {
-            ...realm,
-            label: realmLabel(realm, resolvedLocale),
-            count: realmRows.length,
-            phyla: phylumIds.map((phylumId) => {
-              const phylumRows = realmRows.filter((row) => key(row.phylum) === phylumId);
-              const classNames = [...new Map(phylumRows.map((row) => [key(row.className) || "all", clean(row.className)])).entries()];
-              return {
-                id: phylumId,
-                label: localizedLabel("phylum", phylumId, resolvedLocale),
-                count: phylumRows.length,
-                classes: classNames.map(([classId, canonicalClassName]) => ({
-                  id: classId,
-                  label: localizedLabel("className", classId, resolvedLocale) || canonicalClassName,
-                  count: phylumRows.filter((row) => key(row.className) === classId).length,
-                })),
-              };
-            }),
-          };
-        }),
+        categories,
       };
     },
 
     list({
-      realmId = "all", phylumId = "all", classId = "all", atlasMode = "living",
+      wingId = "fauna", classId = "all", atlasMode = "living",
       lifeState = "all", encounterYear = "all", query = "", locale = "en",
     } = {}) {
       const resolvedLocale = selectedLocale(locale);
       const items = (store.read() ?? [])
-        .filter((row) => realmId === "all" || key(row.realmId) === key(realmId))
-        .filter((row) => phylumId === "all" || key(row.phylum) === key(phylumId))
-        .filter((row) => classId === "all" || key(row.className) === key(classId))
+        .filter((row) => wingId === "all" || matchesWing(row, wingId))
+        .filter((row) => classId === "all" || getCozyCategory(row.className, wingId) === classId)
         .filter((row) => matchesAtlasMode(row, atlasMode))
         .filter((row) => lifeState === "all" || key(row.lifeState) === key(lifeState))
         .filter((row) => atlasMode !== "hall_of_fame" || encounterYear === "all" || clean(row.encounterDate).startsWith(`${encounterYear}-`))
         .filter((row) => matchesQuery(row, query))
-        .map((row) => localized(structuredClone(row), resolvedLocale))
+        .map((row) => {
+          const item = localized(structuredClone(row), resolvedLocale);
+          const cozyId = getCozyCategory(row.className, wingId);
+          item.displayClass = localizedLabel("cozyCategory", cozyId, resolvedLocale);
+          return item;
+        })
         .sort((left, right) => {
           if (atlasMode === "hall_of_fame") {
             const rarity = (Number(right.rarityScore) || 0) - (Number(left.rarityScore) || 0);
@@ -145,7 +157,7 @@ export function createBiodiversityCatalog({ store, clock = () => new Date() } = 
         items,
         total: items.length,
         locale: resolvedLocale,
-        filters: { realmId, phylumId, classId, atlasMode, encounterYear, query },
+        filters: { wingId, classId, atlasMode, encounterYear, query },
         generatedAt: new Date().toISOString(),
       };
     },

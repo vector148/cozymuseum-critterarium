@@ -1,16 +1,15 @@
-export const REALMS = [
-  { id: "animalia", icon: "◇", en: "Animalia", vi: "Động vật" },
-  { id: "plantae_fungi", icon: "△", en: "Plants & Fungi", vi: "Thực vật & Nấm" },
-  { id: "sar", icon: "◈", en: "SAR", vi: "SAR" },
-  { id: "microverse", icon: "✣", en: "Microverse", vi: "Siêu vi" },
+export const WINGS = [
+  { id: "aquarium", icon: "🐠", en: "Aquarium", vi: "Thủy cung" },
+  { id: "flora", icon: "🌿", en: "Botany", vi: "Vườn bách thảo" },
+  { id: "fossils", icon: "🦴", en: "Fossils", vi: "Khu khảo cổ" },
+  { id: "fauna", icon: "🐾", en: "Wildlife", vi: "Động vật hoang dã" },
 ];
 
 const COPY = {
   en: {
-    living: "Extant", retired: "Retired", hall_of_fame: "Hall of Fame",
-    search: "Search organisms...", phylum: "Phylum", className: "Class",
-    allPhyla: "All phyla", allClasses: "All classes",
-    selectPhylumFirst: "Choose a phylum to reveal its classes", allYears: "All years",
+    living: "Atlas", retired: "Retired", hall_of_fame: "Hall of Fame",
+    search: "Search organisms...", category: "Category",
+    allCategories: "All categories", allYears: "All years",
     loading: "Loading the atlas...",
     emptyLiving: "No extant taxa match these filters.",
     emptyRetired: "No retired organisms match these filters yet.",
@@ -35,10 +34,9 @@ const COPY = {
     loadMore: "Load more",
   },
   vi: {
-    living: "Hiện sinh", retired: "Đã nghỉ hưu", hall_of_fame: "Hall of Fame",
-    search: "Tìm sinh vật...", phylum: "Ngành", className: "Lớp",
-    allPhyla: "Tất cả ngành", allClasses: "Tất cả lớp",
-    selectPhylumFirst: "Chọn một ngành để hiện các lớp trực thuộc", allYears: "Tất cả năm",
+    living: "Bách khoa", retired: "Đã nghỉ hưu", hall_of_fame: "Hall of Fame",
+    search: "Tìm sinh vật...", category: "Nhóm",
+    allCategories: "Tất cả nhóm", allYears: "Tất cả năm",
     loading: "Đang mở bách khoa...",
     emptyLiving: "Không có đơn vị phân loại hiện sinh nào khớp bộ lọc.",
     emptyRetired: "Chưa có sinh vật đã nghỉ hưu nào khớp bộ lọc.",
@@ -69,9 +67,9 @@ export function t(locale, key) {
 }
 
 export function availableAtlasModes(encounterEnabled) {
-  return encounterEnabled ? ["living", "retired", "hall_of_fame"] : ["living", "retired"];
+  return encounterEnabled ? ["living", "hall_of_fame"] : ["living"];
 }
 
-export function realmName(realm, locale) {
-  return realm?.[locale === "vi" ? "vi" : "en"] || realm?.en || realm?.id;
+export function wingName(wing, locale) {
+  return wing?.[locale === "vi" ? "vi" : "en"] || wing?.en || wing?.id;
 }

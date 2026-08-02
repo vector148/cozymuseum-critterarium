@@ -4,22 +4,14 @@ import { api } from "../api/index.js";
 import OrganismCard from "../components/OrganismCard.jsx";
 import OrganismDetailModal from "../components/OrganismDetailModal.jsx";
 import { useApp } from "../context/AppContext.jsx";
-import { REALMS, realmName, t } from "../i18n.js";
+import { WINGS, wingName, t } from "../i18n.js";
 
-function Controls({ metadata, activeRealm }) {
+function Controls({ metadata }) {
   const {
-    atlasMode, locale, query, setQuery, phylumId, selectPhylum,
+    atlasMode, locale, query, setQuery,
     classId, setClassId, encounterYear, setEncounterYear,
   } = useApp();
-  const phyla = activeRealm?.phyla || [];
-  const selectedPhylum = phyla.find((phylum) => phylum.id === phylumId);
-  const classes = phylumId === "all"
-    ? []
-    : (selectedPhylum?.classes || []).filter((classItem) => classItem.id !== "all");
-
-  useEffect(() => {
-    if (phylumId !== "all" && !phyla.some((phylum) => phylum.id === phylumId)) selectPhylum("all");
-  }, [phyla, phylumId, selectPhylum]);
+  const classes = metadata?.categories || [];
 
   useEffect(() => {
     if (classId !== "all" && !classes.some((classItem) => classItem.id === classId)) setClassId("all");
@@ -35,7 +27,6 @@ function Controls({ metadata, activeRealm }) {
     <div className="controls glass-card atlas-controls">
       <div className="atlas-search-row">
         <div className="search-box glass-input">
-          <span className="icon">Search</span>
           <input
             type="search"
             placeholder={t(locale, "search")}
@@ -57,32 +48,11 @@ function Controls({ metadata, activeRealm }) {
         ) : null}
       </div>
 
-      <div className="taxonomy-row">
-        <span className="taxonomy-label">{t(locale, "phylum")}</span>
-        <div className="filter-chips">
-          <button className={`chip ${phylumId === "all" ? "active" : ""}`} type="button" onClick={() => selectPhylum("all")}>
-            {t(locale, "allPhyla")}
-          </button>
-          {phyla.map((phylum) => (
-            <button
-              key={phylum.id}
-              className={`chip realm-chip ${phylumId === phylum.id ? "active" : ""}`}
-              type="button"
-              onClick={() => selectPhylum(phylum.id)}
-            >
-              <span className="dot green" />{phylum.label}<span className="chip-count">{phylum.count}</span>
-            </button>
-          ))}
-        </div>
-      </div>
-
       <div className="taxonomy-row class-row">
-        <span className="taxonomy-label">{t(locale, "className")}</span>
         <div className="filter-chips">
           <button className={`chip ${classId === "all" ? "active" : ""}`} type="button" onClick={() => setClassId("all")}>
-            {t(locale, "allClasses")}
+            {t(locale, "allCategories")}
           </button>
-          {phylumId === "all" ? <span className="taxonomy-hint">{t(locale, "selectPhylumFirst")}</span> : null}
           {classes.map((classItem) => (
             <button
               key={classItem.id}
@@ -90,7 +60,7 @@ function Controls({ metadata, activeRealm }) {
               type="button"
               onClick={() => setClassId(classItem.id)}
             >
-              <span className="dot blue" />{classItem.label}<span className="chip-count">{classItem.count}</span>
+              <span className="dot accent" />{classItem.label}<span className="chip-count">{classItem.count}</span>
             </button>
           ))}
         </div>
@@ -125,16 +95,15 @@ function HallOfFame({ items, locale, onOpen }) {
 }
 
 export default function Atlas({ data }) {
-  const { realmId, atlasMode, locale, showToast } = useApp();
+  const { wingId, atlasMode, locale, showToast } = useApp();
   const [detail, setDetail] = useState(null);
   const detailTriggerRef = useRef(null);
-  const activeRealm = data.metadata.realms?.find((realm) => realm.id === realmId);
-  const clientRealm = useMemo(() => REALMS.find((realm) => realm.id === realmId), [realmId]);
+  const clientWing = useMemo(() => WINGS.find((wing) => wing.id === wingId), [wingId]);
   const [visibleCount, setVisibleCount] = useState(16);
 
   useEffect(() => {
     setVisibleCount(16);
-  }, [realmId, atlasMode, data.items]);
+  }, [wingId, atlasMode, data.items]);
 
   async function completeEncounter(score) {
     try {
@@ -178,7 +147,7 @@ export default function Atlas({ data }) {
 
   return (
     <>
-      <Controls metadata={data.metadata} activeRealm={activeRealm} />
+      <Controls metadata={data.metadata} />
       {data.loading ? <div className="atlas-state">{t(locale, "loading")}</div> : null}
       {data.error ? <div className="atlas-state is-error">{data.error}</div> : null}
       {!data.loading && !data.error && !data.items.length ? <div className="atlas-state">{emptyCopy}</div> : null}
@@ -205,7 +174,7 @@ export default function Atlas({ data }) {
         <OrganismDetailModal
           item={detail}
           locale={locale}
-          realmLabel={realmName(clientRealm, locale)}
+          realmLabel={wingName(clientWing, locale)}
           onClose={closeDetail}
           onComplete={completeEncounter}
           onUndo={undoEncounter}

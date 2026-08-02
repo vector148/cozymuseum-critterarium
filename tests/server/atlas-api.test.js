@@ -45,13 +45,13 @@ test("atlas HTTP surface exposes metadata and filtered localized organisms", asy
   await new Promise((resolve) => server.once("listening", resolve));
   const { port } = server.address();
 
-  const metadataResponse = await fetch(`http://127.0.0.1:${port}/api/atlas/meta?locale=vi`);
+  const metadataResponse = await fetch(`http://127.0.0.1:${port}/api/atlas/meta?locale=vi&wingId=fauna`);
   assert.equal(metadataResponse.status, 200);
   const metadata = await metadataResponse.json();
-  assert.equal(metadata.realms[0].label, "Động vật");
+  assert.equal(metadata.categories[0].label, "Thú");
 
   const listResponse = await fetch(
-    `http://127.0.0.1:${port}/api/atlas/organisms?realmId=animalia&phylumId=chordata&classId=mammalia&lifeState=extant&locale=vi`,
+    `http://127.0.0.1:${port}/api/atlas/organisms?wingId=fauna&classId=mammals&lifeState=extant&locale=vi`,
   );
   assert.equal(listResponse.status, 200);
   const list = await listResponse.json();
@@ -70,7 +70,7 @@ test("atlas HTTP surface exposes metadata and filtered localized organisms", asy
   assert.equal((await encounterResponse.json()).encounterDate, "2026-08-01");
 
   const hallResponse = await fetch(
-    `http://127.0.0.1:${port}/api/atlas/organisms?realmId=animalia&atlasMode=hall_of_fame&encounterYear=2026&locale=vi`,
+    `http://127.0.0.1:${port}/api/atlas/organisms?wingId=fauna&atlasMode=hall_of_fame&encounterYear=2026&locale=vi`,
   );
   const hall = await hallResponse.json();
   assert.equal(hall.total, 1);

@@ -1,6 +1,6 @@
 function queryFrom(request) {
   return {
-    realmId: request.query.realmId,
+    wingId: request.query.wingId,
     phylumId: request.query.phylumId,
     classId: request.query.classId,
     lifeState: request.query.lifeState,
@@ -17,7 +17,7 @@ export function createAtlasController({ catalog }) {
     metadata(request, response) {
       response.json(catalog.metadata({
         locale: request.query.locale,
-        realmId: request.query.realmId,
+        wingId: request.query.wingId,
         atlasMode: request.query.atlasMode,
       }));
     },

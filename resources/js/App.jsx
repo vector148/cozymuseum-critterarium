@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import Toast from "./components/Toast.jsx";
 import { AppProvider, useApp } from "./context/AppContext.jsx";
 import { useAtlas } from "./hooks/useAtlas.js";
-import { availableAtlasModes, REALMS, realmName, t } from "./i18n.js";
+import { availableAtlasModes, WINGS, wingName, t } from "./i18n.js";
 import Atlas from "./pages/Atlas.jsx";
 
 function GitHubIcon() {
@@ -28,18 +28,18 @@ function MediaCollectionIcon() {
 
 function AppInner() {
   const {
-    realmId, switchRealm, atlasMode, switchMode, locale, setLocale,
-    query, phylumId, classId, encounterYear,
+    wingId, switchWing, atlasMode, switchMode, locale, setLocale,
+    query, classId, encounterYear,
   } = useApp();
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
-  const data = useAtlas({ realmId, atlasMode, locale, query, phylumId, classId, encounterYear });
+  const data = useAtlas({ wingId, atlasMode, locale, query, classId, encounterYear });
 
   useEffect(() => {
-    document.documentElement.className = `theme-bio-${realmId}`;
-  }, [realmId]);
+    document.documentElement.className = `theme-wing-${wingId}`;
+  }, [wingId]);
 
-  const encounterEnabled = data.metadata.realms.find((realm) => realm.id === realmId)?.encounterEnabled === true;
+  const encounterEnabled = wingId !== "fossils";
 
   useEffect(() => {
     if (!encounterEnabled && atlasMode === "hall_of_fame") switchMode("living");
@@ -47,7 +47,6 @@ function AppInner() {
 
   const modeDefinitions = [
     { id: "living", icon: "◆", label: t(locale, "living") },
-    { id: "retired", icon: "✦", label: t(locale, "retired") },
     { id: "hall_of_fame", icon: "★", label: t(locale, "hall_of_fame") },
   ];
   const modes = availableAtlasModes(encounterEnabled)
@@ -108,15 +107,15 @@ function AppInner() {
           </div>
 
           <div className="realm-tab-grid">
-            {REALMS.map((realm) => (
+            {WINGS.map((wing) => (
               <button
-                key={realm.id}
-                className={`realm-tab-btn realm-tab-${realm.id} ${realmId === realm.id ? "active" : ""}`}
+                key={wing.id}
+                className={`realm-tab-btn realm-tab-${wing.id} ${wingId === wing.id ? "active" : ""}`}
                 type="button"
-                onClick={() => switchRealm(realm.id)}
+                onClick={() => switchWing(wing.id)}
               >
-                <span className="realm-tab-icon">{realm.icon}</span>
-                <span className="realm-tab-label">{realmName(realm, locale)}</span>
+                <span className="realm-tab-icon">{wing.icon}</span>
+                <span className="realm-tab-label">{wingName(wing, locale)}</span>
               </button>
             ))}
           </div>
