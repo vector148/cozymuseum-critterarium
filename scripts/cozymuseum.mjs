@@ -20,6 +20,25 @@ import { syncSeedOrganisms } from "../app/biodiversity/seeds.js";
 import { applyTaxonomyClassCorrections } from "../app/biodiversity/taxonomy-corrections.js";
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), "..");
+
+try {
+  const envPath = resolve(root, ".env");
+  if (existsSync(envPath)) {
+    const lines = readFileSync(envPath, "utf8").split("\n");
+    for (const line of lines) {
+      const match = line.match(/^\s*([\w.-]+)\s*=\s*(.*)?\s*$/);
+      if (match) {
+        const key = match[1];
+        let value = match[2] || "";
+        if (value.startsWith('"') && value.endsWith('"')) value = value.slice(1, -1);
+        if (!process.env[key]) process.env[key] = value;
+      }
+    }
+  }
+} catch {
+  // Ignore env file errors
+}
+
 const args = process.argv.slice(2);
 const command = args[0] || "help";
 
@@ -156,6 +175,7 @@ if (command === "migrate") {
       commonNameVi: option("--common-name-vi"),
       realmId: option("--realm"),
       lifeState: option("--life-state", "extant"),
+      unsplashId: option("--unsplash-id"),
     }];
   const intake = createOrganismIntake({
     store: organismStore,
@@ -164,6 +184,7 @@ if (command === "migrate") {
   const result = await intake.add(items, {
     apply,
     minConfidence: Number(option("--min-confidence", "0.8")),
+    strictMedia: flag("--strict-media"),
   });
   output({
     command,

@@ -61,9 +61,9 @@ test("versioned showroom snapshot contains all four workbook catalogs and stays 
   const rows = JSON.parse(readFileSync(resolve(root, "database/seeds/catalog.json"), "utf8"));
   const report = inspectBiodiversityCatalog(rows);
 
-  assert.equal(rows.length, 326);
-  assert.equal(rows.filter((item) => item.importBatch === "legacy-observation-curation").length, 161);
+  assert.equal(rows.length, 291);
+  assert.equal(rows.filter((item) => item.importBatch === "legacy-observation-curation").length, 129);
   assert.equal(report.ok, true);
-  assert.deepEqual(report.realms, { animalia: 196, microverse: 10, plantae_fungi: 111, sar: 9 });
-  assert.deepEqual(report.lifeStates, { extinct: 23, extant: 303 });
+  assert.deepEqual(report.realms, { animalia: 166, microverse: 10, plantae_fungi: 107, sar: 8 });
+  assert.deepEqual(report.lifeStates, { extinct: 19, extant: 272 });
 });

@@ -61,7 +61,7 @@ function matchesAtlasMode(row, atlasMode) {
 }
 
 const AQUATIC_CLASSES = [
-  "actinopterygii", "teleostei", "carangiformes", "perciformes", "siluriformes", "cypriniformes", "syngnathiformes",
+  "actinopterygii", "actinopteri", "teleostei", "carangiformes", "perciformes", "siluriformes", "cypriniformes", "syngnathiformes",
   "chondrichthyes", "elasmobranchii", "myliobatiformes", "carcharhiniformes", "lamniformes",
   "anthozoa", "scyphozoa", "hydrozoa", "cubozoa", "ascidiacea",
   "cephalopoda", "gastropoda", "bivalvia",

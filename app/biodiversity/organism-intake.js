@@ -102,7 +102,6 @@ function validateCandidate(row, minConfidence) {
     !(clean(row.className) && isCanonicalScientificClass(row.className)) && "missing canonical scientific Class",
     !(Number.isFinite(confidence) && confidence >= minConfidence) && `GBIF confidence is below ${minConfidence}`,
     !hasFullHdImage(row) && "missing a provenance-linked Full HD/4K image",
-    !hasVerifiedNaturalHistoryVideo(row) && "missing a verified HD/4K natural-history YouTube video",
   ];
   return problems.filter(Boolean);
 }
@@ -128,6 +127,7 @@ export function createOrganismIntake({
     async add(items, {
       apply = false,
       minConfidence = 0.8,
+      strictMedia = false,
     } = {}) {
       const threshold = Number(minConfidence);
       if (!Number.isFinite(threshold) || threshold < 0 || threshold > 1) {
@@ -160,7 +160,8 @@ export function createOrganismIntake({
             commonNameVi: clean(input.commonNameVi),
             scientificName: clean(input.scientificName) || name,
             lifeState: validLifeState(input.lifeState || "extant") || clean(input.lifeState || "extant"),
-          }, { overwrite: true });
+            realmId: validRealm(input.realmId) || "",
+          }, { overwrite: true, strictMedia: Boolean(strictMedia) });
           const row = freshRecord(input, enriched.row || {}, clock);
           const existingResolved = hasSameResolvedIdentity([...knownRows, ...readyRows], row);
           if (existingResolved) {

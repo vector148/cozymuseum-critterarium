@@ -162,15 +162,15 @@ test("friendly Class labels remain one-to-one with canonical scientific Class va
   const classes = metadata.categories;
   assert.deepEqual(classes.map(({ id, label }) => ({ id, label })), [
     { id: "fishes", label: "Fishes" },
-    { id: "sharks_rays", label: "Sharks & Rays" },
+    { id: "sharks_rays", label: "Sharks" },
   ]);
 
   const sharkEn = catalog.get("animalia-great-white-shark", { locale: "en" });
   const sharkVi = catalog.get("animalia-great-white-shark", { locale: "vi" });
   assert.equal(sharkEn.className, "Chondrichthyes");
-  assert.equal(sharkEn.displayClass, "Sharks & Rays");
+  assert.equal(sharkEn.displayClass, "Cartilaginous fishes");
   assert.equal(sharkVi.className, "Chondrichthyes");
-  assert.equal(sharkVi.displayClass, "Cá mập & Đuối");
+  assert.equal(sharkVi.displayClass, "Cá sụn");
 });
 
 test("encounter policy allows observable Realms and rejects SAR and Microverse", () => {

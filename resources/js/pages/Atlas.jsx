@@ -3,15 +3,17 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { api } from "../api/index.js";
 import OrganismCard from "../components/OrganismCard.jsx";
 import OrganismDetailModal from "../components/OrganismDetailModal.jsx";
+import { OptimizedImage } from "../components/OptimizedImage.jsx";
 import { useApp } from "../context/AppContext.jsx";
 import { WINGS, wingName, t } from "../i18n.js";
 
-function Controls({ metadata }) {
+function Controls({ metadata, sidebarOpen, onMenuClick }) {
   const {
     atlasMode, locale, query, setQuery,
     classId, setClassId, encounterYear, setEncounterYear,
   } = useApp();
   const classes = metadata?.categories || [];
+  const [hidden, setHidden] = useState(false);
 
   useEffect(() => {
     if (classId !== "all" && !classes.some((classItem) => classItem.id === classId)) setClassId("all");
@@ -23,9 +25,47 @@ function Controls({ metadata }) {
     setEncounterYear(metadata.encounterYears?.includes(currentYear) ? currentYear : "all");
   }, [atlasMode, encounterYear, metadata.encounterYears, setEncounterYear]);
 
+  useEffect(() => {
+    let lastY = window.scrollY;
+    let ticking = false;
+
+    function update() {
+      const currentY = window.scrollY;
+      if (window.innerWidth <= 768) {
+        if (currentY > lastY && currentY > 120 && !sidebarOpen) {
+          setHidden(true);
+        } else if (currentY < lastY || currentY <= 120) {
+          setHidden(false);
+        }
+      } else {
+        if (hidden) setHidden(false);
+      }
+      lastY = currentY;
+      ticking = false;
+    }
+
+    function handleScroll() {
+      if (!ticking) {
+        window.requestAnimationFrame(update);
+        ticking = true;
+      }
+    }
+
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, [hidden, sidebarOpen]);
+
   return (
-    <div className="controls glass-card atlas-controls">
+    <div className={`controls glass-card atlas-controls ${hidden ? "hidden" : ""}`}>
       <div className="atlas-search-row">
+        <button
+          className={`mobile-menu-btn ${sidebarOpen ? "active" : ""}`}
+          type="button"
+          onClick={onMenuClick}
+          aria-label="Toggle menu"
+        >
+          <span /><span /><span />
+        </button>
         <div className="search-box glass-input">
           <input
             type="search"
@@ -83,7 +123,7 @@ function HallOfFame({ items, locale, onOpen }) {
           <button className="ranking-row" type="button" key={item.organismId} onClick={(event) => onOpen(item, event.currentTarget)}>
             <span className="rank-no">#{index + 1}</span>
             {item.coverUrl
-              ? <img src={item.coverUrl} alt="" />
+              ? <OptimizedImage src={item.coverUrl} width={128} quality={60} alt="" />
               : <span className="ranking-image-fallback">◇</span>}
             <span className="rank-title">{item.displayName}<small><i>{item.scientificName}</i> · {item.encounterDate}</small></span>
             <span className="rank-score">{Number(item.rarityScore).toFixed(1)}</span>
@@ -94,7 +134,7 @@ function HallOfFame({ items, locale, onOpen }) {
   );
 }
 
-export default function Atlas({ data }) {
+export default function Atlas({ data, sidebarOpen, onMenuClick }) {
   const { wingId, atlasMode, locale, showToast } = useApp();
   const [detail, setDetail] = useState(null);
   const detailTriggerRef = useRef(null);
@@ -147,7 +187,7 @@ export default function Atlas({ data }) {
 
   return (
     <>
-      <Controls metadata={data.metadata} />
+      <Controls metadata={data.metadata} sidebarOpen={sidebarOpen} onMenuClick={onMenuClick} />
       {data.loading ? <div className="atlas-state">{t(locale, "loading")}</div> : null}
       {data.error ? <div className="atlas-state is-error">{data.error}</div> : null}
       {!data.loading && !data.error && !data.items.length ? <div className="atlas-state">{emptyCopy}</div> : null}

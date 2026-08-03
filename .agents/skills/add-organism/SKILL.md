@@ -51,3 +51,29 @@ Use the public `npm run bio -- add` command. Do not write directly to Excel, inv
 ## Recovery
 
 If a result is rejected for weak taxonomy or inadequate media, report the exact reason and leave the workbook unchanged. Do not lower the default `0.8` confidence threshold or use AI-generated imagery as a silent substitute. The owner may provide a better scientific name or intentionally use a separate manual import path.
+
+## Image Filtering (Built-in — do not bypass)
+
+The Wikimedia Commons scraper in `app/biodiversity/enrichment.js` has two automatic image-rejection layers:
+
+**Layer 1 — Search-time negative keywords** (sent to Wikimedia API):
+Searches already exclude: `aquarium`, `zoo`, `market`, `captive`, `illustration`, `drawing`, `pencil`, `watercolour`, `engraving`, `lithograph`, old naturalist names (`Siebold`, `Audubon`, `Gould`, `Brehm`, `Kawahara`, `Temminck`), `specimen`, `herbarium`, `taxidermy`, `skeleton`, `museum`, `dead`, `food`, `dish`, `trap`, `fishing`, etc.
+
+**Layer 2 — URL post-filter** (`isImageUrlAcceptable`):
+Even if a bad image leaks through the search, it is rejected at intake if its filename URL contains any of the bad-context patterns (`.pdf`, `.tif`, `_zoo_`, `_aquarium`, `_drawing`, `_pencil`, `rmnh.art`, etc.).
+
+**RELAXED MEDIA ENFORCEMENT (1% Difference)**
+Because we are NOT using `--strict-media` in the public skill, the scraper is relaxed enough to fallback to academic/specimen photos if a beautiful natural photo is unavailable. Do NOT use `--strict-media` in this public skill.
+
+**What this means for you:**
+- If the scraper returns no image for a species, it is likely because only extremely bad images (PDFs, illustrations) were available. **Do not lower the threshold or manually insert a bad URL.** Just leave the field blank — blank is acceptable per ADR-0007.
+- The filter intentionally passes illustrations for **extinct species** (`lifeState: extinct`) because no wild photographs exist. Do not remove old-book images for fossils.
+- See `docs/adr/0007-media-rights-and-provenance.md` § "Programmatic QA Methodology" for the full decision matrix and QA process.
+
+## Manual Unsplash Overrides (Relaxed)
+
+When the user manually provides an Unsplash URL or ID (e.g., via `--unsplash-id`), you MUST visually verify the image before running the `apply` command to prevent misidentification (e.g., mistaking a sea grape for an animal).
+1. Extract the image URL using the Unsplash API or page structure.
+2. Download the image temporarily using `run_command` (e.g., `curl -o .scratch/temp_check.jpg <URL>`).
+3. Use the `view_file` tool on the downloaded image to visually inspect it.
+4. **RELAXED ENFORCEMENT**: ONLY proceed with the `add` command if your visual inspection confirms the image correctly depicts the target organism. You do NOT need to judge if it is an aesthetic masterpiece. If it is fundamentally the wrong species, reject the link and inform the user. Do NOT push it to a backlog.

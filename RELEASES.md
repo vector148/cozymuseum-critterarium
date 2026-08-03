@@ -6,3 +6,4 @@ Every canonical shell commit is one version. `package.json`, `package-lock.json`
 | --- | --- | --- |
 | `1.0.0` | 2026-08-01 | feat: establish CozyMuseum |
 | `1.1.0` | 2026-08-01 | feat: finalize taxonomy UI, organism scraper, and video QA |
+| `1.2.0` | 2026-08-02 | feat: rewrite fun facts for 249 organisms, Vercel sync, UI polish |

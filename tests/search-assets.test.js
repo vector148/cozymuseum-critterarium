@@ -45,8 +45,8 @@ test("sidebar exposes two distinct museum destinations", () => {
   assert.match(app, /https:\/\/buymeacoffee\.com\/vector148\/e\/562244/);
   assert.match(app, /MediaCollectionIcon/);
   assert.doesNotMatch(app, /sidebar-icon-row/);
-  assert.match(i18n, /Your own museum/);
-  assert.match(i18n, /Movie & game museum/);
+  assert.match(i18n, /Your own Cozy Museum/);
+  assert.match(i18n, /Movie & Game Museum/);
   assert.match(i18n, /Choose the museum you want to build/);
   assert.match(i18n, /Bảo tàng của riêng bạn/);
   assert.match(i18n, /Bảo tàng phim & game/);

@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
+import { OptimizedImage } from "./OptimizedImage.jsx";
 
 import { t } from "../i18n.js";
 
@@ -65,7 +66,7 @@ export default function OrganismDetailModal({ item, locale, realmLabel, onClose,
         <button className="close-btn" type="button" onClick={onClose} aria-label={t(locale, "close")}>×</button>
 
         <div className="detail-hero organism-detail-hero">
-          {image ? <img className="organism-detail-image" src={image} alt={item.displayName} /> : null}
+          {image ? <OptimizedImage className="organism-detail-image" src={image} width={1200} quality={85} alt={item.displayName} /> : null}
           <div className="big-title">{item.displayName}</div>
           <div className="sub"><i>{item.scientificName}</i></div>
           <div className="timeline">

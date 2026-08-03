@@ -9,7 +9,7 @@ const root = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 test("Windows shortcut launcher finds the CozyMuseum root and exposes a dry run", {
   skip: process.platform !== "win32",
 }, () => {
-  const launcher = resolve(root, "scripts/CozyMuseum.bat");
+  const launcher = resolve(root, "CozyMuseum.bat");
   const result = spawnSync(
     `call "${launcher}" --dry-run`,
     {

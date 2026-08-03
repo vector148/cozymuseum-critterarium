@@ -54,19 +54,16 @@ function AppInner() {
 
   return (
     <div id="app">
-      <button
-        className={`mobile-menu-btn ${sidebarOpen ? "active" : ""}`}
-        type="button"
-        onClick={() => setSidebarOpen((open) => !open)}
-        aria-label="Toggle menu"
-      >
-        <span /><span /><span />
-      </button>
 
       <aside className={`sidebar ${sidebarOpen ? "open" : ""} ${sidebarCollapsed ? "collapsed" : ""}`}>
         <div className="sidebar-header">
           <div className="logo"><span className="logo-text">CozyMuseum</span></div>
-          <button className="collapse-btn" type="button" onClick={() => setSidebarCollapsed((value) => !value)} aria-label="Toggle sidebar">
+          <button 
+            className="collapse-btn" 
+            type="button" 
+            onClick={() => window.innerWidth <= 768 ? setSidebarOpen(false) : setSidebarCollapsed((value) => !value)} 
+            aria-label="Toggle sidebar"
+          >
             <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" strokeWidth="2" fill="none">
               <rect x="3" y="3" width="18" height="18" rx="2" />
               <line x1="9" y1="3" x2="9" y2="21" />
@@ -124,17 +121,27 @@ function AppInner() {
             <div className="museum-invite">
               <p className="museum-invite-title">{t(locale, "museumInvite")}</p>
               <div className="museum-choice-grid">
-              <a className="museum-choice github-choice" href="https://github.com/vector148/cozymuseum" target="_blank" rel="noopener noreferrer">
-                <span className="museum-cta-icon"><GitHubIcon /></span>
-                <span className="museum-cta-copy">
-                  <strong>{t(locale, "museumCtaTitle")}</strong>
-                </span>
-                <span className="museum-cta-arrow">→</span>
-              </a>
-              <a className="museum-choice media-museum-choice" href="https://buymeacoffee.com/vector148/e/562244" target="_blank" rel="noopener noreferrer">
+              <a
+                className="museum-choice media-museum-choice"
+                href="https://buymeacoffee.com/vector148/e/562244"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
                 <span className="museum-cta-icon media"><MediaCollectionIcon /></span>
                 <span className="museum-cta-copy">
                   <strong>{t(locale, "mediaMuseumCtaTitle")}</strong>
+                </span>
+                <span className="museum-cta-arrow">→</span>
+              </a>
+              <a
+                className="museum-choice github-choice"
+                href="https://github.com/vector148/cozymuseum"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <span className="museum-cta-icon"><GitHubIcon /></span>
+                <span className="museum-cta-copy">
+                  <strong>{t(locale, "museumCtaTitle")}</strong>
                 </span>
                 <span className="museum-cta-arrow">→</span>
               </a>
@@ -143,9 +150,18 @@ function AppInner() {
           </div>
         </div>
       </aside>
+      <div 
+        className={`sidebar-overlay ${sidebarOpen ? "active" : ""}`} 
+        onClick={() => setSidebarOpen(false)} 
+        aria-hidden="true"
+      />
 
       <main className={`main-content ${sidebarCollapsed ? "collapsed" : ""}`}>
-        <Atlas data={data} />
+        <Atlas 
+          data={data} 
+          sidebarOpen={sidebarOpen} 
+          onMenuClick={() => setSidebarOpen(o => !o)} 
+        />
       </main>
       <Toast />
     </div>

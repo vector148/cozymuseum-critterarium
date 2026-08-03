@@ -1,138 +1,100 @@
 # CozyMuseum
 
-**Current shell version:** `1.1.0`
+**Current shell version:** `1.2.0`
 
-> Your aesthetic digital museum. A cozy, local-first sanctuary to collect, catalog, and display your favorite critters with a beautiful Liquid Glass UI.
+**Your personal digital museum** — collect, catalog, and display your favorite critters, animals, and plants with a beautiful Liquid Glass interface. A cozy, offline-first sanctuary where all data stays right on your computer.
 
-CozyMuseum is a bilingual EN/VI biological collection with four vivid Realms, dependent Phylum → Class filtering, a scientifically accurate detail view, extinct collections, natural-history YouTube links, and a personal Hall of Fame for organisms encountered outdoors.
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+[![Buy Me a Coffee](https://img.shields.io/badge/Support-Buy%20Me%20a%20Coffee-ffdd00?logo=buy-me-a-coffee)](https://buymeacoffee.com/Vector148)
 
-The hosted build is a read-only showroom of all four workbook catalogs. Visitors may mark encounters, but those changes stay in their own browser and never alter the owner's source data.
+---
 
-**Live museum:** [cozymuseum.vercel.app](https://cozymuseum.vercel.app/)
+## What it does
 
-## Start locally
+- **4 Vivid Realms** — Organisms are sorted into Animalia, Plantae & Fungi, SAR (Chromista), and Microverse.
+- **Scientific Accuracy** — Every species is verified with its real biological classification and taxonomy.
+- **Hall of Fame** — Mark critters you've personally encountered in real life, complete with the date and your personal rarity score!
+- **Extinct Collections** — A dedicated section to collect ancient, fossilized species.
+- **Natural History Media** — Beautiful public domain photography and verified YouTube documentaries.
 
-On Windows, double-click [`scripts/CozyMuseum.bat`](scripts/CozyMuseum.bat). A desktop shortcut should point to that file; move only the shortcut, not the launcher.
+---
 
-Or use a terminal:
+## 🚀 Quick Start (For Non-IT Users)
 
+You don't need to know anything about coding to run this game! Just follow these simple steps to start your museum:
+
+### Step 1: Download the Game
+1. Click the green **Code** button at the top of this GitHub page.
+2. Select **Download ZIP**.
+3. Extract the ZIP file to a folder on your computer (e.g., `C:\CozyMuseum`).
+
+### Step 2: Start the Museum Launcher
+We've built an automated launcher that will handle everything for you.
+1. Open the extracted folder.
+2. Double-click the file named **`CozyMuseum.bat`**.
+
+That's it! 
+- If you don't have Node.js (the engine required to run the game), the launcher will automatically download and install it for you (just press "Yes" if Windows asks for permission, then reopen `CozyMuseum.bat` when it's done).
+- The launcher will automatically download game files and open your web browser to the Museum. 
+- Play and enjoy!
+
+---
+
+## How to Add Animals / Organisms
+
+Your museum database lives in the `database/` folder inside simple Excel files (`animalia.xlsx`, `plantae-fungi.xlsx`, etc.). But you **don't need to type things manually**! 
+
+### Option A — Edit Excel manually (Easiest & Most Popular)
+You can always open the files in `database/` (like `animalia.xlsx`) using Excel or Google Sheets. Add a new row below the header, fill in the `scientificName` and `commonName`, and paste a DIRECT image link (ending in `.jpg` or `.png`) into the `coverUrl` column.
+> ⚠️ **Warning:** Do NOT paste regular Unsplash page links (like `https://unsplash.com/photos/...`) into Excel. They are web pages, not image files, and will show up as a broken image in the game! To use Unsplash, use Option B, C, or D.
+
+### Option B — Ask ChatGPT, Claude, or Gemini
+If you want to add many animals at once without typing, ask a web AI to make a JSON file for you!
+**Prompt:**
+> *"Generate a JSON array for CozyMuseum. I want 3 ocean animals. Each object must have 'name', 'realmId' (animalia), and 'lifeState' (extant). For the Whale Shark, please also add exactly this Unsplash ID: 'a7T0PQol-6E' into the 'unsplashId' field."*
+
+Save the AI's response to `backup/add-organisms.json`, then open your terminal and run:
 ```bash
-npm install
-npm run dev
-```
-
-The local app uses an Express adapter and exactly four single-sheet Excel workbooks:
-
-- `database/animalia.xlsx`
-- `database/plantae-fungi.xlsx`
-- `database/sar.xlsx`
-- `database/microverse.xlsx`
-
-These four rights-reviewed workbooks are versioned with the repository, so every clone includes the complete editable database rather than an empty schema. Their public release rows keep encounter/date/rarity values blank; personal Hall of Fame activity remains in each visitor's browser.
-
-Extant, Retired, Hall of Fame, taxonomy, encounter date, and rarity are row fields and filtered views—not extra workbooks or sheets.
-
-## Add organisms in four ways
-
-All intake paths resolve scientific identity first, require canonical taxonomy, keep field-level sources and confidence, accept only remote CC0/Public Domain cover images with exact proof, and verify public YouTube watch links. Preview is the default; add `--apply` only after reviewing the proposed records.
-
-### 1. Add one organism by name
-
-```bash
-npm run bio -- add --name "Panthera leo" --realm animalia
-npm run bio -- add --name "Panthera leo" --realm animalia --apply
-```
-
-### 2. Import a JSON batch
-
-Create a local JSON array in `backup/add-organisms.json`:
-
-```json
-[
-  { "name": "Danaus plexippus", "realmId": "animalia" },
-  { "scientificName": "Ginkgo biloba", "realmId": "plantae_fungi" }
-]
-```
-
-Then preview and apply:
-
-```bash
-npm run bio -- add --input backup/add-organisms.json
 npm run bio -- add --input backup/add-organisms.json --apply
 ```
 
-### 3. Ask Codex with the add-organism skill
+### Option C — Use an AI IDE Assistant (Advanced)
+If you play around with AI tools like Cursor or Antigravity connected to this folder, you can ask it to do all the heavy lifting:
+1. Type `@add-organism` or ask the AI to use the **`add-organism` skill**.
+2. Give it a name: *"Use the add-organism skill to add a Lion."*
+**Want to pick your own Unsplash picture?** Just drop the link!
+> *"Use the add-organism skill to add a Gray Whale, and use this Unsplash photo: https://unsplash.com/photos/a7T0PQol-6E"*
 
-```text
-Use $add-organism to add these organisms to my CozyMuseum collection: <your list>.
-Preview first, report uncertain matches, then apply only the accepted records.
-```
-
-The skill lives at `.agents/skills/add-organism/` and delegates writes to the same validated CLI instead of editing workbooks directly.
-
-### 4. Prepare records with another AI, then validate locally
-
-Ask any AI for JSON only using this contract:
-
-```text
-Return a JSON array of organism intake records. Each item may contain name,
-scientificName, commonNameEn, commonNameVi, realmId, and lifeState.
-Do not invent taxonomy, image rights, or source URLs; CozyMuseum will resolve
-and validate those fields locally before any write.
-```
-
-Save the response under ignored `backup/`, then run the JSON batch flow above. Unverified AI output never bypasses the local intake gate.
-
-## Enrich and verify
-
+### Option D — Add via Command Line (For Coders)
+Open your terminal and type:
 ```bash
-npm run bio -- enrich --id animalia-panthera-leo --providers gbif,wikipedia-en,wikipedia-vi,youtube --min-confidence 0.8
-npm run bio -- enrich --id animalia-panthera-leo --providers gbif,wikipedia-en,wikipedia-vi,youtube --min-confidence 0.8 --apply
-npm run bio -- doctor
-npm run verify
+npm run bio -- add --name "Panthera leo" --realm animalia
+# To use a specific Unsplash photo, grab the ID from the URL (the part after the last dash)
+npm run bio -- add --name "Whale shark" --realm animalia --unsplash-id "a7T0PQol-6E" --apply
 ```
 
-Images remain remote links. CozyMuseum never downloads, caches, or serves catalog photos locally. A URL alone is not permission: every displayed image must retain exact CC0/Public Domain evidence. YouTube uses the official privacy-enhanced player and a direct watch link; no video or audio is downloaded.
+---
 
-## Build the read-only showroom
+## Free Image Sources for Covers
 
-Refresh the committed web snapshot from all four workbooks, then build:
+Your museum only allows **copyright-free** (CC0 / Public Domain) images. Do NOT use images from Pinterest or Google Images randomly.
 
-```bash
-npm run bio -- snapshot-seed
-npm run build
-```
+| Source | How to get the URL |
+|--------|--------------------|
+| **Unsplash** | Go to [unsplash.com](https://unsplash.com). Copy the link in your browser bar. The AI can use this link directly! |
+| **Wikimedia Commons** | Search at [commons.wikimedia.org](https://commons.wikimedia.org). |
 
-Production uses `database/seeds/catalog.json` and stores each visitor's encounter overlay in localStorage. The four source workbooks remain downloadable from GitHub but are excluded from the Vercel payload because the equivalent catalog snapshot is already compiled into the showroom. Local skills, reports, backups, state, and scratch files are also excluded. Set `SITE_URL` to the final canonical HTTPS URL before the production build; it drives the canonical tag, `robots.txt`, and `sitemap.xml`.
+---
 
-```bash
-SITE_URL=https://your-domain.example npm run build
-```
+## 💻 Tech Details (For Developers)
 
-The release output is `dist/`. The repository includes `vercel.json`, `.vercelignore`, search metadata, JSON-LD, a web manifest, root robots rules, and a one-page canonical sitemap.
+- **Frontend:** React 18 + Vite
+- **Backend:** Node.js (Express adapter)
+- **Data:** Direct `.xlsx` file parsing
+- **CLI Tool:** Run `npm run bio` to see all manual ingestion and taxonomy commands.
+- **Production Build:** `npm run build` generates a static read-only snapshot for hosting on Vercel.
 
-## Architecture
+### License
+Source code is MIT licensed. Catalog media remains governed by its exact source rights.
 
-- `app/biodiversity/` — catalog, taxonomy, encounter, enrichment, and diagnostics.
-- `app/catalog/adapters/` — memory and Excel storage adapters.
-- `resources/js/` — React application and production browser adapter.
-- `resources/css/` — compact Liquid Glass visual system and Realm themes.
-- `server/` — local-only HTTP delivery adapter.
-- `database/` — four local workbooks and the public read-only snapshot.
-- `docs/adr/` — durable engineering, scientific, source, media-rights, and deployment decisions.
-- `.scratch/` — PRDs, issues, audits, and implementation queues.
-
-## Product rules
-
-- Phylum is the first filter row; Class is the dependent second row.
-- `Extant` / `Hiện sinh` means a taxon still has living individuals; `Extinct` / `Tuyệt chủng` is its scientific opposite.
-- Class values in data and detail views are canonical scientific taxa. Friendly labels are presentation only.
-- Hall of Fame exists only for directly observable Animalia and Plants & Fungi.
-- Completing an encounter stamps today's local date and stores a 0–10 personal rarity score.
-- SAR and Microverse deliberately have no encounter or Hall of Fame mechanics.
-
-## License and support
-
-Source code is MIT licensed. Catalog media remains governed by its exact source rights and [`docs/adr/0007-media-rights-and-provenance.md`](docs/adr/0007-media-rights-and-provenance.md).
-
-Want a museum of your own? [Create yours from CozyMuseum on GitHub](https://github.com/vector148/cozymuseum). For a matching collection manager built around games, films, social channels, and music, [explore FourRealm OS v2](https://buymeacoffee.com/vector148/e/562244).
+Want a museum of your own? [Create yours from CozyMuseum on GitHub](https://github.com/vector148/cozymuseum). For a matching collection manager built around games, films, social channels, and music, [explore FourRealm OS v3](https://github.com/vector148/fourrealm-os).

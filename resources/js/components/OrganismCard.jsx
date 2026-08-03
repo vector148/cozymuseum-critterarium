@@ -1,12 +1,7 @@
-const PILL_COLORS = ["blue", "green", "yellow", "red", "purple"];
+import { OptimizedImage } from "./OptimizedImage.jsx";
 
 function initials(value) {
   return String(value || "?").split(/\s+/).filter(Boolean).slice(0, 2).map((part) => part[0]).join("").toUpperCase();
-}
-
-function pillColor(value) {
-  const hash = [...String(value || "")].reduce((sum, character) => sum + character.charCodeAt(0), 0);
-  return PILL_COLORS[hash % PILL_COLORS.length];
 }
 
 export default function OrganismCard({ item, mode, onOpen }) {
@@ -17,8 +12,10 @@ export default function OrganismCard({ item, mode, onOpen }) {
     <button className="card type-organism organism-card" type="button" onClick={(event) => onOpen(item, event.currentTarget)}>
       <div className="cover-wrap">
         {image ? (
-          <img
+          <OptimizedImage
             src={image}
+            width={640}
+            quality={75}
             alt={item.displayName}
             loading="lazy"
             onError={(event) => {
@@ -36,7 +33,7 @@ export default function OrganismCard({ item, mode, onOpen }) {
         <div className="title" title={item.displayName}>{item.displayName}</div>
         <div className="artist" title={item.scientificName}><i>{item.scientificName}</i></div>
         <div className="row">
-          <span className={`pill ${pillColor(item.className)}`}>{item.displayClass}</span>
+          <span className="pill">{item.displayClass}</span>
           <span className="score">{sideValue}</span>
         </div>
       </div>

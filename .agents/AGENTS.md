@@ -1,4 +1,4 @@
 
 ### Commit policy
 
-Theo tôn chỉ của Sếp: một ngày chỉ có một commit duy nhất. Khi Sếp yêu cầu commit, hãy kiểm tra xem hôm nay đã có commit nào chưa. Nếu có, hãy amend hoặc gộp vào commit của ngày hôm nay thay vì tạo commit mới.
+Maximum one commit per calendar day. It is strictly forbidden to squash multiple days' work into a single commit or to create multiple commits in a single day. Before committing, always check if there is an existing commit for today. If so, amend the existing commit. If it is a new day, create a new commit.

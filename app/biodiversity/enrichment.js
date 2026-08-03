@@ -3,6 +3,15 @@ import {
   normalizeRightsFreeLicense,
 } from "./media-rights.js";
 
+const AQUATIC_CLASSES = [
+  "actinopterygii", "actinopteri", "teleostei", "carangiformes", "perciformes", "siluriformes", "cypriniformes", "syngnathiformes",
+  "chondrichthyes", "elasmobranchii", "myliobatiformes", "carcharhiniformes", "lamniformes",
+  "anthozoa", "scyphozoa", "hydrozoa", "cubozoa", "ascidiacea",
+  "cephalopoda", "gastropoda", "bivalvia",
+  "malacostraca", "maxillopoda",
+  "holothuroidea", "asteroidea", "echinoidea"
+];
+
 function clean(value) {
   return String(value ?? "").replace(/\s+/g, " ").trim();
 }
@@ -165,8 +174,15 @@ async function fetchJson(fetchImpl, url, timeoutMs, headers = {}, {
 }
 
 async function fetchGbifTaxon(fetchImpl, query, timeoutMs) {
-  const match = await fetchJson(fetchImpl, new URL(`/v1/species/match?name=${encodeURIComponent(query)}`, "https://api.gbif.org"), timeoutMs);
-  if (!match?.usageKey) return match;
+  let match = await fetchJson(fetchImpl, new URL(`/v1/species/match?name=${encodeURIComponent(query)}`, "https://api.gbif.org"), timeoutMs);
+  if (!match?.usageKey || match.matchType === "NONE") {
+    const search = await fetchJson(fetchImpl, new URL(`/v1/species/search?q=${encodeURIComponent(query)}&limit=1`, "https://api.gbif.org"), timeoutMs);
+    if (search?.results?.[0]?.key) {
+      match = { usageKey: search.results[0].key, confidence: 90, ...search.results[0] };
+    } else {
+      return match;
+    }
+  }
   try {
     const accepted = await fetchJson(fetchImpl, new URL(`/v1/species/${match.usageKey}`, "https://api.gbif.org"), timeoutMs);
     const resolved = { ...match, ...accepted, usageKey: accepted?.key || accepted?.usageKey || match.usageKey };
@@ -230,10 +246,160 @@ async function fetchINaturalistImage(fetchImpl, query, timeoutMs) {
   };
 }
 
-function wikimediaCommonsImageUrl(query, featured = false) {
+async function fetchFlickrUnderwaterImage(fetchImpl, query, apiKey, timeoutMs) {
+  if (!apiKey) return null;
+  const url = new URL("https://www.flickr.com/services/rest/");
+  url.search = new URLSearchParams({
+    method: "flickr.photos.search",
+    api_key: apiKey,
+    text: `${query} (underwater OR reef OR ocean)`,
+    license: "7,8,9,10", // No known copyright restrictions, US Gov Work, CC0, Public Domain Mark
+    content_type: "1", // photos only
+    media: "photos",
+    format: "json",
+    nojsoncallback: "1",
+    per_page: "1",
+    sort: "relevance",
+    extras: "url_l,url_o,license,owner_name"
+  });
+  const payload = await fetchJson(fetchImpl, url, timeoutMs, { accept: "application/json" });
+  const photo = payload?.photos?.photo?.[0];
+  if (!photo) return null;
+  const imageUrl = photo.url_o || photo.url_l;
+  if (!imageUrl) return null;
+  return {
+    coverUrl: clean(imageUrl),
+    imageSourceUrl: clean(`https://www.flickr.com/photos/${photo.owner}/${photo.id}`),
+    imageWidth: Number(photo.width_o || photo.width_l) || "",
+    imageHeight: Number(photo.height_o || photo.height_l) || "",
+    imageLicense: "CC0",
+    imageLicenseUrl: "https://creativecommons.org/publicdomain/zero/1.0/",
+    imageRightsStatus: "rights-free",
+    imageQualityHint: "HD",
+  };
+}
+
+async function fetchUnsplashUnderwaterImage(fetchImpl, query, apiKey, timeoutMs) {
+  if (!apiKey) return null;
+  const url = new URL("https://api.unsplash.com/search/photos");
+  url.searchParams.set("query", `${query} underwater`);
+  url.searchParams.set("orientation", "landscape");
+  url.searchParams.set("per_page", "1");
+  const payload = await fetchJson(fetchImpl, url, timeoutMs, {
+    accept: "application/json",
+    Authorization: `Client-ID ${apiKey}`,
+  });
+  const photo = payload?.results?.[0];
+  if (!photo?.urls?.regular) return null;
+  return {
+    coverUrl: clean(photo.urls.regular),
+    imageSourceUrl: clean(photo.links?.html || `https://unsplash.com/photos/${photo.id}`),
+    imageWidth: Number(photo.width) || "",
+    imageHeight: Number(photo.height) || "",
+    imageLicense: "Unsplash License",
+    imageLicenseUrl: "https://unsplash.com/license",
+    imageRightsStatus: "rights-free",
+    imageQualityHint: "HD",
+  };
+}
+
+async function fetchUnsplashImageById(fetchImpl, inputId, apiKey, timeoutMs) {
+  if (!apiKey || !inputId) return null;
+  
+  let id = String(inputId).trim();
+  if (id.includes("unsplash.com/photos/")) {
+    try {
+      const parts = new URL(id).pathname.split("/");
+      id = parts[parts.length - 1];
+    } catch {
+      // Ignore URL parse error and fall back to raw id
+    }
+  }
+
+  const url = new URL(`https://api.unsplash.com/photos/${encodeURIComponent(id)}`);
+  try {
+    const photo = await fetchJson(fetchImpl, url, timeoutMs, {
+      accept: "application/json",
+      Authorization: `Client-ID ${apiKey}`,
+    });
+    if (!photo?.urls?.regular) return null;
+    return {
+      coverUrl: clean(photo.urls.regular),
+      imageSourceUrl: clean(photo.links?.html || `https://unsplash.com/photos/${photo.id}`),
+      imageWidth: Number(photo.width) || "",
+      imageHeight: Number(photo.height) || "",
+      imageLicense: "Unsplash License",
+      imageLicenseUrl: "https://unsplash.com/license",
+      imageRightsStatus: "rights-free",
+      imageQualityHint: "HD",
+    };
+  } catch (error) {
+    return null;
+  }
+}
+
+function wikimediaCommonsImageUrl(query, featured = false, realmId = "") {
   const url = new URL("https://commons.wikimedia.org/w/api.php");
-  const negativeKeywords = '-"specimen" -"illustration" -"drawing" -"fossil" -"track" -"trap" -"museum" -"dead" -"map" -"fishing" -"catch" -"caught" -"market" -"food" -"dish" -"painting" -"art" -"sketch" -"vintage" -"botanical" -"statue" -"model" -"sculpture" -"captive" -"zoo"';
-  const searchQuery = featured ? `"${query}" (incategory:Featured_pictures_of_animals OR incategory:Featured_pictures_of_plants OR incategory:Featured_pictures_of_fungi OR incategory:Quality_images) ${negativeKeywords}` : `"${query}" ${negativeKeywords}`;
+  // Negative keywords prevent scraper from picking up bad image types.
+  // Layer 1: Unrenderable formats (.pdf, .tif handled separately in firstCommonsImage)
+  // Layer 2: Non-natural context (market, zoo, aquarium tank, food, captive)
+  // Layer 3: Illustrations/artwork (pencil, watercolour, drawings, old naturalist collections)
+  // Layer 4: Old encyclopaedia/scientific book sources
+  // See: docs/adr/0007-media-rights-and-provenance.md § Programmatic QA Methodology
+  const negativeKeywords = [
+    // === NON-NATURAL CONTEXT ===
+    // Food / market
+    '-"market"', '-"stall"', '-"food"', '-"dish"', '-"cooked"', '-"smoked"', '-"dried"', '-"salted"',
+    '-"for sale"', '-"bycatch"', '-"fish market"', '-"fresh catch"', '-"fishmonger"',
+    // Dead animals
+    '-"dead"', '-"deceased"', '-"corpse"', '-"carcass"', '-"beached"', '-"stranded"',
+    '-"washed up"', '-"on the beach"', '-"on sand"',
+    // Caught / fishing
+    '-"catch"', '-"caught"', '-"fishing"', '-"angling"', '-"bait"', '-"trap"', '-"net"',
+    '-"hook"', '-"lure"', '-"fisherman"',
+    // Captive / zoo
+    '-"zoo"', '-"zoological"', '-"aquarium"', '-"captive"', '-"cage"', '-"enclosure"',
+    '-"terrarium"', '-"vivarium"', '-"pet"', '-"pet shop"', '-"tank"',
+    // === HAND DRAWINGS & ARTWORK ===
+    '-"illustration"', '-"drawing"', '-"hand drawn"', '-"hand-drawn"', '-"pencil"',
+    '-"watercolour"', '-"water colour"', '-"watercolor"', '-"gouache"',
+    '-"painting"', '-"sketch"', '-"engraving"', '-"lithograph"', '-"woodcut"',
+    '-"etching"', '-"aquatint"', '-"mezzotint"', '-"woodblock"',
+    '-"vintage"', '-"botanical illustration"', '-"plate"',
+    // === MEDIEVAL / HISTORICAL MANUSCRIPTS ===
+    '-"manuscript"', '-"codex"', '-"vellum"', '-"folio"', '-"illuminated"',
+    '-"medieval"', '-"middle ages"', '-"visboeck"', '-"visboek"',
+    '-"der naturen bloeme"', '-"historia naturalis"', '-"naturalis historia"',
+    '-"bestiary"', '-"bestiaire"', '-"fischbuch"', '-"chronicle"',
+    // === OLD NATURALIST ENCYCLOPAEDIA SOURCES ===
+    '-"Siebold"', '-"Audubon"', '-"Gould"', '-"Brehm"', '-"Naumann"', '-"Buffon"',
+    '-"Kawahara"', '-"Temminck"', '-"Schlegel"', '-"Naturalis Biodiversity"', '-"RMNH"',
+    '-"Gesner"', '-"Aldrovandi"', '-"Rondelet"', '-"Olaus Magnus"', '-"Nordisk"',
+    '-"Maerlant"', '-"Coenen"', '-"Adriaen"', '-"Jacob van"',
+    '-"Meyers"', '-"Brockhaus"', '-"Encyclopaedia Britannica"',
+    '-"Cambridge Natural History"', '-"British Museum"',
+    // === MUSEUM SPECIMENS ===
+    '-"specimen"', '-"herbarium"', '-"taxidermy"', '-"stuffed"', '-"mounted"',
+    '-"skull"', '-"skeleton"', '-"mummy"', '-"preserved"', '-"pinned"',
+    '-"collection"', '-"type specimen"',
+    '-"map"', '-"statue"', '-"model"', '-"sculpture"', '-"diagram"', '-"chart"',
+    '-"x-ray"', '-"radiograph"', '-"ultrasound"',
+  ];
+
+  if (realmId === "aquarium") {
+    negativeKeywords.push(
+      '-"deck"', '-"hand"', '-"held"', '-"ruler"', '-"bucket"', '-"ashore"',
+      '-"measuring"', '-"boat"', '-"hooked"'
+    );
+  } else if (realmId === "aquarium-strict") {
+    negativeKeywords.push(
+      '-"deck"', '-"hand"', '-"held"', '-"ruler"', '-"bucket"', '-"ashore"',
+      '-"measuring"', '-"boat"', '-"hooked"', '-"specimen"', '-"aquarium"', '-"tank"',
+      '-"captive"'
+    );
+  }
+
+  const searchQuery = featured ? `"${query}" (incategory:Featured_pictures_of_animals OR incategory:Featured_pictures_of_plants OR incategory:Featured_pictures_of_fungi OR incategory:Quality_images) ${negativeKeywords.join(' ')}` : `"${query}" ${negativeKeywords.join(' ')}`;
   url.search = new URLSearchParams({
     action: "query",
     generator: "search",
@@ -265,7 +431,10 @@ function firstCommonsImage(payload) {
       if (!image?.url) return null;
       const imageLicense = normalizeRightsFreeLicense(stripMarkup(image.extmetadata?.LicenseShortName?.value));
       if (!imageLicense) return null;
+      // Post-filter: reject PDFs, TIFs, and bad-context filenames (see isImageUrlAcceptable)
+      if (!isImageUrlAcceptable(clean(image.url))) return null;
       return {
+
         coverUrl: clean(image.url),
         imageSourceUrl: clean(image.descriptionurl || page.fullurl),
         imageWidth: Number(image.width) || "",
@@ -286,6 +455,49 @@ function firstCommonsImage(payload) {
   })[0] || null;
 }
 
+function isImageUrlAcceptable(url) {
+  const lower = url.toLowerCase();
+  // Layer 1: Reject unrenderable file formats
+  if (lower.endsWith('.pdf') || lower.includes('.pdf?') || lower.endsWith('.tif') || lower.endsWith('.tiff')) return false;
+  // Layer 2+3+4: Reject bad-context, illustration, manuscript, and dead-animal filename patterns
+  // (See docs/adr/0007-media-rights-and-provenance.md § Programmatic QA Methodology)
+  const badPatterns = [
+    // Food / market context
+    '_market', '_stall', '_for_sale', '_food', '_dish', '_cooked', '_smoked', '_dried', '_salted',
+    'fish_market', 'fishmonger', '_bycatch', 'fresh_catch',
+    // Dead / caught animals
+    '_dead_', '_dead.', 'dead_fish', 'dead_animal',
+    '_beached', '_stranded', 'washed_up', 'on_sand', 'on_beach', 'on_ground',
+    '_catch_', '_caught_', '_fishing', 'fisherman', '_angling', '_bycatch',
+    // Captive / zoo / aquarium
+    '_zoo_', '_zoo.', 'zoological_park', 'zoological_garden', 'zoological_park',
+    '_aquarium', '_in_aquarium', '_in_tank', '_captive', 'in_captivity',
+    '_cage_', '_enclosure', '_terrarium', '_vivarium',
+    // Hand drawings & artwork
+    '_pencil', '_drawing', 'hand_drawn', '_watercolour', '_water_colour', '_watercolor',
+    '_gouache', '_painting', '_engraving', '_lithograph', '_woodcut', '_etching',
+    '_aquatint', '_mezzotint', '_woodblock', '_sketch',
+    // Medieval manuscripts & historical texts
+    'visboeck', 'visboek', 'maerlant', '_coenen', 'adriaen_coenen',
+    '_folio', 'kb_78', 'kb_ka', '_kronik', '_chronicle',
+    'der_naturen', 'naturen_bloeme', 'manuscript', '_codex', '_vellum',
+    'historia_naturalis', 'naturalis_historia', '_bestiary', '_bestiaire',
+    'fischbuch', '_illuminated',
+    // Old naturalist encyclopaedia / book sources
+    '_siebold', '_audubon', '_brehm', '_naumann', '_buffon', '_kawahara',
+    '_temminck', '_schlegel', 'rmnh.art', 'naturalis_biodiversity',
+    '_gesner', '_aldrovandi', '_rondelet', 'olaus_magnus', '_nordisk',
+    'cambridge_natural_history', 'meyers_b', '_brockhaus',
+    // Museum specimens / preserved
+    '_specimen_', '_specimen.', '_herbarium', '_taxidermy', '_stuffed', '_skeleton',
+    '_preserved', '_pinned', 'type_specimen',
+    // Misc unacceptable
+    '_x-ray', '_radiograph', '_ultrasound',
+  ];
+  return !badPatterns.some(p => lower.includes(p));
+}
+
+
 async function resolveWikidataClass(fetchImpl, initialEntityId, timeoutMs) {
   const entityId = clean(initialEntityId);
   if (!entityId) return null;
@@ -293,7 +505,8 @@ async function resolveWikidataClass(fetchImpl, initialEntityId, timeoutMs) {
   url.searchParams.set("format", "json");
   url.searchParams.set("query", `SELECT ?class ?className WHERE {
     wd:${entityId} wdt:P171* ?class .
-    ?class wdt:P105 wd:Q37517 ; wdt:P225 ?className .
+    ?class wdt:P105 ?rank ; wdt:P225 ?className .
+    VALUES ?rank { wd:Q37517 wd:Q5867016 wd:Q5867051 wd:Q336987 }
   } LIMIT 1`);
   const payload = await fetchJson(fetchImpl, url, timeoutMs, {
     accept: "application/sparql-results+json",
@@ -410,6 +623,8 @@ function authoredTaxonomyDescription({
 export const ENRICHMENT_PROVIDERS = Object.freeze([
   "gbif",
   "inaturalist",
+  "unsplash",
+  "flickr",
   "wikipedia-en",
   "wikipedia-vi",
   "youtube",
@@ -446,6 +661,8 @@ export function createBioEnricher({
   clock = () => new Date(),
   requestTimeoutMs = 12000,
   providers,
+  flickrApiKey = process.env.FLICKR_API_KEY || "",
+  unsplashApiKey = process.env.UNSPLASH_API_KEY || "",
 } = {}) {
   if (typeof fetchImpl !== "function") throw new TypeError("Bio enricher requires fetch");
   const enabledProviders = providerSet(providers);
@@ -473,7 +690,7 @@ export function createBioEnricher({
   };
 
   return Object.freeze({
-    async enrich(row, { overwrite = false, overwriteFields = [] } = {}) {
+    async enrich(row, { overwrite = false, overwriteFields = [], strictMedia = false } = {}) {
       const query = clean(row.scientificName) || clean(row.commonNameEn);
       if (!query) throw new Error("Organism requires a scientific or common name");
       const errors = [];
@@ -499,19 +716,72 @@ export function createBioEnricher({
       const wikiVi = enabledProviders.has("wikipedia-vi") && shouldRefresh("commonNameVi")
         ? await wikimediaRead("wikipedia-vi", wikipediaUrl("vi", clean(row.commonNameVi) || query), firstWikipediaPage)
         : null;
+        
+      const gbif = await gbifPromise;
+      const providerClass = clean(gbif?.class);
+      let wikidataClass = null;
+      if (!isCanonicalScientificClass(providerClass) || !providerClass) {
+        let entityId = clean(wikiEn?.pageprops?.wikibase_item || wikiVi?.pageprops?.wikibase_item);
+        if (entityId) {
+          try {
+            wikidataClass = await resolveWikidataClass(fetchImpl, entityId, requestTimeoutMs);
+          } catch (error) {
+            errors.push({ provider: "wikidata", message: error.message });
+          }
+        }
+        if (!wikidataClass && (gbif?.canonicalName || gbif?.scientificName)) {
+           const wikiFallback = enabledProviders.has("wikipedia-en") ? await wikimediaRead("wikipedia-en", wikipediaUrl("en", clean(gbif.canonicalName || gbif.scientificName)), firstWikipediaPage) : null;
+           const fallbackId = clean(wikiFallback?.pageprops?.wikibase_item);
+           if (fallbackId && fallbackId !== entityId) {
+             try {
+               wikidataClass = await resolveWikidataClass(fetchImpl, fallbackId, requestTimeoutMs);
+             } catch (error) {
+               errors.push({ provider: "wikidata", message: error.message });
+             }
+           }
+        }
+      }
+      const resolvedClassName = providerClass && isCanonicalScientificClass(providerClass) ? providerClass : wikidataClass?.className || clean(row.className);
+      const isAquatic = resolvedClassName && AQUATIC_CLASSES.includes(clean(resolvedClassName));
+      
+      const commonsImageFeaturedStrict = (isAquatic && (enabledProviders.has("wikipedia-en") || enabledProviders.has("wikipedia-vi")) && shouldRefresh("coverUrl"))
+        ? await wikimediaRead("wikimedia", wikimediaCommonsImageUrl(query, true, "aquarium-strict"), firstCommonsImage)
+        : null;
+      const commonsImageNormalStrict = (!commonsImageFeaturedStrict && isAquatic && (enabledProviders.has("wikipedia-en") || enabledProviders.has("wikipedia-vi")) && shouldRefresh("coverUrl"))
+        ? await wikimediaRead("wikimedia", wikimediaCommonsImageUrl(query, false, "aquarium-strict"), firstCommonsImage)
+        : null;
+      const commonsImageStrict = commonsImageFeaturedStrict || commonsImageNormalStrict;
+
       const commonsImageFeatured = (enabledProviders.has("wikipedia-en") || enabledProviders.has("wikipedia-vi")) && shouldRefresh("coverUrl")
-        ? await wikimediaRead("wikimedia", wikimediaCommonsImageUrl(query, true), firstCommonsImage)
+        ? await wikimediaRead("wikimedia", wikimediaCommonsImageUrl(query, true, clean(row.realmId)), firstCommonsImage)
         : null;
       const commonsImageNormal = (!commonsImageFeatured && (enabledProviders.has("wikipedia-en") || enabledProviders.has("wikipedia-vi")) && shouldRefresh("coverUrl"))
-        ? await wikimediaRead("wikimedia", wikimediaCommonsImageUrl(query, false), firstCommonsImage)
+        ? await wikimediaRead("wikimedia", wikimediaCommonsImageUrl(query, false, clean(row.realmId)), firstCommonsImage)
         : null;
       const commonsImage = commonsImageFeatured || commonsImageNormal;
       const inatImage = enabledProviders.has("inaturalist") && shouldRefresh("coverUrl")
         ? await fetchINaturalistImage(fetchImpl, query, requestTimeoutMs).catch((error) => { errors.push({ provider: "inaturalist", message: error.message }); return null; })
         : null;
-      const [gbif, video] = await Promise.all([gbifPromise, videoPromise]);
+      const flickrImage = isAquatic && enabledProviders.has("flickr") && shouldRefresh("coverUrl")
+        ? await fetchFlickrUnderwaterImage(fetchImpl, query, flickrApiKey, requestTimeoutMs).catch((error) => { errors.push({ provider: "flickr", message: error.message }); return null; })
+        : null;
+      const unsplashId = clean(row.unsplashId);
+      const unsplashImage = unsplashId
+        ? await fetchUnsplashImageById(fetchImpl, unsplashId, unsplashApiKey, requestTimeoutMs).catch((error) => { errors.push({ provider: "unsplash", message: error.message }); return null; })
+        : (isAquatic && enabledProviders.has("unsplash") && shouldRefresh("coverUrl")
+          ? await fetchUnsplashUnderwaterImage(fetchImpl, query, unsplashApiKey, requestTimeoutMs).catch((error) => { errors.push({ provider: "unsplash", message: error.message }); return null; })
+          : null);
+      const video = await videoPromise;
       const gbifSource = gbif?.usageKey ? `https://www.gbif.org/species/${gbif.usageKey}` : "";
-      const image = commonsImage || inatImage || {};
+      
+      let image = {};
+      if (strictMedia && isAquatic) {
+        image = unsplashImage || flickrImage || commonsImageStrict || {};
+      } else if (isAquatic) {
+        image = unsplashImage || flickrImage || commonsImageStrict || commonsImage || inatImage || {};
+      } else {
+        image = commonsImage || inatImage || {};
+      }
       const videoId = clean(video?.videoId || video?.id);
       const videoUrl = clean(video?.url) || (videoId ? `https://www.youtube.com/watch?v=${videoId}` : "");
       const title = clean(video?.title);
@@ -520,22 +790,9 @@ export function createBioEnricher({
       const matchConfidence = Number.isFinite(gbifConfidence)
         ? Math.min(1, Math.max(0, gbifConfidence / 100))
         : Number(row.confidence) || 0;
-      const providerClass = clean(gbif?.class);
-      let wikidataClass = null;
-      if (!isCanonicalScientificClass(providerClass) || !providerClass) {
-        const entityId = clean(wikiEn?.pageprops?.wikibase_item || wikiVi?.pageprops?.wikibase_item);
-        if (entityId) {
-          try {
-            wikidataClass = await resolveWikidataClass(fetchImpl, entityId, requestTimeoutMs);
-          } catch (error) {
-            errors.push({ provider: "wikidata", message: error.message });
-          }
-        }
-      }
       const resolvedScientificName = clean(gbif?.canonicalName || gbif?.scientificName || row.scientificName);
       const resolvedCommonNameEn = clean(wikiEn?.title || row.commonNameEn || resolvedScientificName);
       const resolvedCommonNameVi = clean(wikiVi?.title || row.commonNameVi);
-      const resolvedClassName = providerClass && isCanonicalScientificClass(providerClass) ? providerClass : wikidataClass?.className || clean(row.className);
       const resolvedOrder = clean(gbif?.order || row.order);
       const resolvedFamily = clean(gbif?.family || row.family);
       const descriptionFacts = {
@@ -588,6 +845,7 @@ export function createBioEnricher({
           row.provider,
           gbif ? "gbif" : "",
           inatImage ? "inaturalist" : "",
+          unsplashImage ? "unsplash" : "",
           wikiEn ? "wikipedia-en" : "",
           wikiVi ? "wikipedia-vi" : "",
           commonsImage ? "wikimedia" : "",

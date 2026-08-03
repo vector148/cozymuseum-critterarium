@@ -1,4 +1,4 @@
-# ADR-0008 - Static CozyMuseum showcase on Vercel
+# ADR-0008 - Static CozyMuseum showcase and image optimization on Vercel
 
 ## Status
 
@@ -23,6 +23,12 @@ The local application intentionally uses four versioned, rights-reviewed Excel w
 - Raw workbooks, reports, backup data, local media, scratch files, and private skills are deployment-denied. The same approved catalog is compiled into the production seed; source workbooks remain downloadable from GitHub under ADR-0009.
 - SPA routes fall back to `index.html`; actual built files retain filesystem priority.
 - Canonical host data comes from deployment configuration and is reused for HTML, robots, and sitemap output.
+
+### Frontend Image Optimization
+
+- To maintain a lightweight repository while ensuring fast, SEO-friendly page loads, production deployments leverage Vercel's Edge Image Optimization API (`/_vercel/image`).
+- Remote CC0 URLs are rewritten at the component level (`OptimizedImage.jsx`) into Vercel requests when `import.meta.env.PROD` is true. Vercel automatically fetches the external image, compresses it to WebP, and serves it from the canonical CozyMuseum domain cache.
+- Local Express development continues to serve the raw unoptimized URLs directly to avoid heavy local dependencies (e.g., `sharp`).
 
 ### Search boundary
 
