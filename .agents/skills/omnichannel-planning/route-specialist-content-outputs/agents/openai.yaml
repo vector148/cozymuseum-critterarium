@@ -1,0 +1,4 @@
+interface:
+  display_name: "Specialist Content Routing"
+  short_description: "Normalize specialist outputs for calendar handoff."
+  default_prompt: "Use $route-specialist-content-outputs to validate specialist content outputs and assemble a publication-ready content supply manifest."

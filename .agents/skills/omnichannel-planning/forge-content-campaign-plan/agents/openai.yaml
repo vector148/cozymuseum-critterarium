@@ -1,0 +1,4 @@
+interface:
+  display_name: "Content Campaign Planner"
+  short_description: "Forge governed, evidence-linked campaign systems."
+  default_prompt: "Use $forge-content-campaign-plan to turn an approved canonical asset into a governed campaign plan, content guideline, calendar brief, and readiness decision."

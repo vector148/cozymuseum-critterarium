@@ -1,0 +1,4 @@
+interface:
+  display_name: "Campaign Calendar & Capacity"
+  short_description: "Bind ready artifacts to governed publication slots."
+  default_prompt: "Use $plan-campaign-calendar-capacity to allocate campaign windows and bind validated specialist artifacts to capacity-aware publication handoff slots."

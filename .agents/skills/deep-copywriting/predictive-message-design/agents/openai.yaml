@@ -1,0 +1,4 @@
+interface:
+  display_name: "Predictive Message Design"
+  short_description: "Ethical predictive-processing copy design"
+  default_prompt: "Use $predictive-message-design to turn an approved founder insight into evidence-led canonical copy and a video foundation brief."

@@ -1,0 +1,4 @@
+interface:
+  display_name: "CRO"
+  short_description: "Optimize the full Commercial journey"
+  default_prompt: "Use $cro to optimize the full Commercial journey with evidence-led experiments."

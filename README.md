@@ -1,6 +1,6 @@
 # CozyMuseum
 
-**Current shell version:** `1.2.0`
+**Current shell version:** `1.2.1`
 
 **Your personal digital museum** — collect, catalog, and display your favorite critters, animals, and plants with a beautiful Liquid Glass interface. A cozy, offline-first sanctuary where all data stays right on your computer.
 

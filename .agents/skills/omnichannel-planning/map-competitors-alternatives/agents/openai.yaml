@@ -1,0 +1,4 @@
+interface:
+  display_name: "Competitor & Alternative Mapping"
+  short_description: "Map real alternatives, proof, trust, and choice gaps."
+  default_prompt: "Use $map-competitors-alternatives to map the real competitors, substitutes, customer choice gaps, and evidence required for this Atumerce plan."
