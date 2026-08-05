@@ -1,7 +1,0 @@
-interface:
-  display_name: "Search & Answer Optimization"
-  short_description: "People-first SEO and AI-answer discovery"
-  default_prompt: "Use $search-answer-optimization to turn this approved canonical draft into an evidence-led SEO and AI-answer package."
-
-policy:
-  allow_implicit_invocation: true

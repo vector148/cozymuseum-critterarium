@@ -1,7 +1,0 @@
-# Omnichannel Planning
-
-Team01's single Planning mega-skill. Its master [SKILL.md](SKILL.md) loads the canonical Atumerce Brand DNA and full-funnel Growth contract before it routes audience evidence, competitor/alternative mapping, canonical strategy, campaign/search/on-page planning, channel derivative planning, specialist-output re-entry, and capacity-aware publication calendar planning. It sends approved founder-source and claim contracts to Deep Copywriting, receives approved specialist artifacts back through a traceable content-supply manifest, and names the Awareness → Consideration → Conversion → Retention bottleneck plus downstream business outcome. Deep Copywriting—not Planning—executes Search & Answer Optimization on the canonical text.
-
-## Bản Tiếng Việt
-
-Mega-skill Planning duy nhất của Team01. Nó nạp Brand DNA canonical và contract Growth toàn phễu trước khi route bằng chứng audience, bản đồ đối thủ/phương án thay thế, canonical strategy, planning campaign/search/on-page, derivative theo kênh, re-entry của output chuyên môn và publication calendar theo năng lực. Nó gửi hợp đồng nguồn founder/claim đã duyệt sang Deep Copywriting, nhận artifact đã duyệt quay lại qua content-supply manifest có truy vết, và nêu bottleneck Awareness → Consideration → Conversion → Retention cùng business outcome downstream. Deep Copywriting, không phải Planning, thực thi Search & Answer Optimization trên canonical text.

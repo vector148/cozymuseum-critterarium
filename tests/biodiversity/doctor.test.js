@@ -1,12 +1,7 @@
 import assert from "node:assert/strict";
-import { readFileSync } from "node:fs";
-import { dirname, resolve } from "node:path";
 import test from "node:test";
-import { fileURLToPath } from "node:url";
 
 import { inspectBiodiversityCatalog } from "../../app/biodiversity/doctor.js";
-
-const root = resolve(dirname(fileURLToPath(import.meta.url)), "../..");
 
 function row(overrides = {}) {
   return {
@@ -55,15 +50,4 @@ test("catalog doctor blocks any displayed image outside the rights-free allowlis
   assert.equal(report.ok, false);
   assert.equal(report.invalidImageRights.length, 1);
   assert.equal(report.invalidImageRights[0].organismId, "animalia-clownfish");
-});
-
-test("versioned showroom snapshot contains all four workbook catalogs and stays doctor-clean", () => {
-  const rows = JSON.parse(readFileSync(resolve(root, "database/seeds/catalog.json"), "utf8"));
-  const report = inspectBiodiversityCatalog(rows);
-
-  assert.equal(rows.length, 291);
-  assert.equal(rows.filter((item) => item.importBatch === "legacy-observation-curation").length, 129);
-  assert.equal(report.ok, true);
-  assert.deepEqual(report.realms, { animalia: 166, microverse: 10, plantae_fungi: 107, sar: 8 });
-  assert.deepEqual(report.lifeStates, { extinct: 19, extant: 272 });
 });

@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 
 import { api } from "../api/index.js";
+import CreateOrganismForm from "../components/CreateOrganismForm.jsx";
 import OrganismCard from "../components/OrganismCard.jsx";
 import OrganismDetailModal from "../components/OrganismDetailModal.jsx";
 import { OptimizedImage } from "../components/OptimizedImage.jsx";
@@ -140,6 +141,7 @@ export default function Atlas({ data, sidebarOpen, onMenuClick }) {
   const detailTriggerRef = useRef(null);
   const clientWing = useMemo(() => WINGS.find((wing) => wing.id === wingId), [wingId]);
   const [visibleCount, setVisibleCount] = useState(16);
+  const [creating, setCreating] = useState(false);
 
   useEffect(() => {
     setVisibleCount(16);
@@ -168,6 +170,21 @@ export default function Atlas({ data, sidebarOpen, onMenuClick }) {
     }
   }
 
+  async function updateOrganism(input) {
+    const updated = await api.updateOrganism(detail.organismId, input);
+    const localized = await api.getOrganism(updated.organismId, locale);
+    setDetail(localized);
+    data.refresh();
+    showToast(locale === "vi" ? "Đã cập nhật mẫu vật." : "Specimen updated.");
+  }
+
+  async function deleteOrganism() {
+    await api.removeOrganism(detail.organismId);
+    closeDetail();
+    data.refresh();
+    showToast(locale === "vi" ? "Đã xóa mẫu vật." : "Specimen removed.");
+  }
+
   function openDetail(item, trigger) {
     detailTriggerRef.current = trigger;
     setDetail(item);
@@ -190,7 +207,8 @@ export default function Atlas({ data, sidebarOpen, onMenuClick }) {
       <Controls metadata={data.metadata} sidebarOpen={sidebarOpen} onMenuClick={onMenuClick} />
       {data.loading ? <div className="atlas-state">{t(locale, "loading")}</div> : null}
       {data.error ? <div className="atlas-state is-error">{data.error}</div> : null}
-      {!data.loading && !data.error && !data.items.length ? <div className="atlas-state">{emptyCopy}</div> : null}
+      {!data.loading && !data.error && !data.items.length && creating ? <CreateOrganismForm locale={locale} onCancel={() => setCreating(false)} onCreated={() => { setCreating(false); data.refresh(); showToast(locale === "vi" ? "Đã thêm mẫu vật đầu tiên." : "Your first specimen is now in the museum."); }} /> : null}
+      {!data.loading && !data.error && !data.items.length && !creating ? <section className="atlas-empty-shell glass-card"><span>{locale === "vi" ? "BẢO TÀNG LOCAL" : "LOCAL MUSEUM"}</span><h1>{locale === "vi" ? "Bảo tàng của bạn đang trống" : "Your museum is empty"}</h1><p>{emptyCopy} {locale === "vi" ? "Không có dữ liệu mẫu hoặc nội dung nào được gửi kèm shell." : "No sample catalog or bundled content ships with this shell."}</p><button className="btn btn-primary" type="button" onClick={() => setCreating(true)}>{locale === "vi" ? "Thêm mẫu vật đầu tiên" : "Add your first specimen"}</button></section> : null}
       {!data.loading && !data.error && data.items.length && atlasMode === "hall_of_fame"
         ? <HallOfFame items={data.items} locale={locale} onOpen={openDetail} /> : null}
       {!data.loading && !data.error && data.items.length && atlasMode !== "hall_of_fame" ? (
@@ -218,6 +236,8 @@ export default function Atlas({ data, sidebarOpen, onMenuClick }) {
           onClose={closeDetail}
           onComplete={completeEncounter}
           onUndo={undoEncounter}
+          onUpdate={updateOrganism}
+          onDelete={deleteOrganism}
         />
       ) : null}
     </>

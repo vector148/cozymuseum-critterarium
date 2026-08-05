@@ -1,19 +1,18 @@
 node_modules/
 dist/
-.env
-*.env.local
-images/
-backup/
-database/state/
-reports/
 *.tmp
 
-.agents/skills/*
-!.agents/skills/add-organism/
-!.agents/skills/add-organism/**
+.env*
+!.env.example
+*recovery*code*
+*backup*code*
 
-database/sar.xlsx
-database/microverse.xlsx
-
+.agents/
 .private/
 .scratch/
+database/
+docs/
+images/
+backup/
+reports/
+.vercel/

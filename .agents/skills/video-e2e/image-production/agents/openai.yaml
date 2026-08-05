@@ -1,4 +1,0 @@
-interface:
-  display_name: "Image Production"
-  short_description: "Create governed still-image assets"
-  default_prompt: "Use $image-production to turn an approved image brief into traceable image variants and visual QA evidence."

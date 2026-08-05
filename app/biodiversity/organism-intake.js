@@ -1,4 +1,5 @@
 import { hasRightsFreeImage } from "./media-rights.js";
+import { allocateOrganismId } from "./organism-id.js";
 import { REALMS, isCanonicalScientificClass } from "./taxonomy.js";
 
 function clean(value) {
@@ -67,13 +68,13 @@ function reason(...messages) {
   return messages.filter(Boolean).join("; ");
 }
 
-function freshRecord(input, enriched, clock) {
+function freshRecord(input, enriched, clock, knownRows) {
   const resolvedRealm = validRealm(input.realmId) || inferRealm(enriched.kingdom);
   const scientificName = clean(enriched.scientificName) || clean(input.scientificName) || clean(input.name);
   const commonNameEn = clean(enriched.commonNameEn) || clean(input.commonNameEn) || scientificName;
   const commonNameVi = clean(enriched.commonNameVi) || clean(input.commonNameVi);
   const lifeState = validLifeState(input.lifeState || "extant");
-  const organismId = resolvedRealm && scientificName ? `${resolvedRealm}-${key(scientificName)}` : "";
+  const organismId = resolvedRealm && scientificName ? allocateOrganismId(knownRows, resolvedRealm) : "";
   return {
     ...enriched,
     organismId,
@@ -162,7 +163,7 @@ export function createOrganismIntake({
             lifeState: validLifeState(input.lifeState || "extant") || clean(input.lifeState || "extant"),
             realmId: validRealm(input.realmId) || "",
           }, { overwrite: true, strictMedia: Boolean(strictMedia) });
-          const row = freshRecord(input, enriched.row || {}, clock);
+          const row = freshRecord(input, enriched.row || {}, clock, [...knownRows, ...readyRows]);
           const existingResolved = hasSameResolvedIdentity([...knownRows, ...readyRows], row);
           if (existingResolved) {
             summary.duplicate += 1;

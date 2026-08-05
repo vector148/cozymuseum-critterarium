@@ -1,5 +1,3 @@
-import { browserApi } from "./browser-api.js";
-
 const BASE = "/api/atlas";
 
 async function request(path, options = {}) {
@@ -24,6 +22,9 @@ const httpApi = {
   getMetadata: (filters) => request(`/meta${queryString(filters)}`),
   getOrganisms: (filters) => request(`/organisms${queryString(filters)}`),
   getOrganism: (organismId, locale) => request(`/organisms/${encodeURIComponent(organismId)}?locale=${locale}`),
+  createOrganism: (organism) => request("/organisms", { method: "POST", body: JSON.stringify(organism) }),
+  updateOrganism: (organismId, organism) => request(`/organisms/${encodeURIComponent(organismId)}`, { method: "PATCH", body: JSON.stringify(organism) }),
+  removeOrganism: (organismId) => request(`/organisms/${encodeURIComponent(organismId)}`, { method: "DELETE" }),
   completeEncounter: (organismId, rarityScore) => request(
     `/organisms/${encodeURIComponent(organismId)}/encounter`,
     { method: "POST", body: JSON.stringify({ rarityScore }) },
@@ -34,5 +35,4 @@ const httpApi = {
   ),
 };
 
-const env = import.meta.env || {};
-export const api = env.PROD || env.VITE_DATA_MODE === "browser" ? browserApi : httpApi;
+export const api = httpApi;

@@ -1,4 +1,0 @@
-interface:
-  display_name: "Ethical Conversion Copywriting"
-  short_description: "Evidence-led copy without dark patterns"
-  default_prompt: "Use $ethical-conversion-copywriting to turn an approved message unit and claim ledger into reviewable conversion copy with autonomy, No-Guru, consent, and measurement gates."

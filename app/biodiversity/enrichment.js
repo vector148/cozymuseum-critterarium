@@ -345,7 +345,7 @@ function wikimediaCommonsImageUrl(query, featured = false, realmId = "") {
   // Layer 2: Non-natural context (market, zoo, aquarium tank, food, captive)
   // Layer 3: Illustrations/artwork (pencil, watercolour, drawings, old naturalist collections)
   // Layer 4: Old encyclopaedia/scientific book sources
-  // See: docs/adr/0007-media-rights-and-provenance.md § Programmatic QA Methodology
+  // The public shell accepts only rights-free media with complete provenance.
   const negativeKeywords = [
     // === NON-NATURAL CONTEXT ===
     // Food / market
@@ -460,7 +460,7 @@ function isImageUrlAcceptable(url) {
   // Layer 1: Reject unrenderable file formats
   if (lower.endsWith('.pdf') || lower.includes('.pdf?') || lower.endsWith('.tif') || lower.endsWith('.tiff')) return false;
   // Layer 2+3+4: Reject bad-context, illustration, manuscript, and dead-animal filename patterns
-  // (See docs/adr/0007-media-rights-and-provenance.md § Programmatic QA Methodology)
+  // Keep bad-context and non-renderable media out of user records.
   const badPatterns = [
     // Food / market context
     '_market', '_stall', '_for_sale', '_food', '_dish', '_cooked', '_smoked', '_dried', '_salted',

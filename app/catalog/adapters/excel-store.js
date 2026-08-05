@@ -9,9 +9,17 @@ import {
 } from "node:fs";
 import { basename, dirname, extname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
+import { homedir } from "node:os";
 
-const moduleDir = dirname(fileURLToPath(import.meta.url));
-export const DEFAULT_DATABASE_DIR = resolve(moduleDir, "../../../database");
+function defaultUserDataDir() {
+  if (process.env.COZYMUSEUM_DATA_DIR?.trim()) return resolve(process.env.COZYMUSEUM_DATA_DIR.trim());
+  const applicationData = process.env.LOCALAPPDATA || process.env.APPDATA;
+  return applicationData
+    ? resolve(applicationData, "CozyMuseum", "data")
+    : resolve(homedir(), ".local", "share", "CozyMuseum", "data");
+}
+
+export const DEFAULT_DATABASE_DIR = defaultUserDataDir();
 
 function assertCatalogFilename(filename, allowedExtensions) {
   if (

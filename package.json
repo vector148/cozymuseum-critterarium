@@ -1,19 +1,19 @@
 {
   "name": "cozymuseum",
-  "version": "1.2.1",
+  "version": "1.3.0",
   "private": true,
   "type": "module",
   "scripts": {
     "dev": "concurrently \"npm run dev:server\" \"npm run dev:client\"",
     "dev:server": "node --watch server/index.js",
     "dev:client": "vite --config vite.config.js",
-    "build": "vite build --config vite.config.js && node scripts/generate-search-assets.mjs",
+    "build": "vite build --config vite.config.js",
     "preview": "vite preview --config vite.config.js",
+    "release:verify": "node scripts/verify-cleanroom-release.mjs .",
     "test": "node --test",
     "commitlint": "commitlint --last --verbose",
     "bio": "node scripts/cozymuseum.mjs",
-    "bio:sync": "npm run bio -- snapshot-seed",
-    "verify": "node --test tests/biodiversity/*.test.js tests/browser/*.test.js tests/server/atlas-api.test.js tests/launcher.test.js tests/search-assets.test.js && npm run build && npm run bio -- doctor",
+    "verify": "node --test && npm run build && npm run bio -- doctor && npm run release:verify",
     "prepare": "husky"
   },
   "dependencies": {

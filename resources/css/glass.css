@@ -25,25 +25,24 @@ html.theme-wing-fauna {
   --accent: #ff4757;
   --accent-rgb: 255, 71, 87;
   background:
-    linear-gradient(180deg, rgba(20, 5, 5, 0.5) 0%, rgba(30, 10, 10, 0.72) 100%),
-    url('/bg-fauna.jpg') no-repeat center center fixed #050e14;
-  background-size: cover;
+    radial-gradient(circle at 78% 12%, rgba(155, 55, 42, 0.28), transparent 32%),
+    linear-gradient(145deg, #071c17 0%, #061016 52%, #130b0b 100%);
 }
 
 html.theme-wing-flora {
   --accent: #35dd84;
   --accent-rgb: 53, 221, 132;
-  background: url('/bg-plantae-fungi.jpg') no-repeat center center fixed #050e14;
-  background-size: cover;
+  background:
+    radial-gradient(circle at 74% 12%, rgba(43, 122, 73, 0.34), transparent 34%),
+    linear-gradient(145deg, #041c13 0%, #071711 46%, #061016 100%);
 }
 
 html.theme-wing-aquarium {
   --accent: #00e5ff;
   --accent-rgb: 0, 229, 255;
   background:
-    linear-gradient(135deg, rgba(6, 12, 20, 0.20) 0%, rgba(7, 14, 24, 0.36) 100%),
-    url('/bg-animalia.jpg') no-repeat center center fixed #050e14;
-  background-size: cover;
+    radial-gradient(circle at 76% 10%, rgba(0, 151, 167, 0.3), transparent 34%),
+    linear-gradient(145deg, #031b20 0%, #06141c 48%, #030b11 100%);
 }
 
 html.theme-wing-fossils {
@@ -531,6 +530,18 @@ a { color: inherit; }
 
 .atlas-state { min-height: 52vh; display: grid; place-items: center; color: var(--dim); text-align: center; }
 .atlas-state.is-error, .score-error { color: #ff7488; }
+.atlas-empty-shell, .create-organism-form { width: min(760px, calc(100% - 40px)); margin: 12vh auto 60px; padding: clamp(28px, 6vw, 64px); }
+.atlas-empty-shell { min-height: 430px; display: flex; flex-direction: column; align-items: flex-start; justify-content: center; }
+.atlas-empty-shell > span, .create-organism-heading > span { color: rgb(var(--accent-rgb)); font-size: 11px; font-weight: 900; letter-spacing: 0.16em; }
+.atlas-empty-shell h1, .create-organism-heading h2 { margin: 16px 0 12px; font-size: clamp(34px, 6vw, 64px); line-height: 0.98; }
+.atlas-empty-shell p, .create-organism-heading p { max-width: 610px; margin: 0 0 26px; color: var(--muted); font-size: 16px; line-height: 1.7; }
+.create-organism-heading h2 { font-size: clamp(30px, 5vw, 48px); }
+.create-organism-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; margin-top: 28px; }
+.create-organism-grid label { display: grid; gap: 8px; color: var(--muted); font-size: 11px; font-weight: 900; letter-spacing: 0.08em; text-transform: uppercase; }
+.create-organism-grid input, .create-organism-grid select { min-width: 0; height: 46px; border: 1px solid var(--line); border-radius: 10px; padding: 0 12px; color: var(--text); background: rgba(2, 15, 18, 0.72); font: inherit; letter-spacing: normal; text-transform: none; }
+.create-organism-error { color: #ff7488; }
+.create-organism-actions { display: flex; justify-content: flex-end; gap: 12px; margin-top: 24px; }
+.local-data-notice { margin: auto 0 0; color: var(--dim); font-size: 11px; line-height: 1.5; }
 
 .ranking-panel { padding: 22px; border-radius: var(--radius); }
 .ranking-head { display: flex; justify-content: space-between; margin-bottom: 18px; }
@@ -611,6 +622,9 @@ a { color: inherit; }
 }
 
 @media (max-width: 768px) {
+  .atlas-empty-shell, .create-organism-form { width: calc(100% - 24px); margin-top: 92px; padding: 26px 20px; }
+  .create-organism-grid { grid-template-columns: 1fr; }
+  .create-organism-actions { flex-direction: column-reverse; }
   :root { --sidebar: min(86vw, 330px); }
   .sidebar { transform: translateX(-102%); padding-top: 130px; z-index: 70; }
   .sidebar.open { transform: translateX(0); }
@@ -691,4 +705,25 @@ a { color: inherit; }
 
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { scroll-behavior: auto !important; transition-duration: 0.01ms !important; animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; }
+}
+.detail-edit-form {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+  margin: 18px 0;
+  padding: 18px;
+  border-radius: 16px;
+}
+
+.detail-edit-form label { display: grid; gap: 7px; color: var(--muted); font-size: 12px; font-weight: 700; }
+.detail-edit-form input,
+.detail-edit-form select { width: 100%; border: 1px solid var(--line); border-radius: 10px; padding: 10px 12px; color: var(--text); background: rgba(2, 10, 14, 0.72); }
+.detail-edit-form .create-organism-actions,
+.detail-edit-form .create-organism-error { grid-column: 1 / -1; }
+.record-actions { display: flex; justify-content: flex-end; gap: 10px; margin: 16px 0; }
+.btn.danger { border-color: rgba(255, 71, 87, 0.46); color: #ffd7dc; background: rgba(90, 13, 24, 0.38); }
+
+@media (max-width: 640px) {
+  .detail-edit-form { grid-template-columns: 1fr; }
+  .record-actions { flex-direction: column; }
 }

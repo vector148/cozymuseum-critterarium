@@ -28,6 +28,13 @@ export function createOrganismExcelStore({ databaseDir } = {}) {
     return workbookEntries.some(([, filename]) => existsSync(excel.pathFor(filename)));
   }
 
+  function initialize() {
+    for (const [, filename] of workbookEntries) {
+      if (!existsSync(excel.pathFor(filename))) excel.write(filename, []);
+    }
+    return Object.fromEntries(workbookEntries.map(([realmId, filename]) => [realmId, excel.pathFor(filename)]));
+  }
+
   function read() {
     if (!hasRealmWorkbooks()) return excel.read(LEGACY_UNIFIED_WORKBOOK).map(normalizedRow);
     return workbookEntries.flatMap(([realmId, filename]) => excel.read(filename).map((row) => normalizedRow({ ...row, realmId })));
@@ -55,6 +62,7 @@ export function createOrganismExcelStore({ databaseDir } = {}) {
   return Object.freeze({
     read,
     write,
+    initialize,
     migrateUnifiedWorkbook,
     paths: () => Object.fromEntries(workbookEntries.map(([realmId, filename]) => [realmId, excel.pathFor(filename)])),
   });

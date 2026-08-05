@@ -1,4 +1,5 @@
-import { encounterEnabledForRealm, localizedLabel, getCozyCategory, REALMS, COZY_CATEGORY_ORDER } from "./taxonomy.js";
+import { encounterEnabledForRealm, localizedLabel, getCozyCategory, REALMS, COZY_CATEGORY_ORDER, isCanonicalScientificClass, taxonomyKey } from "./taxonomy.js";
+import { allocateOrganismId, isSupportedRealm } from "./organism-id.js";
 
 function clean(value) {
   return String(value ?? "").replace(/\s+/g, " ").trim();
@@ -30,6 +31,34 @@ function localDate(value) {
   const month = String(date.getMonth() + 1).padStart(2, "0");
   const day = String(date.getDate()).padStart(2, "0");
   return `${year}-${month}-${day}`;
+}
+
+function createRecord(rows, input) {
+  const realmId = taxonomyKey(input.realmId);
+  const scientificName = clean(input.scientificName);
+  const commonNameEn = clean(input.commonNameEn) || scientificName;
+  const className = clean(input.className);
+  const lifeState = clean(input.lifeState || "extant").toLowerCase();
+  if (!isSupportedRealm(realmId)) throw new Error("A valid Realm is required");
+  if (!scientificName) throw new Error("Scientific name is required");
+  if (!className || !isCanonicalScientificClass(className)) throw new Error("A canonical scientific Class is required");
+  if (!["extant", "extinct"].includes(lifeState)) throw new Error("Life state must be extant or extinct");
+  if (rows.some((row) => clean(row.scientificName).toLowerCase() === scientificName.toLowerCase())) {
+    throw new Error("Scientific name already exists");
+  }
+  return {
+    organismId: allocateOrganismId(rows, realmId),
+    realmId,
+    commonNameEn,
+    commonNameVi: clean(input.commonNameVi),
+    scientificName,
+    phylum: clean(input.phylum),
+    className,
+    lifeState,
+    encountered: false,
+    encounterDate: "",
+    rarityScore: "",
+  };
 }
 
 function localized(row, locale) {
@@ -165,6 +194,38 @@ export function createBiodiversityCatalog({ store, clock = () => new Date() } = 
     get(organismId, { locale = "en" } = {}) {
       const row = (store.read() ?? []).find((item) => clean(item.organismId) === clean(organismId));
       return row ? localized(structuredClone(row), selectedLocale(locale)) : null;
+    },
+
+    create(input = {}) {
+      const rows = store.read() ?? [];
+      const row = createRecord(rows, input);
+      store.write([...rows, row]);
+      return structuredClone(row);
+    },
+
+    update(organismId, input = {}) {
+      const rows = store.read() ?? [];
+      const index = rows.findIndex((row) => clean(row.organismId) === clean(organismId));
+      if (index < 0) throw new Error("Organism not found");
+      const current = rows[index];
+      const candidate = createRecord(rows.filter((_, rowIndex) => rowIndex !== index), { ...current, ...input });
+      rows[index] = {
+        ...current,
+        ...candidate,
+        organismId: current.organismId,
+        encountered: current.encountered,
+        encounterDate: current.encounterDate,
+        rarityScore: current.rarityScore,
+      };
+      store.write(rows);
+      return structuredClone(rows[index]);
+    },
+
+    remove(organismId) {
+      const rows = store.read() ?? [];
+      const next = rows.filter((row) => clean(row.organismId) !== clean(organismId));
+      if (next.length === rows.length) throw new Error("Organism not found");
+      store.write(next);
     },
 
     completeEncounter(organismId, { rarityScore } = {}) {

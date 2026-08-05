@@ -29,6 +29,32 @@ export function createAtlasController({ catalog }) {
       if (!item) return response.status(404).json({ error: "organism_not_found" });
       return response.json(item);
     },
+    create(request, response) {
+      try {
+        return response.status(201).json(catalog.create(request.body));
+      } catch (error) {
+        const message = error instanceof Error ? error.message : String(error);
+        return response.status(400).json({ error: "invalid_organism", message });
+      }
+    },
+    update(request, response) {
+      try {
+        return response.json(catalog.update(request.params.organismId, request.body));
+      } catch (error) {
+        const message = error instanceof Error ? error.message : String(error);
+        const status = message === "Organism not found" ? 404 : 400;
+        return response.status(status).json({ error: status === 404 ? "organism_not_found" : "invalid_organism", message });
+      }
+    },
+    remove(request, response) {
+      try {
+        catalog.remove(request.params.organismId);
+        return response.status(204).end();
+      } catch (error) {
+        const message = error instanceof Error ? error.message : String(error);
+        return response.status(404).json({ error: "organism_not_found", message });
+      }
+    },
     completeEncounter(request, response) {
       try {
         return response.json(catalog.completeEncounter(request.params.organismId, request.body));

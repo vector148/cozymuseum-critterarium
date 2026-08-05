@@ -57,7 +57,7 @@ test("organism intake previews a doctor-clean, media-ready scientific record wit
   assert.equal(writes, 0);
   assert.deepEqual(result.summary, { received: 1, ready: 1, duplicate: 0, rejected: 0, failed: 0, written: 0 });
   assert.equal(result.items[0].status, "ready");
-  assert.equal(result.items[0].row.organismId, "animalia-panthera-leo");
+  assert.equal(result.items[0].row.organismId, "A00001");
   assert.equal(result.items[0].row.realmId, "animalia");
   assert.equal(result.items[0].row.lifeState, "extant");
   assert.equal(result.items[0].row.encountered, false);
@@ -113,7 +113,7 @@ test("organism intake applies a ready row once and blocks its exact duplicate be
 
   assert.equal(applied.summary.written, 1);
   assert.equal(rows.length, 1);
-  assert.equal(rows[0].organismId, "animalia-panthera-tigris");
+  assert.equal(rows[0].organismId, "A00001");
   assert.equal(rows[0].encountered, false);
   assert.equal(replay.summary.duplicate, 1);
   assert.equal(writes, 1);

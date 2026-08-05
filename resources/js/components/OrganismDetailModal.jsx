@@ -26,11 +26,20 @@ function InfoCell({ label, value, italic = false }) {
   );
 }
 
-export default function OrganismDetailModal({ item, locale, realmLabel, onClose, onComplete, onUndo }) {
+export default function OrganismDetailModal({ item, locale, realmLabel, onClose, onComplete, onUndo, onUpdate, onDelete }) {
   const [completing, setCompleting] = useState(false);
   const [rarityScore, setRarityScore] = useState("");
   const [validationError, setValidationError] = useState("");
   const [saving, setSaving] = useState(false);
+  const [editing, setEditing] = useState(false);
+  const [editForm, setEditForm] = useState({
+    commonNameEn: item.commonNameEn || "",
+    commonNameVi: item.commonNameVi || "",
+    scientificName: item.scientificName || "",
+    phylum: item.phylum || "",
+    className: item.className || "",
+    lifeState: item.lifeState || "extant",
+  });
   const videoId = useMemo(() => youtubeId(item), [item]);
   const image = item.coverUrl;
 
@@ -54,6 +63,31 @@ export default function OrganismDetailModal({ item, locale, realmLabel, onClose,
       await onComplete(score);
       setCompleting(false);
       setRarityScore("");
+    } finally {
+      setSaving(false);
+    }
+  }
+
+  async function saveEdit(event) {
+    event.preventDefault();
+    setSaving(true);
+    setValidationError("");
+    try {
+      await onUpdate(editForm);
+      setEditing(false);
+    } catch (error) {
+      setValidationError(error.message);
+    } finally {
+      setSaving(false);
+    }
+  }
+
+  async function remove() {
+    const message = locale === "vi" ? "Xóa mẫu vật này khỏi bảo tàng local?" : "Remove this specimen from your local museum?";
+    if (!window.confirm(message)) return;
+    setSaving(true);
+    try {
+      await onDelete();
     } finally {
       setSaving(false);
     }
@@ -100,6 +134,24 @@ export default function OrganismDetailModal({ item, locale, realmLabel, onClose,
           <InfoCell label={t(locale, "diet")} value={item.displayDiet} />
           <InfoCell label={t(locale, "size")} value={item.size} />
           <InfoCell label={t(locale, "lifespan")} value={item.lifespan} />
+        </div>
+
+        {editing ? (
+          <form className="detail-edit-form glass-card" onSubmit={saveEdit}>
+            <label>{locale === "vi" ? "Tên thường gọi" : "Common name"}<input required value={editForm.commonNameEn} onChange={(event) => setEditForm({ ...editForm, commonNameEn: event.target.value })} /></label>
+            <label>{locale === "vi" ? "Tên tiếng Việt" : "Vietnamese name"}<input value={editForm.commonNameVi} onChange={(event) => setEditForm({ ...editForm, commonNameVi: event.target.value })} /></label>
+            <label>{locale === "vi" ? "Tên khoa học" : "Scientific name"}<input required value={editForm.scientificName} onChange={(event) => setEditForm({ ...editForm, scientificName: event.target.value })} /></label>
+            <label>Phylum<input value={editForm.phylum} onChange={(event) => setEditForm({ ...editForm, phylum: event.target.value })} /></label>
+            <label>Class<input required value={editForm.className} onChange={(event) => setEditForm({ ...editForm, className: event.target.value })} /></label>
+            <label>{locale === "vi" ? "Trạng thái" : "Life state"}<select value={editForm.lifeState} onChange={(event) => setEditForm({ ...editForm, lifeState: event.target.value })}><option value="extant">Extant</option><option value="extinct">Extinct</option></select></label>
+            {validationError ? <p className="create-organism-error" role="alert">{validationError}</p> : null}
+            <div className="create-organism-actions"><button className="btn" type="button" onClick={() => setEditing(false)}>{locale === "vi" ? "Hủy" : "Cancel"}</button><button className="btn btn-primary" disabled={saving} type="submit">{locale === "vi" ? "Lưu thay đổi" : "Save changes"}</button></div>
+          </form>
+        ) : null}
+
+        <div className="record-actions">
+          <button className="btn" type="button" onClick={() => setEditing((value) => !value)}>{locale === "vi" ? "Sửa mẫu vật" : "Edit specimen"}</button>
+          <button className="btn danger" type="button" disabled={saving} onClick={remove}>{locale === "vi" ? "Xóa mẫu vật" : "Delete specimen"}</button>
         </div>
 
         {item.displayDescription ? <div className="organism-description">{item.displayDescription}</div> : null}

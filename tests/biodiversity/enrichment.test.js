@@ -327,7 +327,7 @@ test("Wikimedia reads are identified, maxlag-aware, sequential, and retry a 429"
     organismId: "animalia-panthera-leo",
     scientificName: "Panthera leo",
     commonNameEn: "Lion",
-    commonNameVi: "SÆ° tá»­",
+    commonNameVi: "Sư tử",
     lifeState: "extant",
     confidence: 0.99,
   }, { overwriteFields: ["commonNameEn", "commonNameVi"] });

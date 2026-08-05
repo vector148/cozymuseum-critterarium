@@ -1,4 +1,0 @@
-interface:
-  display_name: "Full-Funnel CRO"
-  short_description: "Optimize all four Atumerce journey stages"
-  default_prompt: "Use $full-funnel-cro to diagnose and optimize Awareness, Consideration, Conversion, and Retention with evidence-led experiments."
