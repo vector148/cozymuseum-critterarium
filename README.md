@@ -1,138 +1,55 @@
 # CozyMuseum
 
-**Current shell version:** `1.0.0`
+CozyMuseum is an empty, local-first natural-history museum shell. A fresh download includes the application and schema only: no organisms, catalog workbooks, personal encounters, articles, or bundled species media.
 
-> Your aesthetic digital museum. A cozy, local-first sanctuary to collect, catalog, and display your favorite critters with a beautiful Liquid Glass UI.
+**Current shell version:** `2.0.0`
 
-CozyMuseum is a bilingual EN/VI biological collection with four vivid Realms, dependent Phylum → Class filtering, a scientifically accurate detail view, extinct collections, natural-history YouTube links, and a personal Hall of Fame for organisms encountered outdoors.
+Version `2.0.0` modernizes the local Critterarium frame with the current CozyMuseum identity, local typography, responsive museum navigation, Atlas and Hall of Fame surfaces. It preserves the `1.3.0` cleanroom data contract and does not add the web Foyer, Reading Room, Curatale, Supabase, analytics, SEO, or deployment services.
 
-The hosted build is a read-only showroom of all four workbook catalogs. Visitors may mark encounters, but those changes stay in their own browser and never alter the owner's source data.
+## Version lineage
 
-**Live museum:** [cozymuseum.vercel.app](https://cozymuseum.vercel.app/)
+- `1.0.0` - initial CozyMuseum empty shell baseline.
+- `2.0.0` - current Critterarium visual, interaction, and modular architecture upgrade.
 
-## Start locally
+## Start on Windows
 
-On Windows, double-click [`scripts/CozyMuseum.bat`](scripts/CozyMuseum.bat). A desktop shortcut should point to that file; move only the shortcut, not the launcher.
+1. Install Node.js 20 or newer.
+2. Download and extract this repository.
+3. Double-click `CozyMuseum.bat`.
 
-Or use a terminal:
+The launcher installs missing npm dependencies, starts the local API and interface, then opens the museum in your browser. Nothing in the core flow requires an account or cloud connection.
+
+Developers can run the same application with:
 
 ```bash
 npm install
 npm run dev
 ```
 
-The local app uses an Express adapter and exactly four single-sheet Excel workbooks:
+## Your data
 
-- `database/animalia.xlsx`
-- `database/plantae-fungi.xlsx`
-- `database/sar.xlsx`
-- `database/microverse.xlsx`
-
-These four rights-reviewed workbooks are versioned with the repository, so every clone includes the complete editable database rather than an empty schema. Their public release rows keep encounter/date/rarity values blank; personal Hall of Fame activity remains in each visitor's browser.
-
-Extant, Retired, Hall of Fame, taxonomy, encounter date, and rarity are row fields and filtered views—not extra workbooks or sheets.
-
-## Add organisms in four ways
-
-All intake paths resolve scientific identity first, require canonical taxonomy, keep field-level sources and confidence, accept only remote CC0/Public Domain cover images with exact proof, and verify public YouTube watch links. Preview is the default; add `--apply` only after reviewing the proposed records.
-
-### 1. Add one organism by name
-
-```bash
-npm run bio -- add --name "Panthera leo" --realm animalia
-npm run bio -- add --name "Panthera leo" --realm animalia --apply
-```
-
-### 2. Import a JSON batch
-
-Create a local JSON array in `backup/add-organisms.json`:
-
-```json
-[
-  { "name": "Danaus plexippus", "realmId": "animalia" },
-  { "scientificName": "Ginkgo biloba", "realmId": "plantae_fungi" }
-]
-```
-
-Then preview and apply:
-
-```bash
-npm run bio -- add --input backup/add-organisms.json
-npm run bio -- add --input backup/add-organisms.json --apply
-```
-
-### 3. Ask Codex with the add-organism skill
+On first run, CozyMuseum creates four empty Realm workbooks outside the source folder. The default Windows location is:
 
 ```text
-Use $add-organism to add these organisms to my CozyMuseum collection: <your list>.
-Preview first, report uncertain matches, then apply only the accepted records.
+%LOCALAPPDATA%\CozyMuseum\data
 ```
 
-The skill lives at `.agents/skills/add-organism/` and delegates writes to the same validated CLI instead of editing workbooks directly.
+Set `COZYMUSEUM_DATA_DIR` before launch to choose another location. Updating or replacing the application folder does not overwrite this user-data directory.
 
-### 4. Prepare records with another AI, then validate locally
+Use the Atlas empty state to add your first organism. IDs are allocated locally with a Realm prefix and five digits, such as `A00001`. Records can be viewed, edited, removed, and marked as personal encounters through the local application.
 
-Ask any AI for JSON only using this contract:
+## Content responsibility
 
-```text
-Return a JSON array of organism intake records. Each item may contain name,
-scientificName, commonNameEn, commonNameVi, realmId, and lifeState.
-Do not invent taxonomy, image rights, or source URLs; CozyMuseum will resolve
-and validate those fields locally before any write.
-```
+You own and control the records you add. Only attach text, images, video links, or other media that you have the right to use. CozyMuseum does not bundle a catalog or grant rights to user-supplied content.
 
-Save the response under ignored `backup/`, then run the JSON batch flow above. Unverified AI output never bypasses the local intake gate.
-
-## Enrich and verify
+## Verify the shell
 
 ```bash
-npm run bio -- enrich --id animalia-panthera-leo --providers gbif,wikipedia-en,wikipedia-vi,youtube --min-confidence 0.8
-npm run bio -- enrich --id animalia-panthera-leo --providers gbif,wikipedia-en,wikipedia-vi,youtube --min-confidence 0.8 --apply
-npm run bio -- doctor
 npm run verify
 ```
 
-Images remain remote links. CozyMuseum never downloads, caches, or serves catalog photos locally. A URL alone is not permission: every displayed image must retain exact CC0/Public Domain evidence. YouTube uses the official privacy-enhanced player and a direct watch link; no video or audio is downloaded.
+The verification suite tests the local data boundary, API behavior, production build, empty catalog health, and the failure-closed cleanroom release gate.
 
-## Build the read-only showroom
+## License
 
-Refresh the committed web snapshot from all four workbooks, then build:
-
-```bash
-npm run bio -- snapshot-seed
-npm run build
-```
-
-Production uses `database/seeds/catalog.json` and stores each visitor's encounter overlay in localStorage. The four source workbooks remain downloadable from GitHub but are excluded from the Vercel payload because the equivalent catalog snapshot is already compiled into the showroom. Local skills, reports, backups, state, and scratch files are also excluded. Set `SITE_URL` to the final canonical HTTPS URL before the production build; it drives the canonical tag, `robots.txt`, and `sitemap.xml`.
-
-```bash
-SITE_URL=https://your-domain.example npm run build
-```
-
-The release output is `dist/`. The repository includes `vercel.json`, `.vercelignore`, search metadata, JSON-LD, a web manifest, root robots rules, and a one-page canonical sitemap.
-
-## Architecture
-
-- `app/biodiversity/` — catalog, taxonomy, encounter, enrichment, and diagnostics.
-- `app/catalog/adapters/` — memory and Excel storage adapters.
-- `resources/js/` — React application and production browser adapter.
-- `resources/css/` — compact Liquid Glass visual system and Realm themes.
-- `server/` — local-only HTTP delivery adapter.
-- `database/` — four local workbooks and the public read-only snapshot.
-- `docs/adr/` — durable engineering, scientific, source, media-rights, and deployment decisions.
-- `.scratch/` — PRDs, issues, audits, and implementation queues.
-
-## Product rules
-
-- Phylum is the first filter row; Class is the dependent second row.
-- `Extant` / `Hiện sinh` means a taxon still has living individuals; `Extinct` / `Tuyệt chủng` is its scientific opposite.
-- Class values in data and detail views are canonical scientific taxa. Friendly labels are presentation only.
-- Hall of Fame exists only for directly observable Animalia and Plants & Fungi.
-- Completing an encounter stamps today's local date and stores a 0–10 personal rarity score.
-- SAR and Microverse deliberately have no encounter or Hall of Fame mechanics.
-
-## License and support
-
-CozyMuseum Critterarium is distributed under the [Personal-Use Only License](LICENSE). Catalog media remains governed by its exact source rights and [`docs/adr/0007-media-rights-and-provenance.md`](docs/adr/0007-media-rights-and-provenance.md).
-
-Want a museum of your own? [Create yours from CozyMuseum on GitHub](https://github.com/vector148/cozymuseum). For a matching collection manager built around games, films, social channels, and music, [explore FourRealm OS v2](https://buymeacoffee.com/vector148/e/562244).
+CozyMuseum Critterarium is distributed under the [Personal-Use Only License](LICENSE). It is licensed solely for private, non-commercial use. Commercial use, resale, sublicensing, and unauthorized public redistribution are strictly prohibited.

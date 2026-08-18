@@ -1,0 +1,13 @@
+CozyMuseum Critterarium includes local webfont files for Be Vietnam Pro and Exo 2.
+
+Be Vietnam Pro
+Copyright 2019 The Be Vietnam Pro Project Authors.
+Licensed under the SIL Open Font License 1.1.
+https://fonts.google.com/specimen/Be+Vietnam+Pro
+
+Exo 2
+Copyright 2013 The Exo 2 Project Authors.
+Licensed under the SIL Open Font License 1.1.
+https://fonts.google.com/specimen/Exo+2
+
+The fonts are bundled only so the local shell does not require a Google Fonts network request during its core flow.

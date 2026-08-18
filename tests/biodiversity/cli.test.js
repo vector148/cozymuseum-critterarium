@@ -6,7 +6,7 @@ import test from "node:test";
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), "../..");
 
-test("CozyMuseum CLI advertises provider selection and a confidence threshold", () => {
+test("CozyMuseum CLI exposes only public shell intake, enrichment, and doctor commands", () => {
   const result = spawnSync(process.execPath, ["scripts/cozymuseum.mjs"], {
     cwd: root,
     encoding: "utf8",
@@ -17,22 +17,7 @@ test("CozyMuseum CLI advertises provider selection and a confidence threshold", 
   assert.match(help.commands.enrich, /--providers/);
   assert.match(help.commands.enrich, /--min-confidence/);
   assert.match(help.commands.enrich, /--overwrite-fields/);
-  assert.match(help.commands.migrate, /--from <legacy-backup>/);
-  assert.match(help.commands.extractObservations, /database\/seeds\/legacy-observations\.txt/);
-  assert.match(help.commands.taxonomy, /taxonomy-class-corrections\.json/);
-  assert.match(help.commands.curateObservations, /--preview-digest/);
-  assert.match(help.commands.curateObservations, /--offset/);
-  assert.match(help.commands.snapshotSeed, /database\/seeds\/catalog\.json/);
   assert.match(help.commands.add, /--name <scientific-or-common-name>/);
   assert.match(help.commands.add, /--input <organisms\.json>/);
-});
-
-test("legacy migration refuses an implicit deleted sibling path", () => {
-  const result = spawnSync(process.execPath, ["scripts/cozymuseum.mjs", "migrate"], {
-    cwd: root,
-    encoding: "utf8",
-  });
-
-  assert.notEqual(result.status, 0);
-  assert.match(result.stderr, /explicit --from <legacy-backup>/);
+  assert.deepEqual(Object.keys(help.commands).sort(), ["add", "doctor", "enrich"]);
 });

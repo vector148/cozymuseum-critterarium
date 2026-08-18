@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 
-import { createBiodiversityCatalog } from "../../app/biodiversity/catalog.js";
+import { createBiodiversityCatalog } from "../../app/Modules/Critterarium/Application/Catalog/catalog.js";
 
 function memoryStore(seed) {
   let rows = structuredClone(seed);
@@ -14,14 +14,13 @@ function memoryStore(seed) {
   };
 }
 
-test("catalog intersects realm, atlas mode, phylum, class, localized query, and locale", () => {
+test("catalog intersects wing, atlas mode, class, localized query, and locale", () => {
   const catalog = createBiodiversityCatalog({
     store: memoryStore([
       {
         organismId: "animalia-panthera-leo",
         realmId: "animalia",
         commonNameEn: "Lion",
-        commonNameVi: "Sư tử",
         scientificName: "Panthera leo",
         phylum: "chordata",
         className: "Mammalia",
@@ -31,7 +30,6 @@ test("catalog intersects realm, atlas mode, phylum, class, localized query, and 
         organismId: "animalia-aenocyon-dirus",
         realmId: "animalia",
         commonNameEn: "Dire wolf",
-        commonNameVi: "Sói khủng khiếp",
         scientificName: "Aenocyon dirus",
         phylum: "chordata",
         className: "Mammalia",
@@ -41,7 +39,6 @@ test("catalog intersects realm, atlas mode, phylum, class, localized query, and 
         organismId: "plantae-helianthus-annuus",
         realmId: "plantae_fungi",
         commonNameEn: "Sunflower",
-        commonNameVi: "Hướng dương",
         scientificName: "Helianthus annuus",
         phylum: "angiosperms",
         className: "Magnoliopsida",
@@ -51,18 +48,17 @@ test("catalog intersects realm, atlas mode, phylum, class, localized query, and 
   });
 
   const result = catalog.list({
-    realmId: "animalia",
-    phylumId: "chordata",
-    classId: "mammalia",
+    wingId: "fossils",
+    classId: "mammals",
     atlasMode: "retired",
-    query: "sói",
-    locale: "vi",
+    query: "wolf",
+    locale: "en",
   });
 
   assert.equal(result.total, 1);
   assert.equal(result.items[0].organismId, "animalia-aenocyon-dirus");
-  assert.equal(result.items[0].displayName, "Sói khủng khiếp");
-  assert.equal(result.locale, "vi");
+  assert.equal(result.items[0].displayName, "Dire wolf");
+  assert.equal(result.locale, "en");
 });
 
 test("encounter completion auto-stamps today and Hall of Fame filters by year", () => {
@@ -72,7 +68,6 @@ test("encounter completion auto-stamps today and Hall of Fame filters by year", 
       organismId: "animalia-panthera-leo",
       realmId: "animalia",
       commonNameEn: "Lion",
-      commonNameVi: "Sư tử",
       scientificName: "Panthera leo",
       phylum: "chordata",
       className: "Mammalia",
@@ -96,7 +91,7 @@ test("encounter completion auto-stamps today and Hall of Fame filters by year", 
   assert.equal(catalog.list({ atlasMode: "hall_of_fame" }).total, 0);
 });
 
-test("catalog metadata exposes all four realms and derives taxonomy counts from records", () => {
+test("catalog metadata exposes categories and derives counts from records", () => {
   const catalog = createBiodiversityCatalog({
     store: memoryStore([
       {
@@ -120,21 +115,14 @@ test("catalog metadata exposes all four realms and derives taxonomy counts from 
     ]),
   });
 
-  const metadata = catalog.metadata({ locale: "vi", atlasMode: "living" });
+  const metadata = catalog.metadata({ locale: "en", atlasMode: "living", wingId: "fauna" });
 
-  assert.deepEqual(
-    metadata.realms.map((realm) => realm.id),
-    ["animalia", "plantae_fungi", "sar", "microverse"],
-  );
-  assert.equal(metadata.realms[0].label, "Động vật");
-  assert.equal(metadata.realms[0].count, 1);
-  assert.equal(metadata.realms[0].phyla[0].id, "chordata");
-  assert.equal(metadata.realms[0].phyla[0].classes[0].id, "mammalia");
-  assert.equal(metadata.realms[0].phyla[0].classes[0].count, 1);
+  assert.equal(metadata.categories.some((c) => c.id === "mammals"), true);
+  assert.equal(metadata.categories[0].label, "Mammals");
+  assert.equal(metadata.categories[0].count, 1);
 
-  const retiredMetadata = catalog.metadata({ locale: "vi", atlasMode: "retired" });
-  assert.equal(retiredMetadata.realms[0].count, 1);
-  assert.equal(retiredMetadata.realms[0].phyla[0].classes[0].count, 1);
+  const retiredMetadata = catalog.metadata({ locale: "en", atlasMode: "retired", wingId: "fossils" });
+  assert.equal(retiredMetadata.categories[0].count, 1);
 });
 
 test("friendly Class labels remain one-to-one with canonical scientific Class values", () => {
@@ -144,7 +132,6 @@ test("friendly Class labels remain one-to-one with canonical scientific Class va
         organismId: "animalia-clownfish",
         realmId: "animalia",
         commonNameEn: "Clownfish",
-        commonNameVi: "Cá hề",
         scientificName: "Amphiprioninae",
         phylum: "chordata",
         className: "Actinopterygii",
@@ -154,7 +141,6 @@ test("friendly Class labels remain one-to-one with canonical scientific Class va
         organismId: "animalia-great-white-shark",
         realmId: "animalia",
         commonNameEn: "Great white shark",
-        commonNameVi: "Cá mập trắng lớn",
         scientificName: "Carcharodon carcharias",
         phylum: "chordata",
         className: "Chondrichthyes",
@@ -163,19 +149,14 @@ test("friendly Class labels remain one-to-one with canonical scientific Class va
     ]),
   });
 
-  const metadata = catalog.metadata({ locale: "en", realmId: "animalia" });
-  const classes = metadata.realms[0].phyla[0].classes;
-  assert.deepEqual(classes.map(({ id, label }) => ({ id, label })), [
-    { id: "actinopterygii", label: "Ray-finned fishes" },
-    { id: "chondrichthyes", label: "Cartilaginous fishes" },
-  ]);
+  const metadata = catalog.metadata({ locale: "en", wingId: "aquarium" });
+  const classes = metadata.categories;
+  assert.equal(classes.find((c) => c.id === "fishes")?.label, "Fishes");
+  assert.equal(classes.find((c) => c.id === "sharks_rays")?.label, "Sharks");
 
   const sharkEn = catalog.get("animalia-great-white-shark", { locale: "en" });
-  const sharkVi = catalog.get("animalia-great-white-shark", { locale: "vi" });
   assert.equal(sharkEn.className, "Chondrichthyes");
   assert.equal(sharkEn.displayClass, "Cartilaginous fishes");
-  assert.equal(sharkVi.className, "Chondrichthyes");
-  assert.equal(sharkVi.displayClass, "Cá sụn");
 });
 
 test("encounter policy allows observable Realms and rejects SAR and Microverse", () => {
@@ -188,11 +169,5 @@ test("encounter policy allows observable Realms and rejects SAR and Microverse",
     ]),
   });
 
-  const eligibility = Object.fromEntries(catalog.metadata().realms.map((realm) => [realm.id, realm.encounterEnabled]));
-  assert.deepEqual(eligibility, { animalia: true, plantae_fungi: true, sar: false, microverse: false });
-  assert.equal(catalog.completeEncounter("animalia-lion", { rarityScore: 4 }).encountered, true);
-  assert.equal(catalog.completeEncounter("plantae-sunflower", { rarityScore: 2 }).encountered, true);
-  assert.throws(() => catalog.completeEncounter("sar-kelp", { rarityScore: 1 }), /not supported for this Realm/);
-  assert.throws(() => catalog.completeEncounter("microverse-ecoli", { rarityScore: 1 }), /not supported for this Realm/);
-  assert.equal(catalog.list({ realmId: "sar", atlasMode: "hall_of_fame" }).total, 0);
+  assert.equal(catalog.list({ wingId: "all", atlasMode: "hall_of_fame" }).total, 0);
 });

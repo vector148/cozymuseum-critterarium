@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 
-import { createBioEnricher, enrichCatalog, parseYouTubeVideoSearchHtml } from "../../app/biodiversity/enrichment.js";
+import { createBioEnricher, enrichCatalog, parseYouTubeVideoSearchHtml } from "../../app/Modules/Critterarium/Application/Ingestion/enrichment.js";
 
 function response(body, { contentType = "application/json", ok = true } = {}) {
   return {
@@ -327,7 +327,7 @@ test("Wikimedia reads are identified, maxlag-aware, sequential, and retry a 429"
     organismId: "animalia-panthera-leo",
     scientificName: "Panthera leo",
     commonNameEn: "Lion",
-    commonNameVi: "SÆ° tá»­",
+    commonNameVi: "Sư tử",
     lifeState: "extant",
     confidence: 0.99,
   }, { overwriteFields: ["commonNameEn", "commonNameVi"] });

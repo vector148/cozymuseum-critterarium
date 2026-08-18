@@ -1,5 +1,6 @@
 import assert from "node:assert/strict";
 import { spawnSync } from "node:child_process";
+import { existsSync } from "node:fs";
 import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import test from "node:test";
@@ -9,7 +10,8 @@ const root = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 test("Windows shortcut launcher finds the CozyMuseum root and exposes a dry run", {
   skip: process.platform !== "win32",
 }, () => {
-  const launcher = resolve(root, "scripts/CozyMuseum.bat");
+  const brandedLauncher = resolve(root, "CozyMuseum Critterarium.bat");
+  const launcher = existsSync(brandedLauncher) ? brandedLauncher : resolve(root, "CozyMuseum.bat");
   const result = spawnSync(
     `call "${launcher}" --dry-run`,
     {

@@ -4,8 +4,16 @@
   "description": "Your aesthetic digital museum for collecting, cataloging, and displaying favorite critters.",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#06171d",
-  "theme_color": "#06171d",
+  "background_color": "#061412",
+  "theme_color": "#061412",
+  "icons": [
+    {
+      "src": "/brand/cozymuseum-primary-logo.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ],
   "lang": "en",
   "categories": ["lifestyle", "education", "entertainment"]
 }

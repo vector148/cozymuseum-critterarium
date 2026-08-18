@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 
-import { createEncounterOverlayStore } from "../../resources/js/data/encounter-overlay-store.js";
+import { createEncounterOverlayStore } from "../../resources/js/modules/critterarium/data/encounter-overlay-store.js";
 
 function fakeStorage(initial = {}) {
   const values = new Map(Object.entries(initial));
