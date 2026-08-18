@@ -1,0 +1,138 @@
+
+/* --- Inline Music Player on Cards --- */
+.music-play-overlay {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) scale(0.9);
+  width: 56px;
+  height: 56px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid rgba(230, 248, 255, 0.28);
+  border-radius: 50%;
+  background: rgba(13, 27, 42, 0.45);
+  color: white;
+  opacity: 0;
+  transition: opacity 0.2s ease, transform 0.2s ease;
+  z-index: 4;
+  cursor: pointer;
+  pointer-events: auto;
+  backdrop-filter: blur(8px);
+}
+
+.curatale-showroom-card:hover .music-play-overlay,
+.music-play-overlay.is-playing {
+  opacity: 1;
+  transform: translate(-50%, -50%) scale(1);
+}
+
+.music-play-overlay:hover {
+  background: rgba(22, 50, 72, 0.78);
+  border-color: rgba(230, 248, 255, 0.5);
+  transform: translate(-50%, -50%) scale(1.08);
+}
+
+.music-play-overlay svg {
+  width: 28px;
+  height: 28px;
+  color: white;
+}
+
+.music-progress-container {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 48px;
+  z-index: 4;
+  pointer-events: none;
+}
+
+.music-progress-bar {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 48px;
+  margin: 0;
+  appearance: none;
+  background: transparent;
+  z-index: 5;
+  cursor: pointer;
+  border-radius: 0;
+  pointer-events: auto;
+
+  background-image:
+    linear-gradient(#FF3333, #FF3333),
+    linear-gradient(rgba(255, 255, 255, 0.3), rgba(255, 255, 255, 0.3));
+  background-size:
+    var(--progress, 0%) 4px,
+    100% 4px;
+  background-position: bottom left, bottom left;
+  background-repeat: no-repeat, no-repeat;
+  transition: background-size 0.2s linear;
+}
+
+.music-progress-bar::-webkit-slider-runnable-track {
+  width: 100%;
+  height: 100%;
+  background: transparent;
+  cursor: pointer;
+}
+
+.music-progress-bar::-moz-range-track {
+  width: 100%;
+  height: 100%;
+  background: transparent;
+  cursor: pointer;
+}
+
+.music-progress-bar::-webkit-slider-thumb {
+  appearance: none;
+  width: 0;
+  height: 0;
+  border-radius: 50%;
+  background: white;
+  box-shadow: 0 0 4px rgba(0, 0, 0, 0.5);
+  transition: width 0.1s ease, height 0.1s ease, margin-top 0.1s ease;
+  margin-top: 46px;
+}
+
+.music-progress-bar:hover::-webkit-slider-thumb {
+  width: 10px;
+  height: 10px;
+  margin-top: 41px;
+}
+
+.music-progress-bar:active::-webkit-slider-thumb {
+  width: 20px;
+  height: 20px;
+  margin-top: 36px;
+}
+
+.music-progress-bar::-moz-range-thumb {
+  width: 0;
+  height: 0;
+  border: none;
+  background: transparent;
+  border-radius: 50%;
+  box-shadow: 0 0 4px rgba(0, 0, 0, 0.5);
+  transition: width 0.1s ease, height 0.1s ease, background 0.1s ease;
+  transform: translateY(22px);
+}
+
+.music-progress-bar:hover::-moz-range-thumb {
+  width: 10px;
+  height: 10px;
+  background: white;
+  transform: translateY(22px);
+}
+
+.music-progress-bar:active::-moz-range-thumb {
+  width: 20px;
+  height: 20px;
+  background: white;
+  transform: translateY(22px);
+}

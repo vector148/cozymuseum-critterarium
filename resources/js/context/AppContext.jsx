@@ -1,5 +1,7 @@
 import { createContext, useCallback, useContext, useEffect, useRef, useState } from "react";
 
+import { critterariumSearchTerm } from "../routing/critterarium-search.js";
+
 const AppContext = createContext(null);
 
 function initialLocale() {
@@ -10,14 +12,18 @@ function initialLocale() {
   }
 }
 
+function initialQuery() {
+  return typeof window === "undefined" ? "" : critterariumSearchTerm(window.location.search);
+}
+
 export function AppProvider({ children }) {
-  const [realmId, setRealmId] = useState("animalia");
-  const [atlasMode, setAtlasMode] = useState("living");
+  const [wingId, setWingId] = useState("aquarium");
+  const [critterariumMode, setcritterariumMode] = useState("living");
   const [locale, setLocale] = useState(initialLocale);
-  const [query, setQuery] = useState("");
-  const [phylumId, setPhylumId] = useState("all");
+  const [query, setQuery] = useState(initialQuery);
   const [classId, setClassId] = useState("all");
-  const [encounterYear, setEncounterYear] = useState("all");
+  // Resolve the newest available year when Hall of Fame metadata arrives.
+  const [encounterYear, setEncounterYear] = useState("latest");
   const [toast, setToast] = useState({ msg: "", show: false });
   const toastTimer = useRef(null);
 
@@ -36,32 +42,25 @@ export function AppProvider({ children }) {
     toastTimer.current = setTimeout(() => setToast((current) => ({ ...current, show: false })), 2600);
   }, []);
 
-  const switchRealm = useCallback((nextRealm) => {
-    setRealmId(nextRealm);
-    setPhylumId("all");
+  const switchWing = useCallback((nextWing) => {
+    setWingId(nextWing);
     setClassId("all");
-    setEncounterYear("all");
+    setEncounterYear("latest");
   }, []);
 
   const switchMode = useCallback((nextMode) => {
-    setAtlasMode(nextMode);
-    setPhylumId("all");
+    setcritterariumMode(nextMode);
     setClassId("all");
-    setEncounterYear(nextMode === "hall_of_fame" ? "auto" : "all");
-  }, []);
-
-  const selectPhylum = useCallback((nextPhylum) => {
-    setPhylumId(nextPhylum);
-    setClassId("all");
+    setEncounterYear("latest");
   }, []);
 
   return (
     <AppContext.Provider value={{
-      realmId, switchRealm,
-      atlasMode, switchMode,
+      wingId, switchWing,
+      critterariumMode, switchMode,
+      atlasMode: critterariumMode,
       locale, setLocale,
       query, setQuery,
-      phylumId, selectPhylum,
       classId, setClassId,
       encounterYear, setEncounterYear,
       toast, showToast,

@@ -4,9 +4,9 @@ import { tmpdir } from "node:os";
 import { join } from "node:path";
 import test from "node:test";
 
-import { createBiodiversityCatalog } from "../../app/biodiversity/catalog.js";
-import { createOrganismExcelStore } from "../../app/biodiversity/store.js";
-import { createMemoryStore } from "../../app/catalog/adapters/memory-store.js";
+import { createBiodiversityCatalog } from "../../app/Modules/Critterarium/Application/Catalog/catalog.js";
+import { createOrganismExcelStore } from "../../app/Modules/Critterarium/Infrastructure/Catalog/organism-store.js";
+import { createMemoryStore } from "../../app/Modules/Critterarium/Infrastructure/Catalog/memory-store.js";
 
 const seed = [{
   organismId: "panthera-leo",

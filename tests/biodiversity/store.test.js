@@ -5,8 +5,8 @@ import { join } from "node:path";
 import test from "node:test";
 import * as XLSX from "xlsx";
 
-import { createBiodiversityCatalog } from "../../app/biodiversity/catalog.js";
-import { createOrganismExcelStore, REALM_WORKBOOKS } from "../../app/biodiversity/store.js";
+import { createBiodiversityCatalog } from "../../app/Modules/Critterarium/Application/Catalog/catalog.js";
+import { createOrganismExcelStore, REALM_WORKBOOKS } from "../../app/Modules/Critterarium/Infrastructure/Catalog/organism-store.js";
 
 test("four Realms persist to four flat single-sheet workbooks", () => {
   const databaseDir = mkdtempSync(join(tmpdir(), "cozymuseum-store-"));

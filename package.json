@@ -1,18 +1,19 @@
 {
   "name": "cozymuseum",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "private": true,
   "type": "module",
   "scripts": {
     "dev": "concurrently \"npm run dev:server\" \"npm run dev:client\"",
     "dev:server": "node --watch server/index.js",
     "dev:client": "vite --config vite.config.js",
-    "build": "vite build --config vite.config.js && node scripts/generate-search-assets.mjs",
+    "build": "vite build --config vite.config.js",
     "preview": "vite preview --config vite.config.js",
+    "release:verify": "node scripts/verify-cleanroom-release.mjs .",
     "test": "node --test",
     "commitlint": "commitlint --last --verbose",
     "bio": "node scripts/cozymuseum.mjs",
-    "verify": "node --test tests/biodiversity/*.test.js tests/browser/*.test.js tests/server/atlas-api.test.js tests/launcher.test.js tests/search-assets.test.js && npm run build && npm run bio -- doctor",
+    "verify": "node --test && npm run build && npm run bio -- doctor && npm run release:verify",
     "prepare": "husky"
   },
   "dependencies": {
@@ -25,9 +26,10 @@
   "devDependencies": {
     "@commitlint/cli": "^19.5.0",
     "@commitlint/config-conventional": "^19.5.0",
-    "@vitejs/plugin-react": "^4.3.1",
+    "@vitejs/plugin-react": "^6.1.1",
     "concurrently": "^9.1.0",
     "husky": "^9.1.6",
-    "vite": "^5.4.2"
+    "sharp": "^0.35.3",
+    "vite": "^8.2.2"
   }
 }

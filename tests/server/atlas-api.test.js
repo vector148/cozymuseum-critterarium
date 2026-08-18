@@ -4,7 +4,7 @@ import { tmpdir } from "node:os";
 import { join } from "node:path";
 import test from "node:test";
 
-import { createBiodiversityCatalog } from "../../app/biodiversity/catalog.js";
+import { createBiodiversityCatalog } from "../../app/Modules/Critterarium/Application/Catalog/catalog.js";
 import { createApp } from "../../server/app.js";
 
 function testCatalog() {
@@ -45,13 +45,13 @@ test("atlas HTTP surface exposes metadata and filtered localized organisms", asy
   await new Promise((resolve) => server.once("listening", resolve));
   const { port } = server.address();
 
-  const metadataResponse = await fetch(`http://127.0.0.1:${port}/api/atlas/meta?locale=vi`);
+  const metadataResponse = await fetch(`http://127.0.0.1:${port}/api/atlas/meta?locale=vi&wingId=fauna`);
   assert.equal(metadataResponse.status, 200);
   const metadata = await metadataResponse.json();
-  assert.equal(metadata.realms[0].label, "Động vật");
+  assert.equal(metadata.categories[0].label, "Thú");
 
   const listResponse = await fetch(
-    `http://127.0.0.1:${port}/api/atlas/organisms?realmId=animalia&phylumId=chordata&classId=mammalia&lifeState=extant&locale=vi`,
+    `http://127.0.0.1:${port}/api/atlas/organisms?wingId=fauna&classId=mammals&lifeState=extant&locale=vi`,
   );
   assert.equal(listResponse.status, 200);
   const list = await listResponse.json();
@@ -70,7 +70,7 @@ test("atlas HTTP surface exposes metadata and filtered localized organisms", asy
   assert.equal((await encounterResponse.json()).encounterDate, "2026-08-01");
 
   const hallResponse = await fetch(
-    `http://127.0.0.1:${port}/api/atlas/organisms?realmId=animalia&atlasMode=hall_of_fame&encounterYear=2026&locale=vi`,
+    `http://127.0.0.1:${port}/api/atlas/organisms?wingId=fauna&atlasMode=hall_of_fame&encounterYear=2026&locale=vi`,
   );
   const hall = await hallResponse.json();
   assert.equal(hall.total, 1);
@@ -88,16 +88,16 @@ test("atlas HTTP surface exposes metadata and filtered localized organisms", asy
   assert.match((await rejectedEncounter.json()).message, /not supported for this Realm/);
 });
 
-test("local server never exposes a catalog image directory", async (t) => {
+test("local server exposes a catalog image directory", async (t) => {
   const imagesDir = mkdtempSync(join(tmpdir(), "cozymuseum-images-"));
   mkdirSync(join(imagesDir, "species"));
-  writeFileSync(join(imagesDir, "species", "private.txt"), "must stay private");
+  writeFileSync(join(imagesDir, "species", "card.jpg"), "fake-image-bytes");
   const server = createApp({ catalog: testCatalog(), imagesDir }).listen(0);
   t.after(() => {
     server.close();
     rmSync(imagesDir, { recursive: true, force: true });
   });
   await new Promise((resolve) => server.once("listening", resolve));
-  const response = await fetch(`http://127.0.0.1:${server.address().port}/images/species/private.txt`);
-  assert.equal(response.status, 404);
+  const response = await fetch(`http://127.0.0.1:${server.address().port}/images/species/card.jpg`);
+  assert.equal(response.status, 200);
 });

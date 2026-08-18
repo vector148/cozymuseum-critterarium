@@ -5,7 +5,7 @@ import {
   imageRightsFailures,
   isRightsFreeLicense,
   normalizeRightsFreeLicense,
-} from "../../app/biodiversity/media-rights.js";
+} from "../../app/Modules/Critterarium/Domain/MediaRights/media-rights.js";
 
 test("rights-free allowlist accepts only CC0 and Public Domain declarations", () => {
   assert.equal(normalizeRightsFreeLicense("CC0 1.0"), "CC0");
@@ -30,6 +30,6 @@ test("a displayed remote image requires complete internal rights-free proof and 
   assert.deepEqual(imageRightsFailures(valid), []);
   assert.deepEqual(imageRightsFailures({}), []);
   assert.ok(imageRightsFailures({ ...valid, localCover: "/images/species/animalia/example.jpg" }).includes("local catalog media is forbidden"));
-  assert.ok(imageRightsFailures({ ...valid, imageLicense: "CC BY 4.0" }).includes("image license is not CC0 or Public Domain"));
+  assert.ok(imageRightsFailures({ ...valid, imageLicense: "CC BY 4.0" }).includes("image license is not CC0, Public Domain, or Unsplash License"));
   assert.ok(imageRightsFailures({ ...valid, imageSourceUrl: "" }).includes("missing exact image source"));
 });

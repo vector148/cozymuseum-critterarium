@@ -1,4 +1,6 @@
 User-agent: *
 Allow: /
+Disallow: /admin
+Disallow: /admin/
 
-Sitemap: https://cozymuseum.vercel.app/sitemap.xml
+Sitemap: https://cozymuseum.app/sitemap.xml
