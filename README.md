@@ -2,9 +2,18 @@
 
 CozyMuseum is an empty, local-first natural-history museum shell. A fresh download includes the application and schema only: no organisms, catalog workbooks, personal encounters, articles, or bundled species media.
 
-**Current shell version:** `1.3.0`
+**Current shell version:** `2.0.0`
 
-Version `1.3.0` is the cleanroom baseline: first-run local storage, an empty Atlas, local organism workflows, Hall of Fame encounters, and failure-closed release verification. Version `2.0.0` will modernize the Critterarium interface without adding the web Foyer, Reading Room, Curatale, Supabase, analytics, or deployment services.
+Version `2.0.0` modernizes the local Critterarium frame with the current CozyMuseum identity, local typography, responsive museum navigation, Atlas and Hall of Fame surfaces. It preserves the `1.3.0` cleanroom data contract and does not add the web Foyer, Reading Room, Curatale, Supabase, analytics, SEO, or deployment services.
+
+## Version lineage
+
+- `1.0.0` - initial CozyMuseum shell.
+- `1.1.0` - taxonomy and organism research workflow.
+- `1.2.0` - catalog presentation and UI refinement.
+- `1.2.1` - mobile stabilization.
+- `1.3.0` - empty cleanroom baseline with local CRUD and release verification.
+- `2.0.0` - current Critterarium-only visual and interaction upgrade.
 
 ## Start on Windows
 

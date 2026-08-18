@@ -18,6 +18,7 @@ const SECRET_PATTERNS = [
   /(?:service_role|supabase_service|database_password|vercel_oidc_token)\s*[=:]/i,
   /-----BEGIN (?:RSA |EC |OPENSSH )?PRIVATE KEY-----/,
 ];
+const PLATFORM_SURFACE_PATTERN = /\b(?:curatale|supabase|gtag|googletagmanager|vercel|foyer|greathall)\b|reading[-_ ]room/i;
 
 function portable(root, path) {
   return relative(root, path).replaceAll("\\", "/");
@@ -56,6 +57,9 @@ export function inspectCleanroomTree(rootDir) {
       if ([".js", ".jsx", ".mjs", ".cjs", ".json", ".md", ".txt", ".html", ".css"].includes(extension)) {
         const content = readFileSync(path, "utf8");
         if (SECRET_PATTERNS.some((pattern) => pattern.test(content))) violations.push({ path: relativePath, reason: "secret-like content" });
+        if (/^(?:app|resources|server)\//.test(relativePath) && PLATFORM_SURFACE_PATTERN.test(content)) {
+          violations.push({ path: relativePath, reason: "public-platform runtime surface" });
+        }
       }
     }
   }

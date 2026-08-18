@@ -51,3 +51,20 @@ test("cleanroom verifier accepts the minimal public shell surface", () => {
     rmSync(root, { recursive: true, force: true });
   }
 });
+
+test("cleanroom verifier rejects public-platform runtime surfaces", () => {
+  const root = mkdtempSync(join(tmpdir(), "cozymuseum-platform-surface-fixture-"));
+  try {
+    mkdirSync(join(root, "resources", "js"), { recursive: true });
+    writeFileSync(join(root, "resources", "js", "Curatale.jsx"), 'import "./supabase-client.js"; export const route = "/reading-room"; gtag("config");');
+
+    const report = inspectCleanroomTree(root);
+    assert.equal(report.ok, false);
+    assert.deepEqual(report.violations, [{
+      path: "resources/js/Curatale.jsx",
+      reason: "public-platform runtime surface",
+    }]);
+  } finally {
+    rmSync(root, { recursive: true, force: true });
+  }
+});

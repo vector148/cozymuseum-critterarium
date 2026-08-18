@@ -1,10 +1,12 @@
 import { useEffect, useState } from "react";
 
 import Toast from "./components/Toast.jsx";
+import MuseumNavIcon from "./components/MuseumNavIcon.jsx";
 import { AppProvider, useApp } from "./context/AppContext.jsx";
 import { useAtlas } from "./hooks/useAtlas.js";
-import { availableAtlasModes, WINGS, wingName, t } from "./i18n.js";
+import { WINGS, wingName, t } from "./i18n.js";
 import Atlas from "./pages/Atlas.jsx";
+import { shellNavigation } from "./shell-surface.js";
 
 function AppInner() {
   const {
@@ -24,18 +26,16 @@ function AppInner() {
     if (!encounterEnabled && atlasMode === "hall_of_fame") switchMode("living");
   }, [atlasMode, encounterEnabled, switchMode]);
 
-  const modeDefinitions = [
-    { id: "living", icon: "◆", label: t(locale, "living") },
-    { id: "hall_of_fame", icon: "★", label: t(locale, "hall_of_fame") },
-  ];
-  const modes = availableAtlasModes(encounterEnabled)
-    .map((modeId) => modeDefinitions.find((mode) => mode.id === modeId));
+  const modes = shellNavigation({ encounterEnabled });
 
   return (
     <div id="app">
       <aside className={`sidebar ${sidebarOpen ? "open" : ""} ${sidebarCollapsed ? "collapsed" : ""}`}>
-        <div className="sidebar-header">
-          <div className="logo"><span className="logo-text">CozyMuseum</span></div>
+        <div className="sidebar-header museum-brand-lockup">
+          <div className="brand-identity" aria-label="CozyMuseum Critterarium">
+            <img className="brand-symbol" src="/brand/cozymuseum-sidebar-logo.svg" alt="" aria-hidden="true" />
+            <span className="brand-wordmark">CozyMuseum</span>
+          </div>
           <button
             className="collapse-btn"
             type="button"
@@ -60,8 +60,8 @@ function AppInner() {
                 setSidebarOpen(false);
               }}
             >
-              <span className="icon">{mode.icon}</span>
-              <span className="nav-label">{mode.label}</span>
+              <span className="icon"><MuseumNavIcon name={mode.icon} /></span>
+              <span className="nav-label">{t(locale, mode.labelKey)}</span>
             </button>
           ))}
         </nav>

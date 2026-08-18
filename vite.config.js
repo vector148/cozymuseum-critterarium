@@ -6,7 +6,7 @@ const apiTarget = process.env.VITE_API_TARGET ?? "http://localhost:3001";
 
 export default defineConfig({
   root: "resources",
-  publicDir: false,
+  publicDir: "../public",
   plugins: [react()],
   build: {
     outDir: "../dist",
