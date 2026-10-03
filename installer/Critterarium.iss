@@ -1,5 +1,5 @@
 #define AppName "CozyMuseum Critterarium"
-#define AppVersion "3.0.0"
+#define AppVersion "3.0.1"
 
 [Setup]
 AppId={{D430A7C9-28DE-49C3-98B6-3552B8567DA1}
