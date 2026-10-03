@@ -1,10 +1,9 @@
 import { Router } from "express";
 import { existsSync, createReadStream, statSync, mkdirSync, writeFileSync } from "node:fs";
-import { extname, resolve, dirname, basename } from "node:path";
-import { fileURLToPath } from "node:url";
+import { extname, resolve, basename } from "node:path";
+import { catalogImagesDir } from "../../../Modules/Critterarium/Infrastructure/Storage/local-paths.js";
 
-const moduleDir = dirname(fileURLToPath(import.meta.url));
-const IMAGES_ROOT = resolve(moduleDir, "../../../../images");
+const IMAGES_ROOT = catalogImagesDir();
 
 const router = Router();
 

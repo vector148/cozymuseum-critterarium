@@ -118,7 +118,7 @@ function AppInner() {
         <div className="sidebar-footer">
           <div className="realm-tab-grid">
             {WINGS.map((wing) => (
-              <button key={wing.id} className={`realm-tab-btn realm-tab-${wing.id} ${wingId === wing.id ? "active" : ""}`} type="button" onClick={() => switchWing(wing.id)}>
+              <button key={wing.id} className={`realm-tab-btn realm-tab-${wing.id} ${wingId === wing.id ? "active" : ""}`} type="button" onClick={() => { switchWing(wing.id); setSidebarOpen(false); }}>
                 <span className="realm-tab-icon">{wing.icon}</span>
                 <span className="realm-tab-label">{wingName(wing, locale)}</span>
               </button>

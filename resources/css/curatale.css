@@ -159,26 +159,26 @@ html.theme-curatale-games body::before {
   background:
     radial-gradient(circle at 18% 12%, rgba(255, 255, 255, 0.18), transparent 30%),
     linear-gradient(180deg, rgba(4, 9, 16, 0.08) 0%, rgba(4, 9, 16, 0.20) 100%),
-    url('/backgrounds/bg-curatale-games.jpg') center / cover no-repeat #050e14;
+    linear-gradient(145deg, #142b2a, #050e14);
 }
 
 html.theme-curatale-film body::before {
   background:
     linear-gradient(180deg, rgba(4, 9, 16, 0.08) 0%, rgba(4, 9, 16, 0.20) 100%),
-    url('/backgrounds/bg-curatale-film.jpg') center / cover no-repeat #050e14;
+    linear-gradient(145deg, #142b2a, #050e14);
 }
 
 html.theme-curatale-social body::before {
   background:
     radial-gradient(circle at 78% 16%, rgba(255, 255, 255, 0.12), transparent 34%),
     linear-gradient(180deg, rgba(4, 9, 16, 0.14), rgba(4, 9, 16, 0.42)),
-    url('/backgrounds/bg-curatale-social.jpg') center / cover no-repeat #050e14;
+    linear-gradient(145deg, #142b2a, #050e14);
 }
 
 html.theme-curatale-music body::before {
   background:
     linear-gradient(180deg, rgba(30, 4, 8, 0.08), rgba(19, 3, 6, 0.4)),
-    url('/backgrounds/bg-curatale-music.jpg') center / cover no-repeat #050e14;
+    linear-gradient(145deg, #142b2a, #050e14);
 }
 
 html.theme-curatale-music .sidebar {
@@ -1137,6 +1137,15 @@ html.theme-curatale-music .curatale-showroom-card {
   gap: 26px;
   padding: 24px 26px;
   overflow: auto;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(var(--accent-rgb), 0.4) rgba(2, 9, 14, 0.92);
+}
+
+.catalog-create-body::-webkit-scrollbar { width: 8px; }
+.catalog-create-body::-webkit-scrollbar-track { background: rgba(2, 9, 14, 0.92); }
+.catalog-create-body::-webkit-scrollbar-thumb {
+  border-radius: 8px;
+  background: rgba(var(--accent-rgb), 0.4);
 }
 
 .catalog-create-fields {

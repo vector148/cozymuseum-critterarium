@@ -10,7 +10,6 @@ import { OptimizedImage } from "../../components/OptimizedImage.jsx";
 import { useApp } from "../../context/AppContext.jsx";
 import { WINGS, wingName, t } from "../../i18n.js";
 import { useSEO } from "../../support/seo/useSEO.js";
-import { siteHref } from "../../routing/site-route.js";
 import { catalogMediaFor } from "./media/catalog-media.js";
 
 // Map cozy category → pill color class (mirrors Curatale PILL_COLOR)
@@ -216,7 +215,7 @@ export default function Critterarium({ data, sidebarOpen, mobileChromeHidden, on
     ? "Hall of Fame — Curated Nature Highlights | CozyMuseum"
     : "Critterarium | A Real-Life Nature Collection";
 
-  const canonicalUrl = siteHref({ mode: isHallOfFame ? "fame" : "critterarium" });
+  const canonicalUrl = isHallOfFame ? "/hall-of-fame" : "/critterarium";
 
   const jsonLd = useMemo(() => {
     if (isHallOfFame && data.items.length) {

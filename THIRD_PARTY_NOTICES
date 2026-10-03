@@ -11,3 +11,5 @@ Licensed under the SIL Open Font License 1.1.
 https://fonts.google.com/specimen/Exo+2
 
 The fonts are bundled only so the local shell does not require a Google Fonts network request during its core flow.
+
+The shell also uses SheetJS xlsx 0.20.3 (Apache-2.0), installed from the official SheetJS CDN. Other JavaScript dependencies retain the licences declared in their package metadata.

@@ -26,7 +26,7 @@ export default function CritterariumAddCard({ locale, onCreated }) {
         </div>
         <div className="meta catalog-add-meta">
           <div className="title">{t(locale, "addOrganism")}</div>
-          <div className="artist"><i>{t(locale, "createHint")}</i></div>
+          <div className="artist">{t(locale, "createCardHint")}</div>
           <div className="row">
             <span className="pill pill-add-badge">+ {locale === "vi" ? "MỚI" : "NEW"}</span>
             <span className="catalog-add-hint">Critterarium</span>

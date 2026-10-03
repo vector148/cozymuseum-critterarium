@@ -161,21 +161,21 @@ html.theme-wing-fauna body::before {
   background:
     radial-gradient(circle at 18% 12%, rgba(255, 255, 255, 0.18), transparent 30%),
     linear-gradient(180deg, rgba(4, 9, 16, 0.08) 0%, rgba(4, 9, 16, 0.20) 100%),
-    url('/backgrounds/bg-fauna.webp') center / cover no-repeat #050e14;
+    linear-gradient(145deg, #38191d, #10151a 52%, #050e14);
 }
 
 html.theme-wing-aquarium body::before {
   background:
     radial-gradient(circle at 18% 12%, rgba(255, 255, 255, 0.18), transparent 30%),
     linear-gradient(180deg, rgba(4, 9, 16, 0.08) 0%, rgba(4, 9, 16, 0.20) 100%),
-    url('/backgrounds/bg-animalia.webp') center / cover no-repeat #050e14;
+    linear-gradient(145deg, #073039, #0b1a23 52%, #050e14);
 }
 
 html.theme-wing-flora body::before {
   z-index: 0;
   background:
     linear-gradient(180deg, rgba(4, 9, 16, 0.08) 0%, rgba(4, 9, 16, 0.20) 100%),
-    url('/backgrounds/bg-plantae-fungi.webp') center / cover no-repeat #050e14;
+    linear-gradient(145deg, #123823, #0c201a 52%, #050e14);
   mask-image: none;
 }
 
@@ -836,7 +836,7 @@ html.theme-great-hall .sidebar {
 }
 
 .great-hall-page,
-.reading-room-article-page {
+.unused-editorial-article-page {
   --glass-rim: rgba(248, 252, 250, 0.46);
   --glass-rim-soft: rgba(244, 250, 247, 0.24);
   --glass-clear-filter: blur(8px) saturate(126%) brightness(0.98) contrast(1.02);
@@ -861,10 +861,10 @@ html.theme-great-hall .sidebar {
   pointer-events: none;
   background:
     linear-gradient(180deg, rgba(4, 9, 16, 0.08) 0%, rgba(4, 9, 16, 0.20) 100%),
-    url('/backgrounds/bg-plantae-fungi.webp') center / cover no-repeat #050e14;
+    linear-gradient(145deg, #123823, #0c201a 52%, #050e14);
 }
 
-.reading-room-article-page::before {
+.unused-editorial-article-page::before {
   content: "";
   position: fixed;
   inset: 0;
@@ -877,27 +877,27 @@ html.theme-great-hall .sidebar {
   background-blend-mode: normal, normal, soft-light;
 }
 
-.reading-room-article-page::after {
+.unused-editorial-article-page::after {
   content: "";
   position: fixed;
   inset: 0;
   z-index: -2;
   pointer-events: none;
-  background: #061b13 url('/backgrounds/bg-plantae-fungi.webp') center / cover no-repeat;
+  background: linear-gradient(145deg, #123823, #061b13);
 }
 
-.reading-room-article-page[style*="--article-bg"]::after {
+.unused-editorial-article-page[style*="--article-bg"]::after {
   background-image: var(--article-bg);
   /* brightness=0.55 (0=black,1=original); no blur — keeps background crisp */
   filter: brightness(0.55) saturate(1.08);
 }
 
-.reading-room-article-page--native-dark[style*="--article-bg"]::after {
+.unused-editorial-article-page--native-dark[style*="--article-bg"]::after {
   filter: brightness(1) saturate(1.08);
 }
 
 /* When article has a real photo, kill the noise texture — it makes the bg look blurry/grainy */
-.reading-room-article-page[style*="--article-bg"]::before {
+.unused-editorial-article-page[style*="--article-bg"]::before {
   background:
     radial-gradient(circle at 76% 6%, rgba(101, 155, 125, 0.06), transparent 31%),
     linear-gradient(110deg, rgba(2, 16, 11, 0.38) 0%, rgba(4, 24, 17, 0.28) 48%, rgba(2, 15, 10, 0.44) 100%);
@@ -1230,7 +1230,7 @@ html.theme-great-hall .sidebar {
   margin-bottom: 40px;
 }
 
-.reading-room-section {
+.unused-editorial-section {
   width: min(1180px, 100%);
   scroll-margin-top: 28px;
   margin: 0 auto;
@@ -1243,14 +1243,14 @@ html.theme-great-hall .sidebar {
   -webkit-backdrop-filter: saturate(126%) brightness(0.96) contrast(1.04);
 }
 
-.reading-room-section-head {
+.unused-editorial-section-head {
   display: flex;
   justify-content: space-between;
   gap: 24px;
   align-items: end;
 }
 
-.reading-room-section-head h2 {
+.unused-editorial-section-head h2 {
   max-width: 720px;
   margin: 8px 0 12px;
   font-family: var(--display);
@@ -1259,14 +1259,14 @@ html.theme-great-hall .sidebar {
   letter-spacing: -.04em;
 }
 
-.reading-room-section-head p:not(.great-hall-eyebrow) {
+.unused-editorial-section-head p:not(.great-hall-eyebrow) {
   max-width: 620px;
   color: var(--muted);
   font-size: 16px;
   line-height: 1.65;
 }
 
-.reading-room-count {
+.unused-editorial-count {
   color: rgba(235, 244, 239, .7);
   font-size: 12px;
   font-weight: 800;
@@ -1275,14 +1275,14 @@ html.theme-great-hall .sidebar {
   white-space: nowrap;
 }
 
-.reading-room-pillars {
+.unused-editorial-pillars {
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
   margin: 30px 0 14px;
 }
 
-.reading-room-pillars button {
+.unused-editorial-pillars button {
   display: inline-flex;
   align-items: center;
   border: 1px solid rgba(235, 245, 239, .18);
@@ -1295,24 +1295,24 @@ html.theme-great-hall .sidebar {
   transition: border-color .2s ease, background .2s ease, color .2s ease;
 }
 
-.reading-room-pillars button strong {
+.unused-editorial-pillars button strong {
   color: inherit;
   font-size: 12px;
   line-height: 1.25;
 }
 
-.reading-room-pillars button.active,
-.reading-room-pillars button:hover {
+.unused-editorial-pillars button.active,
+.unused-editorial-pillars button:hover {
   border-color: rgba(244, 249, 246, .62);
   color: var(--text);
   background: rgba(235, 245, 239, .12);
 }
 
-.reading-room-pillars button.active {
+.unused-editorial-pillars button.active {
   box-shadow: inset 0 1px rgba(255, 255, 255, .08), 0 10px 22px rgba(0, 0, 0, .12);
 }
 
-.reading-room-pillar-description {
+.unused-editorial-pillar-description {
   min-height: 24px;
   margin: 0 0 24px;
   color: rgba(235, 244, 239, .72);
@@ -1320,13 +1320,13 @@ html.theme-great-hall .sidebar {
   line-height: 1.55;
 }
 
-.reading-room-grid {
+.unused-editorial-grid {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 14px;
 }
 
-.reading-room-card {
+.unused-editorial-card {
   min-height: 27.5rem;
   min-width: 0;
   width: 100%;
@@ -1342,26 +1342,26 @@ html.theme-great-hall .sidebar {
   overflow: hidden;
 }
 
-.reading-room-card-hero-wrapper {
+.unused-editorial-card-hero-wrapper {
   width: 100%;
   min-height: 0;
   background: rgba(244, 249, 246, 0.05);
   overflow: hidden;
 }
 
-.reading-room-card-hero {
+.unused-editorial-card-hero {
   width: 100%;
   height: 100%;
   object-fit: cover;
 }
 
-.reading-room-card-hero-placeholder {
+.unused-editorial-card-hero-placeholder {
   width: 100%;
   height: 100%;
   background: radial-gradient(circle at 70% 20%, rgba(var(--accent-rgb), .26), transparent 42%), linear-gradient(145deg, rgba(24, 76, 71, .55), rgba(9, 19, 25, .86));
 }
 
-.reading-room-card-content {
+.unused-editorial-card-content {
   min-height: 12.5rem;
   min-width: 0;
   display: flex;
@@ -1374,7 +1374,7 @@ html.theme-great-hall .sidebar {
   overflow: hidden;
 }
 
-.reading-room-card-kicker {
+.unused-editorial-card-kicker {
   color: rgba(231, 242, 236, .62);
   font-size: 10px;
   font-weight: 800;
@@ -1382,7 +1382,7 @@ html.theme-great-hall .sidebar {
   text-transform: uppercase;
 }
 
-.reading-room-card h3 {
+.unused-editorial-card h3 {
   height: 3.36em;
   min-height: 3.36em;
   max-height: 3.36em;
@@ -1400,7 +1400,7 @@ html.theme-great-hall .sidebar {
   text-overflow: ellipsis;
 }
 
-.reading-room-card-dek {
+.unused-editorial-card-dek {
   margin: 0;
   color: var(--muted);
   line-height: 1.6;
@@ -1411,7 +1411,7 @@ html.theme-great-hall .sidebar {
   text-overflow: ellipsis;
 }
 
-.reading-room-card-link {
+.unused-editorial-card-link {
   align-self: flex-start;
   margin-top: auto;
   display: inline-flex;
@@ -1428,21 +1428,21 @@ html.theme-great-hall .sidebar {
   transition: all 0.2s ease;
 }
 
-.reading-room-card-link:hover {
+.unused-editorial-card-link:hover {
   background: rgba(255, 255, 255, 0.1);
   border-color: rgba(255, 255, 255, 0.25);
   transform: translateY(-2px);
 }
 
-.reading-room-card-link-icon {
+.unused-editorial-card-link-icon {
   transition: transform 0.2s ease;
 }
 
-.reading-room-card-link:hover .reading-room-card-link-icon {
+.unused-editorial-card-link:hover .unused-editorial-card-link-icon {
   transform: translateX(3px);
 }
 
-.reading-room-back {
+.unused-editorial-back {
   align-self: flex-start;
   margin-top: auto;
   border: 0;
@@ -1454,12 +1454,12 @@ html.theme-great-hall .sidebar {
   cursor: pointer;
 }
 
-.reading-room-empty {
+.unused-editorial-empty {
   padding: 34px 0 4px;
   color: var(--muted);
 }
 
-.reading-room-article-page {
+.unused-editorial-article-page {
   position: relative;
   min-height: 100vh;
   margin: -32px -40px -60px;
@@ -1559,7 +1559,7 @@ html.theme-great-hall .sidebar {
 }
 
 .rra-body-card {
-  /* override the inherited min() width from .reading-room-article-reading */
+  /* override the inherited min() width from .unused-editorial-article-reading */
   width: 100% !important;
   margin: 0 !important;
   min-width: 0;
@@ -1677,7 +1677,7 @@ html.theme-great-hall .sidebar {
   color: rgba(220, 234, 226, 0.7);
 }
 
-.reading-room-article-hero {
+.unused-editorial-article-hero {
   width: min(1080px, 100%);
   margin: 0 auto;
   padding: clamp(48px, 7vw, 92px) clamp(28px, 7vw, 88px);
@@ -1686,7 +1686,7 @@ html.theme-great-hall .sidebar {
   isolation: isolate;
 }
 
-.reading-room-article-hero::before {
+.unused-editorial-article-hero::before {
   content: "";
   position: absolute;
   inset: 1px;
@@ -1696,18 +1696,18 @@ html.theme-great-hall .sidebar {
   background: linear-gradient(120deg, rgba(255, 255, 255, 0.07), transparent 25%, transparent 72%, rgba(255, 255, 255, 0.025));
 }
 
-.reading-room-article-hero>* {
+.unused-editorial-article-hero>* {
   position: relative;
   z-index: 2;
 }
 
-.reading-room-article-hero .reading-room-back {
+.unused-editorial-article-hero .unused-editorial-back {
   margin: 0 0 28px;
   padding: 0;
   color: rgba(244, 249, 246, 0.82);
 }
 
-.reading-room-article-hero h1 {
+.unused-editorial-article-hero h1 {
   max-width: 900px;
   margin: 18px 0 24px;
   font-family: var(--display);
@@ -1718,7 +1718,7 @@ html.theme-great-hall .sidebar {
   text-wrap: balance;
 }
 
-.reading-room-article-dek {
+.unused-editorial-article-dek {
   max-width: 760px;
   margin: 0;
   color: rgba(231, 240, 235, .76);
@@ -1726,7 +1726,7 @@ html.theme-great-hall .sidebar {
   line-height: 1.62;
 }
 
-.reading-room-article-meta {
+.unused-editorial-article-meta {
   margin-top: 30px;
   color: rgba(242, 247, 244, .72);
   font-size: 11px;
@@ -1735,7 +1735,7 @@ html.theme-great-hall .sidebar {
   text-transform: uppercase;
 }
 
-.reading-room-article-reading {
+.unused-editorial-article-reading {
   width: min(860px, calc(100% - clamp(0px, 8vw, 120px)));
   margin: 28px auto 0;
   padding: clamp(40px, 6vw, 72px);
@@ -1745,48 +1745,48 @@ html.theme-great-hall .sidebar {
   -webkit-backdrop-filter: saturate(126%) brightness(0.96);
 }
 
-.reading-room-article-body {
+.unused-editorial-article-body {
   max-width: 66ch;
   margin: 0 auto;
 }
 
-.reading-room-article-body h2,
-.reading-room-article-body h3 {
+.unused-editorial-article-body h2,
+.unused-editorial-article-body h3 {
   color: rgba(247, 250, 248, .96);
   font-family: var(--display);
   text-wrap: balance;
 }
 
-.reading-room-article-body h2 {
+.unused-editorial-article-body h2 {
   margin: 58px 0 22px;
   font-size: clamp(28px, 3.2vw, 40px);
   line-height: 1.16;
   letter-spacing: -.025em;
 }
 
-.reading-room-article-body h3 {
+.unused-editorial-article-body h3 {
   margin: 44px 0 18px;
   font-size: clamp(22px, 2.4vw, 30px);
   line-height: 1.24;
   letter-spacing: -.018em;
 }
 
-.reading-room-article-body p {
+.unused-editorial-article-body p {
   margin: 0 0 30px;
   color: rgba(241, 245, 237, .86);
   font-size: clamp(17px, 1.5vw, 19px);
   line-height: 1.82;
 }
 
-.reading-room-article-body p:last-child {
+.unused-editorial-article-body p:last-child {
   margin-bottom: 0;
 }
 
-.reading-room-article-figure {
+.unused-editorial-article-figure {
   margin: 44px 0;
 }
 
-.reading-room-article-figure img {
+.unused-editorial-article-figure img {
   display: block;
   width: 100%;
   height: auto;
@@ -1794,25 +1794,25 @@ html.theme-great-hall .sidebar {
   border: 1px solid rgba(244, 249, 246, .14);
 }
 
-.reading-room-article-image-placeholder {
+.unused-editorial-article-image-placeholder {
   min-height: clamp(220px, 42vw, 520px);
   border: 1px solid rgba(244, 249, 246, .14);
   border-radius: 16px;
   background: radial-gradient(circle at 70% 20%, rgba(var(--accent-rgb), .26), transparent 42%), linear-gradient(145deg, rgba(24, 76, 71, .55), rgba(9, 19, 25, .86));
 }
 
-.reading-room-article-figure figcaption {
+.unused-editorial-article-figure figcaption {
   margin-top: 12px;
   color: rgba(225, 236, 230, .62);
   font-size: 13px;
   line-height: 1.55;
 }
 
-.reading-room-article-state {
+.unused-editorial-article-state {
   min-height: 420px;
 }
 
-.reading-room-article-state h1 {
+.unused-editorial-article-state h1 {
   max-width: 680px;
   margin: 56px 0 20px;
   font-family: var(--display);
@@ -1820,14 +1820,14 @@ html.theme-great-hall .sidebar {
   line-height: 1;
 }
 
-.reading-room-article-state>p {
+.unused-editorial-article-state>p {
   max-width: 600px;
   color: rgba(225, 236, 230, .72);
   font-size: 17px;
   line-height: 1.65;
 }
 
-.reading-room-article-footer {
+.unused-editorial-article-footer {
   max-width: 66ch;
   display: flex;
   align-items: center;
@@ -1838,7 +1838,7 @@ html.theme-great-hall .sidebar {
   border-top: 1px solid rgba(242, 248, 245, 0.16);
 }
 
-.reading-room-article-footer p {
+.unused-editorial-article-footer p {
   max-width: 420px;
   margin: 0;
   color: rgba(225, 236, 230, 0.68);
@@ -1846,7 +1846,7 @@ html.theme-great-hall .sidebar {
   line-height: 1.55;
 }
 
-.reading-room-article-footer .great-hall-action {
+.unused-editorial-article-footer .great-hall-action {
   flex: 0 0 auto;
 }
 
@@ -2461,7 +2461,15 @@ html.theme-great-hall .sidebar {
   overflow-y: auto;
   border-radius: 25px;
   background: rgba(4, 14, 20, 0.92);
-  scrollbar-color: rgba(var(--accent-rgb), 0.5) transparent;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(var(--accent-rgb), 0.42) rgba(2, 9, 14, 0.92);
+}
+
+.modal-content::-webkit-scrollbar { width: 8px; }
+.modal-content::-webkit-scrollbar-track { background: rgba(2, 9, 14, 0.92); }
+.modal-content::-webkit-scrollbar-thumb {
+  border-radius: 8px;
+  background: rgba(var(--accent-rgb), 0.42);
 }
 
 .close-btn {
@@ -2867,7 +2875,7 @@ html.theme-great-hall .sidebar {
   }
 
   .great-hall-page,
-  .reading-room-article-page {
+  .unused-editorial-article-page {
     margin-inline: -28px;
   }
 
@@ -3004,7 +3012,7 @@ html.theme-great-hall .sidebar {
   }
 
   .great-hall-page,
-  .reading-room-article-page {
+  .unused-editorial-article-page {
     width: calc(100% + 32px);
     margin: -16px -16px -48px;
   }
@@ -3013,7 +3021,7 @@ html.theme-great-hall .sidebar {
     padding: 16px 16px 64px;
   }
 
-  .reading-room-article-page {
+  .unused-editorial-article-page {
     padding: 0 0 64px;
   }
 
@@ -3181,33 +3189,33 @@ html.theme-great-hall .sidebar {
     align-self: flex-start;
   }
 
-  .reading-room-section-head {
+  .unused-editorial-section-head {
     display: block;
   }
 
-  .reading-room-pillars {
+  .unused-editorial-pillars {
     gap: 7px;
   }
 
-  .reading-room-pillars button {
+  .unused-editorial-pillars button {
     padding: 10px 13px;
   }
 
-  .reading-room-count {
+  .unused-editorial-count {
     display: block;
     margin-top: 20px;
   }
 
-  .reading-room-grid {
+  .unused-editorial-grid {
     grid-template-columns: 1fr;
   }
 
-  .reading-room-section {
+  .unused-editorial-section {
     padding: 28px;
     border-radius: 24px;
   }
 
-  .reading-room-article-mobile-bar {
+  .unused-editorial-article-mobile-bar {
     display: contents;
   }
 
@@ -3256,32 +3264,32 @@ html.theme-great-hall .sidebar {
     outline-offset: 2px;
   }
 
-  .reading-room-article-hero {
+  .unused-editorial-article-hero {
     padding: 42px 24px;
     border-radius: 24px;
   }
 
-  .reading-room-article-hero::before {
+  .unused-editorial-article-hero::before {
     border-radius: 23px;
   }
 
-  .reading-room-article-hero h1 {
+  .unused-editorial-article-hero h1 {
     font-size: clamp(44px, 13vw, 64px);
   }
 
-  .reading-room-article-reading {
+  .unused-editorial-article-reading {
     width: 100%;
     margin-top: 12px;
     padding: 34px 24px;
     border-radius: 22px;
   }
 
-  .reading-room-article-footer {
+  .unused-editorial-article-footer {
     align-items: stretch;
     flex-direction: column;
   }
 
-  .reading-room-article-footer .great-hall-action {
+  .unused-editorial-article-footer .great-hall-action {
     width: 100%;
   }
 
@@ -3448,7 +3456,7 @@ html.theme-great-hall .sidebar {
 
   .great-hall-hero,
   .great-hall-exhibit,
-  .reading-room-section {
+  .unused-editorial-section {
     background-color: rgba(3, 27, 18, 0.9);
     border-color: rgba(255, 255, 255, 0.58);
   }
@@ -3460,7 +3468,7 @@ html.theme-great-hall .sidebar {
   }
 
   .great-hall-exhibit,
-  .reading-room-section {
+  .unused-editorial-section {
     background: rgba(3, 27, 18, 0.94);
   }
 }

@@ -1,6 +1,6 @@
 {
   "name": "cozymuseum",
-  "version": "2.0.0",
+  "version": "3.0.0",
   "private": true,
   "type": "module",
   "scripts": {
@@ -10,6 +10,7 @@
     "build": "vite build --config vite.config.js",
     "preview": "vite preview --config vite.config.js",
     "release:verify": "node scripts/verify-cleanroom-release.mjs .",
+    "desktop:build": "node scripts/build-windows-installer.mjs",
     "test": "node --test",
     "commitlint": "commitlint --last --verbose",
     "bio": "node scripts/cozymuseum.mjs",
@@ -21,7 +22,7 @@
     "express": "^4.19.2",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
-    "xlsx": "^0.18.5"
+    "xlsx": "https://cdn.sheetjs.com/xlsx-0.20.3/xlsx-0.20.3.tgz"
   },
   "devDependencies": {
     "@commitlint/cli": "^19.5.0",

@@ -12,7 +12,7 @@ const FORBIDDEN_FILENAMES = [
   /vercel\.json/i,
 ];
 const FORBIDDEN_EXTENSIONS = new Set([".xlsx", ".xls", ".csv", ".sqlite", ".db", ".sql", ".jpg", ".jpeg", ".png", ".webp", ".gif", ".mp4", ".webm"]);
-const IGNORED_DIRECTORIES = new Set([".git", "dist", "node_modules"]);
+const IGNORED_DIRECTORIES = new Set([".git", ".build", "dist", "node_modules"]);
 const SECRET_PATTERNS = [
   /(?:service_role|supabase_service|database_password|vercel_oidc_token)\s*[=:]/i,
   /-----BEGIN (?:RSA |EC |OPENSSH )?PRIVATE KEY-----/,
