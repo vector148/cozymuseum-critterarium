@@ -22,6 +22,7 @@ if (resolve(payload) !== resolve(root, ".build/windows-payload")) throw new Erro
 
 run(process.execPath, ["scripts/verify-cleanroom-release.mjs", "."]);
 run(process.execPath, [npmCli, "run", "build"]);
+run(process.execPath, [resolve(root, "node_modules/@tauri-apps/cli/tauri.js"), "build", "--no-bundle"]);
 if (existsSync(payload)) rmSync(payload, { recursive: true, force: true });
 mkdirSync(resolve(payload, "scripts"), { recursive: true });
 
@@ -31,10 +32,11 @@ for (const folder of ["app", "server", "dist"]) {
 for (const file of ["package.json", "package-lock.json", "LICENSE", "THIRD_PARTY_NOTICES"]) {
   copyFileSync(resolve(root, file), resolve(payload, file));
 }
-for (const file of ["desktop-server.mjs", "start-hidden.vbs"]) {
+for (const file of ["desktop-server.mjs"]) {
   copyFileSync(resolve(root, "scripts", file), resolve(payload, "scripts", file));
 }
 copyFileSync(process.execPath, resolve(payload, "node.exe"));
+copyFileSync(resolve(root, "src-tauri/target/release/cozymuseum-critterarium.exe"), resolve(payload, "cozymuseum-critterarium.exe"));
 copyFileSync(resolve(root, "installer/node-license.txt"), resolve(payload, "NODE-LICENSE.txt"));
 
 run(process.execPath, [npmCli, "ci", "--omit=dev", "--ignore-scripts", "--no-audit", "--no-fund"], payload);

@@ -1,5 +1,5 @@
 #define AppName "CozyMuseum Critterarium"
-#define AppVersion "3.0.1"
+#define AppVersion "3.0.2"
 
 [Setup]
 AppId={{D430A7C9-28DE-49C3-98B6-3552B8567DA1}
@@ -16,6 +16,7 @@ PrivilegesRequired=lowest
 ArchitecturesAllowed=x64compatible
 ArchitecturesInstallIn64BitMode=x64compatible
 UninstallDisplayName={#AppName}
+SetupIconFile=..\src-tauri\icons\icon.ico
 WizardStyle=modern
 DisableDirPage=yes
 DisableProgramGroupPage=yes
@@ -25,8 +26,8 @@ LicenseFile=..\LICENSE
 Source: "..\.build\windows-payload\*"; DestDir: "{app}"; Flags: recursesubdirs createallsubdirs ignoreversion
 
 [Icons]
-Name: "{group}\CozyMuseum Critterarium"; Filename: "{sys}\wscript.exe"; Parameters: """{app}\scripts\start-hidden.vbs"""; WorkingDir: "{app}"
-Name: "{autodesktop}\CozyMuseum Critterarium"; Filename: "{sys}\wscript.exe"; Parameters: """{app}\scripts\start-hidden.vbs"""; WorkingDir: "{app}"
+Name: "{group}\CozyMuseum Critterarium"; Filename: "{app}\cozymuseum-critterarium.exe"; WorkingDir: "{app}"; IconFilename: "{app}\cozymuseum-critterarium.exe"
+Name: "{userdesktop}\CozyMuseum Critterarium"; Filename: "{app}\cozymuseum-critterarium.exe"; WorkingDir: "{app}"; IconFilename: "{app}\cozymuseum-critterarium.exe"
 
 [Run]
-Filename: "{sys}\wscript.exe"; Parameters: """{app}\scripts\start-hidden.vbs"""; Description: "Open CozyMuseum Critterarium"; Flags: nowait postinstall skipifsilent
+Filename: "{app}\cozymuseum-critterarium.exe"; Description: "Open CozyMuseum Critterarium"; Flags: nowait postinstall skipifsilent

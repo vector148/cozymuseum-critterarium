@@ -12,7 +12,11 @@ const FORBIDDEN_FILENAMES = [
   /vercel\.json/i,
 ];
 const FORBIDDEN_EXTENSIONS = new Set([".xlsx", ".xls", ".csv", ".sqlite", ".db", ".sql", ".jpg", ".jpeg", ".png", ".webp", ".gif", ".mp4", ".webm"]);
-const IGNORED_DIRECTORIES = new Set([".git", ".build", "dist", "node_modules"]);
+const IGNORED_DIRECTORIES = new Set([".git", ".build", "dist", "node_modules", "target", "gen"]);
+const APPROVED_ASSETS = new Set([
+  "public/backgrounds/bg-animalia.webp",
+  "src-tauri/icons/icon.png",
+]);
 const SECRET_PATTERNS = [
   /(?:service_role|supabase_service|database_password|vercel_oidc_token)\s*[=:]/i,
   /-----BEGIN (?:RSA |EC |OPENSSH )?PRIVATE KEY-----/,
@@ -56,7 +60,7 @@ export function inspectCleanroomTree(rootDir) {
         continue;
       }
       const extension = extname(entry.name).toLowerCase();
-      if (FORBIDDEN_EXTENSIONS.has(extension) && !relativePath.startsWith("public/brand/")) {
+      if (FORBIDDEN_EXTENSIONS.has(extension) && !relativePath.startsWith("public/brand/") && !APPROVED_ASSETS.has(relativePath)) {
         violations.push({ path: relativePath, reason: `forbidden release extension ${extension}` });
         continue;
       }

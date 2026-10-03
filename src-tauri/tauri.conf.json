@@ -1,0 +1,26 @@
+{
+  "$schema": "https://schema.tauri.app/config/2",
+  "productName": "CozyMuseum Critterarium",
+  "version": "3.0.2",
+  "identifier": "app.cozymuseum.critterarium",
+  "build": {
+    "frontendDist": "../dist"
+  },
+  "app": {
+    "windows": [{
+      "label": "critterarium",
+      "title": "CozyMuseum Critterarium",
+      "width": 1366,
+      "height": 850,
+      "minWidth": 960,
+      "minHeight": 640,
+      "resizable": true,
+      "visible": false
+    }],
+    "security": { "csp": null }
+  },
+  "bundle": {
+    "active": false,
+    "icon": ["icons/icon.ico", "icons/icon.png"]
+  }
+}

@@ -168,7 +168,7 @@ html.theme-wing-aquarium body::before {
   background:
     radial-gradient(circle at 18% 12%, rgba(255, 255, 255, 0.18), transparent 30%),
     linear-gradient(180deg, rgba(4, 9, 16, 0.08) 0%, rgba(4, 9, 16, 0.20) 100%),
-    linear-gradient(145deg, #073039, #0b1a23 52%, #050e14);
+    url('/backgrounds/bg-animalia.webp') center / cover no-repeat #050e14;
 }
 
 html.theme-wing-flora body::before {

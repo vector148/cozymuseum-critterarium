@@ -2,7 +2,7 @@
 
 CozyMuseum is an empty, local-first natural-history museum shell. A fresh download includes the application and schema only: no organisms, catalog workbooks, personal encounters, articles, or bundled species media.
 
-**Current shell version:** `3.0.1`
+**Current shell version:** `3.0.2`
 
 Version `3.0.0` starts from the 2.0.0 Critterarium shell. It preserves the local catalog and encounter model, uses the same card-to-detail and add-card-to-editor interaction pattern as Curatale, closes mobile navigation after a Realm switch, and removes inherited public-platform modules and private catalog media from this source tree.
 
@@ -12,14 +12,15 @@ Version `3.0.0` starts from the 2.0.0 Critterarium shell. It preserves the local
 - `2.0.0` - Critterarium visual, interaction, and modular architecture upgrade.
 - `3.0.0` - clean source baseline for incremental Critterarium card and navigation refinements.
 - `3.0.1` - correct the installed shortcut path and release a verified Windows setup.
+- `3.0.2` - open the museum in its own native desktop window, add a desktop shortcut and sidebar-logo icon, and restore the showroom background.
 
 ## Start on Windows
 
 1. Download `CozyMuseum-Critterarium-Setup.exe` from the official GitHub Release.
 2. Run the installer. It installs for the current Windows user and creates desktop and Start Menu shortcuts.
-3. Open **CozyMuseum Critterarium**. The local showroom opens in your browser; no Node.js or npm installation is required.
+3. Open **CozyMuseum Critterarium** from the Desktop or Start Menu shortcut. The showroom opens in its own desktop window; no browser, Node.js, or npm installation is required.
 
-The installer contains the Node runtime and production dependencies. The application binds to Windows loopback only. Nothing in the core flow requires an account or cloud connection. Internet access is needed only for optional source lookup and enrichment.
+The installer contains a native Tauri window, the Node runtime, and production dependencies. Its local server binds to Windows loopback only and closes with the desktop app. Nothing in the core flow requires an account or cloud connection. Internet access is needed only for optional source lookup and enrichment.
 
 The source checkout remains available to developers. Double-click `CozyMuseum Critterarium.bat` after installing Node.js 20 or newer, or run:
 
@@ -50,7 +51,7 @@ You own and control the records you add. Only attach text, images, video links, 
 npm run verify
 ```
 
-Windows release builders can run `npm run desktop:build` with Node 26.3.0 and Inno Setup 6. The exact GitHub asset name is `CozyMuseum-Critterarium-Setup.exe`. Build output is in `.build/release/` and does not enter Git.
+Windows release builders can run `npm run desktop:build` with Node 26.3.0, Rust, WebView2, and Inno Setup 6. The exact GitHub asset name is `CozyMuseum-Critterarium-Setup.exe`. Build output is in `.build/release/` and does not enter Git.
 
 The verification suite tests the local data boundary, API behavior, production build, empty catalog health, and the failure-closed cleanroom release gate.
 
