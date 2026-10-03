@@ -27,7 +27,7 @@ test("Critterarium shell frame is branded, local, and free of platform-only surf
   assert.doesNotMatch(index, /user-scalable=no|maximum-scale=1/);
 });
 
-test("Critterarium shell publishes the verified 2.0 release contract", async () => {
+test("Critterarium shell publishes the verified 3.0 release contract", async () => {
   const [packageText, readme, notices, viteConfig] = await Promise.all([
     readFile(new URL("../../package.json", import.meta.url), "utf8"),
     readFile(new URL("../../README.md", import.meta.url), "utf8"),
@@ -36,8 +36,8 @@ test("Critterarium shell publishes the verified 2.0 release contract", async () 
   ]);
   const packageJson = JSON.parse(packageText);
 
-  assert.equal(packageJson.version, "2.0.0");
-  assert.match(readme, /Current shell version:\*\* `2\.0\.0`/);
+  assert.equal(packageJson.version, "3.0.0");
+  assert.match(readme, /Current shell version:\*\* `3\.0\.0`/);
   assert.match(notices, /Be Vietnam Pro[\s\S]*Exo 2[\s\S]*SIL Open Font License 1\.1/);
   assert.match(viteConfig, /publicDir:\s*"\.\.\/public"/);
 });

@@ -5,8 +5,6 @@ import { createExcelStore } from "./excel-store.js";
 export const REALM_WORKBOOKS = Object.freeze({
   animalia: "animalia.xlsx",
   plantae_fungi: "plantae-fungi.xlsx",
-  sar: "sar.xlsx",
-  microverse: "microverse.xlsx",
 });
 
 export const LEGACY_UNIFIED_WORKBOOK = "organisms.xlsx";

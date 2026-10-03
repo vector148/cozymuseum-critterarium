@@ -4,14 +4,6 @@ import { critterariumSearchTerm } from "../routing/critterarium-search.js";
 
 const AppContext = createContext(null);
 
-function initialLocale() {
-  try {
-    return localStorage.getItem("cozymuseum-locale") === "vi" ? "vi" : "en";
-  } catch {
-    return "en";
-  }
-}
-
 function initialQuery() {
   return typeof window === "undefined" ? "" : critterariumSearchTerm(window.location.search);
 }
@@ -19,7 +11,7 @@ function initialQuery() {
 export function AppProvider({ children }) {
   const [wingId, setWingId] = useState("aquarium");
   const [critterariumMode, setcritterariumMode] = useState("living");
-  const [locale, setLocale] = useState(initialLocale);
+  const locale = "en";
   const [query, setQuery] = useState(initialQuery);
   const [classId, setClassId] = useState("all");
   // Resolve the newest available year when Hall of Fame metadata arrives.
@@ -29,11 +21,6 @@ export function AppProvider({ children }) {
 
   useEffect(() => {
     document.documentElement.lang = locale;
-    try {
-      localStorage.setItem("cozymuseum-locale", locale);
-    } catch {
-      // Browsing remains functional when localStorage is unavailable.
-    }
   }, [locale]);
 
   const showToast = useCallback((msg) => {
@@ -59,7 +46,7 @@ export function AppProvider({ children }) {
       wingId, switchWing,
       critterariumMode, switchMode,
       atlasMode: critterariumMode,
-      locale, setLocale,
+      locale,
       query, setQuery,
       classId, setClassId,
       encounterYear, setEncounterYear,

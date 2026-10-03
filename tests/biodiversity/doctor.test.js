@@ -35,6 +35,14 @@ test("catalog doctor permits an explicitly unresolved Class without hiding it as
   assert.deepEqual(report.invalidClassNames, []);
 });
 
+test("shell doctor reports English completeness only", () => {
+  const report = inspectBiodiversityCatalog([row({ descriptionEn: "A fish." })]);
+  assert.equal(report.missing.commonNameEn, 0);
+  assert.equal(report.missing.descriptionEn, 0);
+  assert.equal("commonNameVi" in report.missing, false);
+  assert.equal("descriptionVi" in report.missing, false);
+});
+
 test("catalog doctor blocks any displayed image outside the rights-free allowlist", () => {
   const report = inspectBiodiversityCatalog([
     row({

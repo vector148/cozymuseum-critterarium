@@ -1,8 +1,6 @@
 export const REALMS = Object.freeze([
   { id: "animalia", labelEn: "Animalia", labelVi: "Động vật", icon: "◇", color: "blue", encounterEnabled: true },
   { id: "plantae_fungi", labelEn: "Plantae & Fungi", labelVi: "Thực vật & Nấm", icon: "△", color: "green", encounterEnabled: true },
-  { id: "sar", labelEn: "SAR", labelVi: "SAR", icon: "◈", color: "yellow", encounterEnabled: false },
-  { id: "microverse", labelEn: "Microverse", labelVi: "Siêu vi", icon: "✣", color: "red", encounterEnabled: false },
 ]);
 
 export const WING_CATEGORIES = Object.freeze({

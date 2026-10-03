@@ -270,13 +270,14 @@ export function createBiodiversityCatalog({ store, clock = () => new Date() } = 
     create(input = {}) {
       const rows = store.read() ?? [];
       const realmId = key(input.realmId) || "animalia";
+      if (!REALMS.some((realm) => realm.id === realmId)) throw new Error("Unsupported Realm");
       const scientificName = clean(input.scientificName);
       const commonNameEn = clean(input.commonNameEn) || scientificName;
       const className = clean(input.className);
       const lifeState = clean(input.lifeState || "extant").toLowerCase();
       if (!scientificName) throw new Error("Scientific name is required");
 
-      const prefix = { animalia: "A", plantae_fungi: "P", sar: "S", microverse: "M" }[realmId] || "A";
+      const prefix = { animalia: "A", plantae_fungi: "P" }[realmId];
       const highest = rows.reduce((max, row) => {
         const match = String(row.organismId || "").match(new RegExp(`^${prefix}(\\d{5})$`));
         return match ? Math.max(max, Number(match[1])) : max;

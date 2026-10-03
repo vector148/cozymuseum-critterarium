@@ -68,8 +68,19 @@ test("clean shell boots with an empty catalog and initializes user data outside 
   const emptyAgain = await fetch(`http://127.0.0.1:${server.address().port}/api/atlas/organisms?wingId=fauna&locale=en`);
   assert.equal((await emptyAgain.json()).total, 0);
 
-  for (const filename of ["animalia.xlsx", "plantae-fungi.xlsx", "sar.xlsx", "microverse.xlsx"]) {
+  for (const filename of ["animalia.xlsx", "plantae-fungi.xlsx"]) {
     assert.equal(existsSync(join(dataDir, filename)), true, `${filename} should be initialized in user data`);
+  }
+  for (const filename of ["sar.xlsx", "microverse.xlsx"]) {
+    assert.equal(existsSync(join(dataDir, filename)), false, `${filename} must not be initialized in the shell`);
+  }
+  for (const realmId of ["sar", "microverse"]) {
+    const response = await fetch(`http://127.0.0.1:${server.address().port}/api/atlas/organisms`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ realmId, scientificName: "Testus syntheticus" }),
+    });
+    assert.equal(response.status, 400, `${realmId} must not be creatable`);
   }
   assert.notEqual(resolve(dataDir), sourceDatabase);
 });

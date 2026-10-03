@@ -4,13 +4,13 @@ import { api } from "./api/index.js";
 import OrganismCard from "./components/OrganismCard.jsx";
 import OrganismDetailModal from "./components/OrganismDetailModal.jsx";
 import OrganismCreateDialog from "./components/OrganismCreateDialog.jsx";
+import CritterariumSelect from "./components/CritterariumSelect.jsx";
 import CritterariumAddCard from "./components/CritterariumAddCard.jsx";
 import { buildOrganismUpdatePayload } from "./organism-editor.js";
 import { OptimizedImage } from "../../components/OptimizedImage.jsx";
 import { useApp } from "../../context/AppContext.jsx";
 import { WINGS, wingName, t } from "../../i18n.js";
 import { useSEO } from "../../support/seo/useSEO.js";
-import { siteHref } from "../../routing/site-route.js";
 import { catalogMediaFor } from "./media/catalog-media.js";
 
 // Map cozy category → pill color class (mirrors Curatale PILL_COLOR)
@@ -139,17 +139,10 @@ function HallOfFame({ items, metadata, locale, onOpen, sidebarOpen, onMenuClick,
             ))}
             </div>
           </div>
-          <select
-            className="ranking-year-select"
+          <CritterariumSelect className="ranking-year-control" label={t(locale, "allYears")}
             value={encounterYear === "latest" ? latestYear : encounterYear}
-            onChange={(event) => setEncounterYear(event.target.value)}
-            aria-label={t(locale, "allYears")}
-          >
-            <option value="all">{t(locale, "allYears")}</option>
-            {(metadata.encounterYears || []).map((year) => (
-              <option key={year} value={year}>{year}</option>
-            ))}
-          </select>
+            options={[{ value: "all", label: t(locale, "allYears") }, ...(metadata.encounterYears || []).map((year) => ({ value: year, label: year }))]}
+            onChange={setEncounterYear} />
         </div>
       </div>
 
@@ -216,7 +209,7 @@ export default function Critterarium({ data, sidebarOpen, mobileChromeHidden, on
     ? "Hall of Fame — Curated Nature Highlights | CozyMuseum"
     : "Critterarium | A Real-Life Nature Collection";
 
-  const canonicalUrl = siteHref({ mode: isHallOfFame ? "fame" : "critterarium" });
+  const canonicalUrl = isHallOfFame ? "/hall-of-fame" : "/critterarium";
 
   const jsonLd = useMemo(() => {
     if (isHallOfFame && data.items.length) {

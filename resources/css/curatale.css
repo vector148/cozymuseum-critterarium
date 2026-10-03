@@ -159,26 +159,26 @@ html.theme-curatale-games body::before {
   background:
     radial-gradient(circle at 18% 12%, rgba(255, 255, 255, 0.18), transparent 30%),
     linear-gradient(180deg, rgba(4, 9, 16, 0.08) 0%, rgba(4, 9, 16, 0.20) 100%),
-    url('/backgrounds/bg-curatale-games.jpg') center / cover no-repeat #050e14;
+    linear-gradient(145deg, #142b2a, #050e14);
 }
 
 html.theme-curatale-film body::before {
   background:
     linear-gradient(180deg, rgba(4, 9, 16, 0.08) 0%, rgba(4, 9, 16, 0.20) 100%),
-    url('/backgrounds/bg-curatale-film.jpg') center / cover no-repeat #050e14;
+    linear-gradient(145deg, #142b2a, #050e14);
 }
 
 html.theme-curatale-social body::before {
   background:
     radial-gradient(circle at 78% 16%, rgba(255, 255, 255, 0.12), transparent 34%),
     linear-gradient(180deg, rgba(4, 9, 16, 0.14), rgba(4, 9, 16, 0.42)),
-    url('/backgrounds/bg-curatale-social.jpg') center / cover no-repeat #050e14;
+    linear-gradient(145deg, #142b2a, #050e14);
 }
 
 html.theme-curatale-music body::before {
   background:
     linear-gradient(180deg, rgba(30, 4, 8, 0.08), rgba(19, 3, 6, 0.4)),
-    url('/backgrounds/bg-curatale-music.jpg') center / cover no-repeat #050e14;
+    linear-gradient(145deg, #142b2a, #050e14);
 }
 
 html.theme-curatale-music .sidebar {
@@ -1077,6 +1077,11 @@ html.theme-curatale-music .curatale-showroom-card {
   animation: catalog-create-in 220ms ease both;
 }
 
+/* The organism editor sits over photographic realms; keep its reading surface opaque. */
+.catalog-create-dialog.catalog-create-organism {
+  background-color: #061218;
+}
+
 @keyframes catalog-create-in {
   from { opacity: 0; transform: translateY(18px) scale(0.985); }
   to { opacity: 1; transform: translateY(0) scale(1); }
@@ -1137,6 +1142,15 @@ html.theme-curatale-music .curatale-showroom-card {
   gap: 26px;
   padding: 24px 26px;
   overflow: auto;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(var(--accent-rgb), 0.4) rgba(2, 9, 14, 0.92);
+}
+
+.catalog-create-body::-webkit-scrollbar { width: 8px; }
+.catalog-create-body::-webkit-scrollbar-track { background: rgba(2, 9, 14, 0.92); }
+.catalog-create-body::-webkit-scrollbar-thumb {
+  border-radius: 8px;
+  background: rgba(var(--accent-rgb), 0.4);
 }
 
 .catalog-create-fields {
@@ -1204,19 +1218,56 @@ html.theme-curatale-music .curatale-showroom-card {
 
 .organism-detail-actions {
   display: flex;
-  justify-content: flex-end;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
   gap: 10px;
-  margin: 18px 0;
+  margin: 8px 24px 20px;
+  padding-top: 18px;
+  border-top: 1px solid rgba(156, 79, 83, 0.3);
+}
+.organism-danger-label {
+  color: #b8747c;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
+}
+.organism-danger-buttons {
+  display: flex;
+  gap: 10px;
+  margin-left: auto;
+}
+
+.organism-detail .encounter-panel {
+  border: 1px solid rgba(var(--accent-rgb), 0.16);
+  background: rgba(2, 12, 17, 0.72);
+  box-shadow: inset 0 1px rgba(255, 255, 255, 0.04);
+}
+.organism-detail .organism-detail-actions .btn,
+.organism-detail .encounter-complete-row .btn {
+  min-width: 90px;
+  border-color: rgba(var(--accent-rgb), 0.24);
+  border-radius: 11px;
+  color: var(--color-foreground-primary);
+  background: rgba(3, 17, 22, 0.74);
+  box-shadow: inset 0 1px rgba(255, 255, 255, 0.05);
+}
+.organism-detail .organism-detail-actions .btn:hover,
+.organism-detail .encounter-complete-row .btn:hover {
+  border-color: rgba(var(--accent-rgb), 0.54);
+  background: rgba(var(--accent-rgb), 0.12);
 }
 
 .organism-detail-actions .btn-danger {
-  border-color: rgba(255, 93, 105, 0.35);
-  color: #ffb0b7;
+  border-color: rgba(156, 79, 83, 0.38) !important;
+  color: #dca4a6 !important;
+  background: rgba(49, 17, 22, 0.48) !important;
 }
 
 .organism-detail-actions .btn-danger:hover {
-  border-color: rgba(255, 93, 105, 0.7);
-  background: rgba(255, 93, 105, 0.12);
+  border-color: rgba(188, 90, 94, 0.62) !important;
+  background: rgba(69, 22, 28, 0.7) !important;
 }
 
 .catalog-create-field .planning-input:focus {
@@ -1226,6 +1277,104 @@ html.theme-curatale-music .curatale-showroom-card {
 
 .catalog-create-field .planning-input[aria-invalid="true"] {
   border-color: rgba(255, 93, 105, 0.72);
+}
+
+/* Critterarium controls use the same dark popup on Windows and in browsers. */
+.critterarium-select {
+  position: relative;
+  min-width: 0;
+  display: grid;
+  align-content: start;
+  gap: 7px;
+  color: rgba(242, 229, 217, 0.78);
+  font-size: 12px;
+  font-weight: 700;
+}
+.critterarium-select[data-open="true"] { z-index: 40; }
+
+.critterarium-select-trigger {
+  width: 100%;
+  min-height: 46px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 11px 13px;
+  border: 1px solid rgba(181, 221, 229, 0.18);
+  border-radius: 12px;
+  color: var(--color-foreground-primary);
+  background: rgba(1, 10, 15, 0.68);
+  font: inherit;
+  font-size: 13px;
+  text-align: left;
+  cursor: pointer;
+}
+
+.critterarium-select-trigger:hover,
+.critterarium-select-trigger[aria-expanded="true"],
+.critterarium-select-trigger:focus-visible {
+  border-color: rgba(var(--accent-rgb), 0.58);
+  outline: 0;
+  box-shadow: 0 0 0 3px rgba(var(--accent-rgb), 0.1);
+}
+
+.critterarium-select-trigger:disabled { opacity: 0.58; cursor: default; }
+.critterarium-select-chevron {
+  width: 8px;
+  height: 8px;
+  flex: 0 0 8px;
+  border-right: 2px solid currentColor;
+  border-bottom: 2px solid currentColor;
+  transform: translateY(-2px) rotate(45deg);
+  opacity: 0.7;
+}
+.critterarium-select-trigger[aria-expanded="true"] .critterarium-select-chevron { transform: translateY(2px) rotate(225deg); }
+
+.critterarium-select-menu {
+  position: absolute;
+  z-index: 30;
+  top: calc(100% + 6px);
+  left: 0;
+  right: 0;
+  display: grid;
+  gap: 3px;
+  padding: 7px;
+  border: 1px solid rgba(var(--accent-rgb), 0.34);
+  border-radius: 13px;
+  background: #020e13;
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.4);
+}
+.critterarium-select[data-placement="above"] .critterarium-select-menu {
+  top: auto;
+  bottom: calc(100% + 6px);
+}
+.critterarium-select-option {
+  min-height: 38px;
+  padding: 8px 11px;
+  border: 0;
+  border-radius: 9px;
+  color: var(--color-foreground-primary);
+  background: transparent;
+  font: inherit;
+  font-size: 13px;
+  text-align: left;
+  cursor: pointer;
+}
+.critterarium-select-option:hover,
+.critterarium-select-option:focus-visible,
+.critterarium-select-option[aria-selected="true"] {
+  outline: 0;
+  background: rgba(var(--accent-rgb), 0.16);
+}
+.ranking-year-control { min-width: 116px; }
+.ranking-year-control .critterarium-select-trigger { min-height: 38px; }
+.ranking-year-control .critterarium-select-label {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
 }
 
 .catalog-create-classification-control {
@@ -1262,6 +1411,11 @@ html.theme-curatale-music .curatale-showroom-card {
   height: 20px;
   fill: currentColor;
 }
+.catalog-browse-btn svg {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.8;
+}
 
 .catalog-create-error,
 .catalog-create-server-error {
@@ -1288,6 +1442,40 @@ html.theme-curatale-music .curatale-showroom-card {
   color: var(--color-foreground-primary);
   background: rgba(255, 255, 255, 0.035);
   cursor: pointer;
+}
+
+.catalog-create-details > .catalog-create-details-toggle {
+  list-style: none;
+  margin: 2px 0 0;
+}
+.catalog-create-details > .catalog-create-details-toggle::-webkit-details-marker { display: none; }
+.catalog-create-details[open] > .catalog-create-details-toggle { margin-bottom: 15px; }
+.catalog-create-details[open] > .catalog-create-details-toggle span { transform: rotate(45deg); }
+.catalog-create-taxonomy-suggestions {
+  display: grid;
+  gap: 8px;
+  color: rgba(242, 229, 217, 0.78);
+  font-size: 12px;
+  font-weight: 700;
+}
+.catalog-create-taxonomy-suggestions > div { display: flex; flex-wrap: wrap; gap: 8px; }
+.catalog-create-taxonomy-suggestions button {
+  min-height: 36px;
+  padding: 6px 12px;
+  border: 1px solid rgba(var(--accent-rgb), 0.35);
+  border-radius: 999px;
+  color: var(--color-foreground-primary);
+  background: rgba(var(--accent-rgb), 0.1);
+  cursor: pointer;
+}
+.catalog-create-taxonomy-suggestions button:hover,
+.catalog-create-taxonomy-suggestions button:focus-visible {
+  border-color: rgba(var(--accent-rgb), 0.75);
+  background: rgba(var(--accent-rgb), 0.2);
+}
+.catalog-create-taxonomy-suggestions button[aria-pressed="true"] {
+  border-color: rgba(var(--accent-rgb), 0.8);
+  background: rgba(var(--accent-rgb), 0.24);
 }
 
 .catalog-create-check {

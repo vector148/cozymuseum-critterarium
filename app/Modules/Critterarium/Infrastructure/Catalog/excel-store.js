@@ -7,11 +7,10 @@ import {
   rmSync,
   writeFileSync,
 } from "node:fs";
-import { basename, dirname, extname, resolve } from "node:path";
-import { fileURLToPath } from "node:url";
+import { dirname, extname, resolve } from "node:path";
+import { DEFAULT_DATABASE_DIR, catalogDataDir } from "../Storage/local-paths.js";
 
-const moduleDir = dirname(fileURLToPath(import.meta.url));
-export const DEFAULT_DATABASE_DIR = resolve(moduleDir, "../../../../../database");
+export { DEFAULT_DATABASE_DIR };
 
 function assertCatalogFilename(filename, allowedExtensions) {
   if (
@@ -38,7 +37,7 @@ function replaceFileAtomically(path, bytes) {
 
 export function createExcelStore({ databaseDir } = {}) {
   function getRoot() {
-    return resolve(databaseDir || process.env.COZYMUSEUM_DATA_DIR || DEFAULT_DATABASE_DIR);
+    return resolve(databaseDir || catalogDataDir());
   }
 
   function pathFor(filename, extensions = [".xlsx"]) {

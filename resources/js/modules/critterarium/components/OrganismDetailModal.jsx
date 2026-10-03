@@ -122,13 +122,8 @@ export default function OrganismDetailModal({ item, locale, realmLabel, onClose,
 
         {item.displayDescription ? <p className="organism-description">{item.displayDescription}</p> : null}
 
-        <div className="organism-detail-actions">
-          <button className="btn btn-primary" type="button" onClick={() => onEdit?.(item)}>{t(locale, "edit")}</button>
-          <button className="btn btn-danger" type="button" onClick={() => onDelete?.(item)}>{t(locale, "delete")}</button>
-        </div>
-
         {item.lifeState === "extant" && item.encounterEnabled !== false ? (
-          <div className="encounter-panel glass-card">
+          <div className="encounter-panel">
             {!item.encountered && !completing ? (
               <button className="completion-toggle" type="button" onClick={() => setCompleting(true)}>
                 <span className="completion-dot" />
@@ -200,6 +195,14 @@ export default function OrganismDetailModal({ item, locale, realmLabel, onClose,
             </a>
           </div>
         ) : null}
+
+        <div className="organism-detail-actions">
+          <span className="organism-danger-label">{t(locale, "dangerZone")}</span>
+          <div className="organism-danger-buttons">
+            <button className="btn" type="button" onClick={() => onEdit?.(item)}>{t(locale, "edit")}</button>
+            <button className="btn btn-danger" type="button" onClick={() => onDelete?.(item)}>{t(locale, "delete")}</button>
+          </div>
+        </div>
       </div>
     </div>
   );

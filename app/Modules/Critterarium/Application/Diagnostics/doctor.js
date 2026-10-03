@@ -36,9 +36,9 @@ export function inspectBiodiversityCatalog(rows = []) {
     lifeStates: countBy(rows, "lifeState"),
     encountered: rows.filter((row) => row.encountered === true || String(row.encountered).toLowerCase() === "true").length,
     missing: {
-      commonNameVi: rows.filter((row) => !row.commonNameVi).length,
+      commonNameEn: rows.filter((row) => !row.commonNameEn).length,
       className: rows.filter((row) => !String(row.className || "").trim()).length,
-      descriptionVi: rows.filter((row) => !row.descriptionVi).length,
+      descriptionEn: rows.filter((row) => !row.descriptionEn).length,
       coverUrl: rows.filter((row) => !row.coverUrl).length,
       video: rows.filter((row) => !row.youtubeUrl && !row.youtubeId).length,
       imageProvenance: rows.filter((row) => !row.imageSourceUrl).length,

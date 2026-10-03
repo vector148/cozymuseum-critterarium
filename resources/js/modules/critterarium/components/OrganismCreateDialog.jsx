@@ -7,6 +7,8 @@ import {
   coverNeedsImport,
   saveOrganismDraft,
 } from "../organism-editor.js";
+import { suggestTaxonomy } from "../taxonomy-suggestions.js";
+import CritterariumSelect from "./CritterariumSelect.jsx";
 import {
   uploadCompressedImage,
   cloneLocalPathImage,
@@ -45,10 +47,13 @@ export default function OrganismCreateDialog({ locale = "en", mode = "create", i
   const pendingCoverPromiseRef = useRef(null);
   const [imgError, setImgError] = useState(false);
   const dialogRef = useRef(null);
+  const detailsRef = useRef(null);
   const titleId = useId();
   const descriptionId = useId();
 
   const previewSrc = resolvePreviewSrc(form.coverUrl);
+  const taxonomySuggestions = suggestTaxonomy(form.commonNameEn)
+    .filter((suggestion) => !isEdit || suggestion.realmId === form.realmId);
 
   const update = (field, value) => {
     setForm((current) => ({ ...current, [field]: value }));
@@ -205,6 +210,12 @@ export default function OrganismCreateDialog({ locale = "en", mode = "create", i
   async function submit(event) {
     event.preventDefault();
     if (saving) return;
+    if (!form.scientificName.trim() || !form.className.trim()) {
+      detailsRef.current.open = true;
+      setError(locale === "vi" ? "Hãy nhập tên khoa học và chọn lớp trước khi lưu." : "Add a scientific name and choose a class before saving.");
+      requestAnimationFrame(() => detailsRef.current?.querySelector(!form.scientificName.trim() ? '[name="scientificName"]' : '[name="className"]')?.focus());
+      return;
+    }
 
     let finalCoverUrl = form.coverUrl;
     if (pendingCoverPromiseRef.current) {
@@ -363,61 +374,49 @@ export default function OrganismCreateDialog({ locale = "en", mode = "create", i
                   </div>
                 </label>
 
-                {/* 2. Realm */}
-                <label className="catalog-create-field">
-                  <span>{t(locale, "realm")}</span>
-                  <select className="planning-input" value={form.realmId} disabled={isEdit} onChange={(event) => update("realmId", event.target.value)}>
-                    <option value="animalia">Animalia</option>
-                    <option value="plantae_fungi">Plantae &amp; Fungi</option>
-                    <option value="sar">SAR</option>
-                    <option value="microverse">Microverse</option>
-                  </select>
-                </label>
-
-                {/* 3. Scientific Name */}
-                <label className="catalog-create-field">
-                  <span>{t(locale, "scientificName")}</span>
-                  <input autoFocus className="planning-input" required value={form.scientificName} onChange={(event) => update("scientificName", event.target.value)} />
-                </label>
-
-                {/* 4. Common Name */}
-                <label className="catalog-create-field">
+                <label className="catalog-create-field field-title">
                   <span>{t(locale, "commonName")}</span>
-                  <input className="planning-input" required value={form.commonNameEn} onChange={(event) => update("commonNameEn", event.target.value)} />
+                  <input autoFocus className="planning-input" required value={form.commonNameEn} onChange={(event) => update("commonNameEn", event.target.value)} />
                 </label>
+                {taxonomySuggestions.length > 0 ? (
+                  <div className="catalog-create-taxonomy-suggestions catalog-create-field-wide" role="group" aria-label={locale === "vi" ? "Gợi ý phân loại" : "Suggested classification"}>
+                    <span>{locale === "vi" ? "Gợi ý phân loại · chọn để áp dụng" : "Classification suggestions · choose to apply"}</span>
+                    <div>
+                      {taxonomySuggestions.map((suggestion) => (
+                        <button key={suggestion.className} type="button" aria-pressed={form.className === suggestion.className} onClick={() => setForm((current) => ({ ...current, ...suggestion, realmId: isEdit ? current.realmId : suggestion.realmId }))}>
+                          {suggestion.className}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                ) : null}
+                <CritterariumSelect label={t(locale, "lifeState")} value={form.lifeState}
+                  options={[{ value: "extant", label: t(locale, "extantStatus") }, { value: "extinct", label: t(locale, "extinctStatus") }]}
+                  onChange={(value) => update("lifeState", value)} />
 
-                <label className="catalog-create-field">
-                  <span>{t(locale, "commonNameVi")}</span>
-                  <input className="planning-input" value={form.commonNameVi} onChange={(event) => update("commonNameVi", event.target.value)} />
-                </label>
-
-                {/* 5. Phylum */}
-                <label className="catalog-create-field">
-                  <span>{t(locale, "phylum")}</span>
-                  <input className="planning-input" value={form.phylum} onChange={(event) => update("phylum", event.target.value)} />
-                </label>
-
-                {/* 6. Class */}
-                <label className="catalog-create-field">
-                  <span>{t(locale, "className")}</span>
-                  <input className="planning-input" required value={form.className} onChange={(event) => update("className", event.target.value)} />
-                </label>
-
-                {/* 7. Life state */}
-                <label className="catalog-create-field">
-                  <span>{t(locale, "lifeState")}</span>
-                  <select className="planning-input" value={form.lifeState} onChange={(event) => update("lifeState", event.target.value)}>
-                    <option value="extant">{t(locale, "extantStatus")}</option>
-                    <option value="extinct">{t(locale, "extinctStatus")}</option>
-                  </select>
-                </label>
-
-                {/* 8. Hall of Fame Score */}
                 <label className="catalog-create-field">
                   <span>{t(locale, "score")}</span>
                   <input className="planning-input" type="number" min="0" max="10" step="0.1" value={form.score} onChange={(event) => update("score", event.target.value)} />
                 </label>
 
+                <details ref={detailsRef} className="catalog-create-details catalog-create-field-wide">
+                  <summary className="catalog-create-details-toggle">{locale === "vi" ? "Phân loại khoa học và chi tiết" : "Scientific classification and details"}<span aria-hidden="true">+</span></summary>
+                  <div className="catalog-create-field-grid">
+                    <CritterariumSelect label={t(locale, "realm")} value={form.realmId} disabled={isEdit}
+                      options={[{ value: "animalia", label: "Animalia" }, { value: "plantae_fungi", label: "Plantae & Fungi" }]}
+                      onChange={(value) => update("realmId", value)} />
+                    <label className="catalog-create-field">
+                      <span>{t(locale, "scientificName")}</span>
+                      <input name="scientificName" className="planning-input" value={form.scientificName} onChange={(event) => update("scientificName", event.target.value)} />
+                    </label>
+                    <label className="catalog-create-field">
+                      <span>{t(locale, "phylum")}</span>
+                      <input className="planning-input" value={form.phylum} onChange={(event) => update("phylum", event.target.value)} />
+                    </label>
+                    <label className="catalog-create-field">
+                      <span>{t(locale, "className")}</span>
+                      <input name="className" className="planning-input" value={form.className} onChange={(event) => update("className", event.target.value)} />
+                    </label>
                 {isEdit ? (
                   <>
                     {[
@@ -435,10 +434,8 @@ export default function OrganismCreateDialog({ locale = "en", mode = "create", i
                       </label>
                     ))}
                     {[
-                      ["descriptionEn", "descriptionEn"], ["descriptionVi", "descriptionVi"],
-                      ["habitatEn", "habitatEn"], ["habitatVi", "habitatVi"],
-                      ["distributionEn", "distributionEn"], ["distributionVi", "distributionVi"],
-                      ["dietEn", "dietEn"], ["dietVi", "dietVi"],
+                      ["descriptionEn", "descriptionEn"], ["habitatEn", "habitatEn"],
+                      ["distributionEn", "distributionEn"], ["dietEn", "dietEn"],
                     ].map(([field, labelKey]) => (
                       <label className="catalog-create-field catalog-create-field-wide" key={field}>
                         <span>{t(locale, labelKey)}</span>
@@ -451,6 +448,8 @@ export default function OrganismCreateDialog({ locale = "en", mode = "create", i
                     </label>
                   </>
                 ) : null}
+                  </div>
+                </details>
               </div>
               <div className="catalog-create-server-error" role="status" aria-live="polite">{error}</div>
             </div>
@@ -466,8 +465,8 @@ export default function OrganismCreateDialog({ locale = "en", mode = "create", i
                   )}
                 </div>
                 <div className="catalog-create-preview-meta">
-                  <strong>{form.scientificName.trim() || t(locale, "unknownSpecies")}</strong>
-                  <span>{(locale === "vi" ? form.commonNameVi : form.commonNameEn) || form.commonNameEn || form.commonNameVi || t(locale, "noCommonName")}</span>
+                  <strong>{form.commonNameEn || t(locale, "unknownSpecies")}</strong>
+                  <span>{form.scientificName.trim() || form.className || t(locale, "noCommonName")}</span>
                 </div>
               </div>
             </aside>

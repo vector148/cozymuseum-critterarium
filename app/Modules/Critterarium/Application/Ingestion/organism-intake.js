@@ -25,8 +25,6 @@ function inferRealm(kingdom) {
   const normalized = key(kingdom);
   if (normalized === "animalia") return "animalia";
   if (["plantae", "fungi"].includes(normalized)) return "plantae_fungi";
-  if (["bacteria", "archaea", "viruses", "virus"].includes(normalized)) return "microverse";
-  if (["chromista", "protista", "sar"].includes(normalized)) return "sar";
   return "";
 }
 
@@ -97,7 +95,7 @@ function validateCandidate(row, minConfidence) {
   const confidence = Number(row.confidence);
   const problems = [
     !clean(row.organismId) && "could not derive an organism ID",
-    !validRealm(row.realmId) && "could not determine one of the four Realms",
+    !validRealm(row.realmId) && "could not determine a supported Realm",
     !validLifeState(row.lifeState) && "lifeState must be extant or extinct",
     !clean(row.scientificName) && "missing scientific name",
     !(clean(row.className) && isCanonicalScientificClass(row.className)) && "missing canonical scientific Class",

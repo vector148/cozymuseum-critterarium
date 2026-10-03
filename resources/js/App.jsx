@@ -27,7 +27,7 @@ function CoffeeIcon() {
 
 function AppInner() {
   const {
-    wingId, switchWing, atlasMode, switchMode, locale, setLocale,
+    wingId, switchWing, atlasMode, switchMode, locale,
     query, classId, encounterYear,
   } = useApp();
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -54,15 +54,6 @@ function AppInner() {
             <img className="brand-symbol" src="/brand/cozymuseum-sidebar-logo.svg" alt="" aria-hidden="true" />
             <span className="brand-wordmark">CozyMuseum</span>
           </a>
-          <button
-            className="locale-header-btn"
-            type="button"
-            onClick={() => setLocale(locale === "en" ? "vi" : "en")}
-            aria-label={locale === "en" ? "Chuyển sang tiếng Việt" : "Switch to English"}
-            title={locale === "en" ? "Chuyển sang tiếng Việt" : "Switch to English"}
-          >
-            <span className="locale-code">{locale.toUpperCase()}</span>
-          </button>
           <button
             className="collapse-btn desktop-collapse-btn"
             type="button"
@@ -104,21 +95,10 @@ function AppInner() {
           ))}
         </nav>
 
-        <button
-          className="locale-switch-collapsed"
-          type="button"
-          onClick={() => setLocale(locale === "en" ? "vi" : "en")}
-          aria-label={locale === "en" ? "Chuyển sang tiếng Việt" : "Switch to English"}
-          title={locale === "en" ? "Chuyển sang tiếng Việt" : "Switch to English"}
-        >
-          <span className="locale-code">{locale.toUpperCase()}</span>
-        </button>
-
-
         <div className="sidebar-footer">
           <div className="realm-tab-grid">
             {WINGS.map((wing) => (
-              <button key={wing.id} className={`realm-tab-btn realm-tab-${wing.id} ${wingId === wing.id ? "active" : ""}`} type="button" onClick={() => switchWing(wing.id)}>
+              <button key={wing.id} className={`realm-tab-btn realm-tab-${wing.id} ${wingId === wing.id ? "active" : ""}`} type="button" onClick={() => { switchWing(wing.id); setSidebarOpen(false); }}>
                 <span className="realm-tab-icon">{wing.icon}</span>
                 <span className="realm-tab-label">{wingName(wing, locale)}</span>
               </button>

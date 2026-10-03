@@ -77,7 +77,7 @@ if (command === "add") {
   output({
     product: "CozyMuseum",
     commands: {
-      add: "npm run bio -- add --name <scientific-or-common-name> [--realm animalia|plantae_fungi|sar|microverse] [--life-state extant|extinct] [--providers gbif,wikipedia-en,wikipedia-vi,youtube] [--min-confidence 0..1] [--apply] | --input <organisms.json>",
+      add: "npm run bio -- add --name <scientific-or-common-name> [--realm animalia|plantae_fungi] [--life-state extant|extinct] [--providers gbif,wikipedia-en,wikipedia-vi,youtube] [--min-confidence 0..1] [--apply] | --input <organisms.json>",
       enrich: "npm run bio -- enrich [--id <organism-id>] [--providers gbif,wikipedia-en,wikipedia-vi,youtube] [--min-confidence 0..1] [--overwrite | --overwrite-fields field,field] [--apply]",
       doctor: "npm run bio -- doctor",
     },
