@@ -1,6 +1,6 @@
 [package]
 name = "cozymuseum-critterarium"
-version = "3.0.2"
+version = "3.0.3"
 description = "CozyMuseum Critterarium desktop host"
 authors = ["CozyMuseum"]
 edition = "2021"

@@ -161,7 +161,7 @@ html.theme-wing-fauna body::before {
   background:
     radial-gradient(circle at 18% 12%, rgba(255, 255, 255, 0.18), transparent 30%),
     linear-gradient(180deg, rgba(4, 9, 16, 0.08) 0%, rgba(4, 9, 16, 0.20) 100%),
-    linear-gradient(145deg, #38191d, #10151a 52%, #050e14);
+    url('/backgrounds/bg-fauna.webp') center / cover no-repeat #050e14;
 }
 
 html.theme-wing-aquarium body::before {
@@ -175,7 +175,7 @@ html.theme-wing-flora body::before {
   z-index: 0;
   background:
     linear-gradient(180deg, rgba(4, 9, 16, 0.08) 0%, rgba(4, 9, 16, 0.20) 100%),
-    linear-gradient(145deg, #123823, #0c201a 52%, #050e14);
+    url('/backgrounds/bg-plantae-fungi.webp') center / cover no-repeat #050e14;
   mask-image: none;
 }
 

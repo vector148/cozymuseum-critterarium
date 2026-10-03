@@ -1,5 +1,5 @@
 #define AppName "CozyMuseum Critterarium"
-#define AppVersion "3.0.2"
+#define AppVersion "3.0.3"
 
 [Setup]
 AppId={{D430A7C9-28DE-49C3-98B6-3552B8567DA1}
@@ -24,10 +24,11 @@ LicenseFile=..\LICENSE
 
 [Files]
 Source: "..\.build\windows-payload\*"; DestDir: "{app}"; Flags: recursesubdirs createallsubdirs ignoreversion
+Source: "..\src-tauri\icons\icon.ico"; DestDir: "{app}"; DestName: "critterarium-mark-3.0.3.ico"; Flags: ignoreversion
 
 [Icons]
-Name: "{group}\CozyMuseum Critterarium"; Filename: "{app}\cozymuseum-critterarium.exe"; WorkingDir: "{app}"; IconFilename: "{app}\cozymuseum-critterarium.exe"
-Name: "{userdesktop}\CozyMuseum Critterarium"; Filename: "{app}\cozymuseum-critterarium.exe"; WorkingDir: "{app}"; IconFilename: "{app}\cozymuseum-critterarium.exe"
+Name: "{group}\CozyMuseum Critterarium"; Filename: "{app}\cozymuseum-critterarium.exe"; WorkingDir: "{app}"; IconFilename: "{app}\critterarium-mark-3.0.3.ico"
+Name: "{userdesktop}\CozyMuseum Critterarium"; Filename: "{app}\cozymuseum-critterarium.exe"; WorkingDir: "{app}"; IconFilename: "{app}\critterarium-mark-3.0.3.ico"
 
 [Run]
 Filename: "{app}\cozymuseum-critterarium.exe"; Description: "Open CozyMuseum Critterarium"; Flags: nowait postinstall skipifsilent

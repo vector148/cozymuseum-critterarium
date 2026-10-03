@@ -15,6 +15,8 @@ const FORBIDDEN_EXTENSIONS = new Set([".xlsx", ".xls", ".csv", ".sqlite", ".db",
 const IGNORED_DIRECTORIES = new Set([".git", ".build", "dist", "node_modules", "target", "gen"]);
 const APPROVED_ASSETS = new Set([
   "public/backgrounds/bg-animalia.webp",
+  "public/backgrounds/bg-fauna.webp",
+  "public/backgrounds/bg-plantae-fungi.webp",
   "src-tauri/icons/icon.png",
 ]);
 const SECRET_PATTERNS = [
