@@ -390,7 +390,7 @@ dependencies = [
 
 [[package]]
 name = "cozymuseum-critterarium"
-version = "3.0.3"
+version = "3.0.4"
 dependencies = [
  "tauri",
  "tauri-build",

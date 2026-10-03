@@ -6,7 +6,7 @@ import { fileURLToPath } from "node:url";
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const buildRoot = resolve(root, ".build");
-const payload = resolve(buildRoot, "windows-payload");
+const payload = resolve(buildRoot, "windows-payload-v304");
 const compiler = process.env.INNO_COMPILER || resolve(homedir(), "AppData/Local/Programs/Inno Setup 6/ISCC.exe");
 const npmCli = resolve(dirname(process.execPath), "node_modules/npm/bin/npm-cli.js");
 
@@ -18,7 +18,7 @@ function run(command, args, cwd = root) {
 if (process.platform !== "win32") throw new Error("Windows installer builds require Windows");
 if (process.version !== "v26.3.0") throw new Error("Build with Node v26.3.0 to match the bundled Node license");
 if (!existsSync(compiler)) throw new Error(`Inno Setup compiler is missing: ${compiler}`);
-if (resolve(payload) !== resolve(root, ".build/windows-payload")) throw new Error("Unsafe payload path");
+if (resolve(payload) !== resolve(root, ".build/windows-payload-v304")) throw new Error("Unsafe payload path");
 
 run(process.execPath, ["scripts/verify-cleanroom-release.mjs", "."]);
 run(process.execPath, [npmCli, "run", "build"]);

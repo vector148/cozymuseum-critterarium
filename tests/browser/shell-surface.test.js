@@ -36,8 +36,8 @@ test("Critterarium shell publishes the verified 3.0 release contract", async () 
   ]);
   const packageJson = JSON.parse(packageText);
 
-  assert.equal(packageJson.version, "3.0.3");
-  assert.match(readme, /Current shell version:\*\* `3\.0\.3`/);
+  assert.equal(packageJson.version, "3.0.4");
+  assert.match(readme, /Current shell version:\*\* `3\.0\.4`/);
   assert.match(notices, /Be Vietnam Pro[\s\S]*Exo 2[\s\S]*SIL Open Font License 1\.1/);
   assert.match(viteConfig, /publicDir:\s*"\.\.\/public"/);
 });

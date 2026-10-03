@@ -1077,6 +1077,11 @@ html.theme-curatale-music .curatale-showroom-card {
   animation: catalog-create-in 220ms ease both;
 }
 
+/* The organism editor sits over photographic realms; keep its reading surface opaque. */
+.catalog-create-dialog.catalog-create-organism {
+  background-color: #061218;
+}
+
 @keyframes catalog-create-in {
   from { opacity: 0; transform: translateY(18px) scale(0.985); }
   to { opacity: 1; transform: translateY(0) scale(1); }

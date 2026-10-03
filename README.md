@@ -2,7 +2,7 @@
 
 CozyMuseum is an empty, local-first natural-history museum shell. A fresh download includes the application and schema only: no organisms, catalog workbooks, personal encounters, articles, or bundled species media.
 
-**Current shell version:** `3.0.3`
+**Current shell version:** `3.0.4`
 
 Version `3.0.0` starts from the 2.0.0 Critterarium shell. It preserves the local catalog and encounter model, uses the same card-to-detail and add-card-to-editor interaction pattern as Curatale, closes mobile navigation after a Realm switch, and removes inherited public-platform modules and private catalog media from this source tree.
 
@@ -14,6 +14,7 @@ Version `3.0.0` starts from the 2.0.0 Critterarium shell. It preserves the local
 - `3.0.1` - correct the installed shortcut path and release a verified Windows setup.
 - `3.0.2` - open the museum in its own native desktop window, add a desktop shortcut and sidebar-logo icon, and restore the showroom background.
 - `3.0.3` - render the sidebar mark without a dark icon tile and match the Botany and Wildlife showroom backgrounds.
+- `3.0.4` - give the organism editor an opaque reading surface over every showroom background.
 
 ## Start on Windows
 
